@@ -3,6 +3,11 @@ package futoshiki;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Hardcoded front-end and recursive solver for Futoshiki puzzles.
+ * 
+ * @author Joseph Walton
+ */
 public class Solver
 {
     public static void main(String[] args)
@@ -69,6 +74,14 @@ public class Solver
         solve(f, blanks);
     }
     
+    /**
+     * Accept a puzzle state and, if there are still blank squares, try every
+     * number. Recurse for all attempts that are still valid. If there are
+     * no blanks remaining then print what must be a solution.
+     * 
+     * @param f
+     * @param blank
+     */
     static void solve(Futoshiki f, List<Futoshiki.CellPos> blank)
     {
         if (blank.isEmpty()) {

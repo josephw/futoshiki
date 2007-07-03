@@ -3,6 +3,13 @@ package futoshiki;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * A Futoshiki puzzle state, with any number of cells filled in and
+ * a set of rules constraining the values. Methods allow for the manipulation
+ * of state and validity checking.
+ * 
+ * @author Joseph Walton
+ */
 public class Futoshiki
 {
     private final byte[] data = new byte[25];
