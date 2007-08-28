@@ -12,9 +12,11 @@ import java.util.Collection;
  */
 public class Futoshiki
 {
+    public static final int LENGTH = 5;
+    
     private final byte[] data = new byte[25];
     
-    final Collection<GtRule> rules = new ArrayList<GtRule>();
+    final Collection<ValidatingGtRule> rules = new ArrayList<ValidatingGtRule>();
 
     private static final int idx(int column, int row)
     {
@@ -52,7 +54,7 @@ public class Futoshiki
         }
         
         /* Obey rules */
-        for (GtRule r : rules) {
+        for (ValidatingGtRule r : rules) {
             if (!r.isValid(this))
                 return false;
         }
@@ -81,7 +83,7 @@ public class Futoshiki
 
     public void addGtRule(int columnA, int rowA, int columnB, int rowB)
     {
-        rules.add(new GtRule(columnA, rowA, columnB, rowB));
+        rules.add(new ValidatingGtRule(columnA, rowA, columnB, rowB));
     }
     
     public Futoshiki clone()
@@ -112,21 +114,16 @@ public class Futoshiki
         return blank;
     }
 
-    static class GtRule
+    private static class ValidatingGtRule extends GtRule
     {
-        final int columnA, rowA, columnB, rowB;
-        
         private final int idxA, idxB;
         
-        GtRule(int columnA, int rowA, int columnB, int rowB)
+        ValidatingGtRule(int columnA, int rowA, int columnB, int rowB)
         {
+            super(columnA, rowA, columnB, rowB);
+            
             idxA = idx(columnA, rowA);
             idxB = idx(columnB, rowB);
-            
-            this.columnA = columnA;
-            this.rowA = rowA;
-            this.columnB = columnB;
-            this.rowB = rowB;
         }
         
         boolean isValid(Futoshiki f)

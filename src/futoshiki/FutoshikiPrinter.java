@@ -25,7 +25,7 @@ public class FutoshikiPrinter
         /* Rules */
         // XXX
         
-        for (Futoshiki.GtRule r : f.rules) {
+        for (GtRule r : f.rules) {
             int row = r.rowA + r.rowB - 2,
                 column = r.columnA + r.columnB - 2;
 
