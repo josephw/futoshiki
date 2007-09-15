@@ -4,71 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Hardcoded front-end and recursive solver for Futoshiki puzzles.
+ * Recursive solver for Futoshiki puzzles.
  * 
  * @author Joseph Walton
  */
 public class Solver
 {
-    public static void main(String[] args)
+    private final SolutionTarget target;
+    
+    public Solver(SolutionTarget target)
     {
-        Futoshiki f = g36();
-        
-        System.out.print(FutoshikiPrinter.toString(f));
-        
-        solve(f);
-    }
-
-    static Futoshiki g36()
-    {
-        Futoshiki f = new Futoshiki();
-        
-        /* Rules */
-        f.addGtRule(3, 1, 4, 1);
-        f.addGtRule(5, 1, 4, 1);
-        f.addGtRule(3, 1, 3, 2);
-        f.addGtRule(4, 1, 4, 2);
-        f.addGtRule(1, 2, 2, 2);
-        f.addGtRule(1, 3, 1, 2);
-        f.addGtRule(1, 3, 2, 3);
-        f.addGtRule(4, 3, 5, 3);
-        f.addGtRule(5, 4, 5, 3);
-        f.addGtRule(3, 4, 3, 5);
-        f.addGtRule(2, 5, 1, 5);
-        
-        f.set(5, 1, 4);
-        f.set(5, 2, 5);
-        f.set(2, 4, 3);
-        
-        return f;
+        this.target = target;
     }
     
-    static Futoshiki g40()
-    {
-        Futoshiki f = new Futoshiki();
-
-        /* Include rules */
-        f.addGtRule(2, 2, 2, 1);
-        f.addGtRule(4, 1, 4, 2);
-        f.addGtRule(2, 3, 3, 3);
-        f.addGtRule(3, 3, 4, 3);
-        f.addGtRule(1, 3, 1, 4);
-        f.addGtRule(1, 4, 1, 5);
-        f.addGtRule(2, 4, 2, 5);
-        f.addGtRule(3, 5, 3, 4);
-        f.addGtRule(2, 5, 1, 5);
-        f.addGtRule(2, 5, 3, 5);
-        f.addGtRule(4, 5, 3, 5);
-        f.addGtRule(5, 5, 4, 5);
-        
-        /* Initial numbers */
-        f.set(1, 1, 5);
-        f.set(4, 4, 5);
-        
-        return f;
-    }
-    
-    static void solve(Futoshiki f)
+    public void solve(Futoshiki f)
     {
         List<Futoshiki.CellPos> blanks = new ArrayList<Futoshiki.CellPos>(f.blankCells());
         solve(f, blanks);
@@ -82,13 +31,10 @@ public class Solver
      * @param f
      * @param blank
      */
-    static void solve(Futoshiki f, List<Futoshiki.CellPos> blank)
+    private boolean solve(Futoshiki f, List<Futoshiki.CellPos> blank)
     {
         if (blank.isEmpty()) {
-            System.out.println("Solution:");
-            System.out.println(FutoshikiPrinter.toString(f));
-            
-            return;
+            return target.solution(f);
         }
         
         Futoshiki.CellPos p = blank.get(0);
@@ -97,8 +43,32 @@ public class Solver
         for (int v = 1; v <= 5; v++) {
             f.set(p.column, p.row, v);
             if (f.isValid()) {
-                solve(f.clone(), remaining);
+                boolean more = solve(f.clone(), remaining);
+                if (!more) {
+                    return false;
+                }
             }
+        }
+        
+        return true;
+    }
+    
+    public interface SolutionTarget
+    {
+        /**
+         * @param f
+         * @return whether or not more solutions are required
+         */
+        boolean solution(Futoshiki f);
+    }
+    
+    public static class PrintingSolutionTarget implements SolutionTarget
+    {
+        public boolean solution(Futoshiki f)
+        {
+            System.out.println("Solution:");
+            System.out.println(FutoshikiPrinter.toString(f));
+            return true;
         }
     }
 }
