@@ -1,9 +1,13 @@
 package futoshiki.test;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import junit.framework.TestCase;
+import futoshiki.CellPos;
 import futoshiki.Futoshiki;
+import futoshiki.GtRule;
 
 public class TestFutoshiki extends TestCase
 {
@@ -169,7 +173,76 @@ public class TestFutoshiki extends TestCase
     {
         Futoshiki f = new Futoshiki();
         
-        Collection<Futoshiki.CellPos> blank = f.blankCells();
+        Collection<CellPos> blank = f.blankCells();
         assertEquals(25, blank.size());
+    }
+    
+    public void testClear()
+    {
+        Futoshiki f = new Futoshiki();
+        assertEquals(0, f.get(1, 1));
+        f.set(1, 1, 5);
+        assertEquals(5, f.get(1, 1));
+        f.clear(1, 1);
+        assertEquals(0, f.get(1, 1));
+    }
+    
+    private static List<GtRule> gather(Iterable<? extends GtRule> rules)
+    {
+        List<GtRule> c = new ArrayList<GtRule>();
+        for (GtRule r : rules) {
+            c.add(r);
+        }
+        return c;
+    }
+    public void testSettingRulesOverwritesExistingRules()
+    {
+        Futoshiki f = new Futoshiki();
+        f.addGtRule(1, 1, 2, 1);
+        
+        List<GtRule> r;
+        
+        r = gather(f.getRules());
+        assertEquals(1, r.size());
+        
+        f.addGtRule(1, 1, 2, 1);
+        r = gather(f.getRules());
+        assertEquals("A duplicate rule should have no effect",
+                1, r.size());
+        
+        f.addGtRule(2, 1, 1, 1);
+        r = gather(f.getRules());
+        assertEquals("A rule in the same position should replace the previous one",
+                1, r.size());
+        
+        /* Make sure it's the more recent rule */
+        GtRule gtr = r.get(0);
+        assertEquals(2, gtr.getGreaterColumn());
+        assertEquals(1, gtr.getGreaterRow());
+        assertEquals(1, gtr.getLesserColumn());
+        assertEquals(1, gtr.getLesserRow());
+    }
+    
+    public void testGetRuleByPosition()
+    {
+        Futoshiki f = new Futoshiki();
+        f.addGtRule(1, 1, 2, 1);
+
+        GtRule r = f.getRule(new GtRule(1, 1, 2, 1).getCanonPosForm());
+        assertNotNull(r);
+        
+        GtRule expected = new GtRule(1, 1, 2, 1);
+        assertEquals(expected, r);
+    }
+    
+    public void testRemoveRule()
+    {
+        Futoshiki f = new Futoshiki();
+        f.addGtRule(1, 1, 2, 1);
+
+        f.removeRule(new GtRule(1, 1, 2, 1).getCanonPosForm());
+        
+        assertFalse("Deleting a single rule should leave no rules",
+                f.getRules().iterator().hasNext());
     }
 }

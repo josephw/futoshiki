@@ -2,21 +2,58 @@ package futoshiki;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Event;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
-public class FutoshikiPanel extends JPanel
+public class FutoshikiPanel extends JPanel implements FocusListener
 {
     private Futoshiki futoshiki = new Futoshiki();
+    private Boolean valid;
+    private Map<CellPos, EditState> cellEditStates = new HashMap<CellPos, EditState>();
+    
+    private CellPos selected;
+    
+    public FutoshikiPanel()
+    {
+        addMouseListener(new ClickListener());
+        addKeyListener(new TypedNumberListener());
+        setFocusable(true);
+        
+        addFocusListener(this);
+    }
+    
+    public void focusGained(FocusEvent e)
+    {
+        repaint();
+    }
+    
+    public void focusLost(FocusEvent e)
+    {
+        repaint();
+    }
     
     @Override
     public Dimension getPreferredSize()
@@ -48,97 +85,116 @@ public class FutoshikiPanel extends JPanel
     public void paint(Graphics origGfx)
     {
         Graphics2D g = (Graphics2D) origGfx;
-        
+
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         Dimension d = getSize();
 
-        g.setColor(Color.LIGHT_GRAY);
+        if (hasFocus()) {
+            g.setColor(Color.LIGHT_GRAY);
+        } else {
+            g.setColor(Color.DARK_GRAY);
+        }
+        
         g.fillRect(0, 0, d.width, d.height);
 
-        Font f = getFont();
-        g.setFont(f);
-
-        
         int px = d.width / (Futoshiki.LENGTH * 3 + 1),
             py = d.height / (Futoshiki.LENGTH * 3 + 1);
+        
+        
+        Font f = getFont();
 
-        g.setFont(f.deriveFont((float)py));
+        f = f.deriveFont((float)py);
+        
+        g.setFont(f);
         FontMetrics fm = g.getFontMetrics();
 
+        Font bf = g.getFont().deriveFont(Font.BOLD);
+        
         /* Numbers */
-        for (int row = 0; row < Futoshiki.LENGTH; row++) {
-            for (int column = 0; column < Futoshiki.LENGTH; column++) {
+        for (int row = 1; row <= Futoshiki.LENGTH; row++) {
+            for (int column = 1; column <= Futoshiki.LENGTH; column++) {
                 
-                int x = (1 + column * 3) * px,
-                    y = (1 + row * 3) * py;
+                int x = (column * 3 - 2) * px,
+                    y = (row * 3 - 2) * py;
                 
                 g.setColor(Color.WHITE);
                 g.fillRect(x, y, px * 2, py * 2);
-                g.setColor(Color.BLACK);
+
+                boolean isSelected = selected != null
+                        && (column == selected.column && row == selected.row);
+                
+                if (isSelected) {
+                    g.setColor(Color.RED);
+                } else {
+                    g.setColor(Color.BLACK);
+                }
+                
                 g.drawRect(x, y, px * 2, py * 2);
                 
-                int v = futoshiki.get(column + 1, row + 1);
-                String s = Integer.toString(v);
+                int v = futoshiki.get(column, row);
+                EditState es = cellEditStates.get(new CellPos(column, row));
+                if (es == null) {
+                    es = EditState.DESIGNED;
+                }
                 
-                Rectangle2D sb = fm.getStringBounds(s, g);
-                
-                int cx = (2 + column * 3) * px,
-                    cy = (2 + row * 3) * py;
-                
-                float tx = (float) (cx - sb.getCenterX()),
-                    ty = (float) (cy - sb.getCenterY());
-                
-                g.drawString(s, tx, ty);
+                if (v > 0) {
+                    String s = Integer.toString(v);
+                    
+                    Rectangle2D sb = fm.getStringBounds(s, g);
+                    
+                    int cx = (column * 3 - 1) * px,
+                        cy = (row * 3 - 1) * py;
+                    
+                    float tx = (float) (cx - sb.getCenterX()),
+                        ty = (float) (cy - sb.getCenterY());
+
+                    switch (es) {
+                        case DESIGNED:
+                            g.setColor(Color.BLACK);
+                            g.setFont(bf);
+                            break;
+                            
+                        case MANUAL:
+                            g.setColor(Color.DARK_GRAY);
+                            g.setColor(Color.YELLOW);
+                            g.setFont(f);
+                            break;
+                            
+                        case AUTOMATIC:
+                            g.setColor(Color.BLUE);
+                            g.setFont(f);
+                            break;
+                    }
+                    
+                    if (isSelected) {
+                        g.setColor(Color.RED);
+                    }
+                    
+                    g.drawString(s, tx, ty);
+                }
             }
         }
 
 //        g.setStroke(new BasicStroke(Math.min(px, py) / 10));
 
+        final int LW = 3;
         GeneralPath gp = new GeneralPath();
-        gp.append(new Line2D.Float(10, 40, 40, 50), false);
-        gp.append(new Line2D.Float(40, 50, 10, 60), false);
-//        gp.append(new Rectangle(0, 0, 50, 100), false);
+        gp.moveTo(10, 40 - LW);
+        gp.lineTo(40, 50 - LW);
+        gp.lineTo(40, 50 + LW);
+        gp.lineTo(10, 60 + LW);
+        gp.lineTo(10, 60 - LW);
+        gp.lineTo(30, 50);
+        gp.lineTo(10, 40 + LW);
+        gp.closePath();
         
         GeneralPath gp2 = new GeneralPath(gp);
         gp2.transform(AffineTransform.getScaleInstance(-1, 1));
         gp2.transform(AffineTransform.getTranslateInstance(50, 0));
         
-//        Collection<GtRule> rules = new ArrayList<GtRule>();
-//        
-//        /* Rules - horizontal */
-//        for (int row = 1; row <= LENGTH; row++) {
-//            for (int firstColumn = 1; firstColumn < LENGTH; firstColumn++) {
-//                boolean gt = (row + firstColumn) % 2 == 0;
-//
-//                GtRule r;
-//                
-//                if (gt) {
-//                    r = new GtRule(row, firstColumn, row, firstColumn + 1);
-//                } else {
-//                    r = new GtRule(row, firstColumn + 1, row, firstColumn);
-//                }
-//
-//                rules.add(r);
-//            }
-//        }
-//        
-//        /* Rules - vertical */
-//        for (int firstRow = 1; firstRow < LENGTH; firstRow++) {
-//            for (int column = 1; column <= LENGTH; column++) {
-//                boolean gt = (firstRow + column) % 2 == 0;
-//
-//                GtRule r;
-//                
-//                if (gt) {
-//                    r = new GtRule(firstRow, column, firstRow + 1, column);
-//                } else {
-//                    r = new GtRule(firstRow, column, firstRow + 1, column);
-//                }
-//
-//                rules.add(r);
-//            }
-//        }
+        g.setColor(Color.BLACK);
 
-        for (GtRule r : futoshiki.rules) {
+        for (GtRule r : futoshiki.getRules()) {
             RulePos rp = rulePosition(r);
             if (rp == null)
                 continue;
@@ -151,11 +207,6 @@ public class FutoshikiPanel extends JPanel
                 
                 t = AffineTransform.getTranslateInstance(x, y);
                 t.scale(px / 50.0, (py * 2) / 100.0);
-
-//                g.setColor(Color.RED);
-//                g.fillRect(x, y, px, py * 2);
-//                g.setColor(Color.BLACK);
-//                g.drawRect(x, y, px, py * 2);
             } else {
                 int x = (-2 + rp.column * 3) * px,
                     y = (0 + rp.row * 3) * py;
@@ -163,16 +214,21 @@ public class FutoshikiPanel extends JPanel
                 t = AffineTransform.getTranslateInstance(x + px * 2, y);;
                 t.scale((px * 2) / 100.0, py / 50.0);
                 t.rotate(Math.PI / 2.0);
-
-//                g.setColor(Color.BLUE);
-//                g.fillRect(x, y, px * 2, py);
-//                g.setColor(Color.BLACK);
-//                g.drawRect(x, y, px * 2, py);
             }
+            
+//            if (clickedRule != null
+//                && rp.column == clickedRule.column
+//                && rp.row == clickedRule.row
+//                && rp.horizontal == clickedRule.horizontal)
+//            {
+//                g.setColor(Color.YELLOW);
+//            } else {
+                g.setColor(Color.BLACK);
+//            }
             
             AffineTransform ot = g.getTransform();
             g.transform(t);
-            g.draw(rp.gt ? gp : gp2);
+            g.fill(rp.gt ? gp : gp2);
             g.setTransform(ot);
         }
         
@@ -181,6 +237,95 @@ public class FutoshikiPanel extends JPanel
     public void setFutoshiki(Futoshiki f)
     {
         this.futoshiki = f.clone();
+        changed();
+    }
+    
+    private void changed()
+    {
+        Boolean nowValid = Boolean.valueOf(futoshiki.isValid());
+        
+        firePropertyChange("futoshiki.valid", valid, nowValid);
+        repaint();
+        valid = nowValid;
+    }
+    
+    public void cellClicked(int column, int row)
+    {
+        System.out.println("Cell column " + column + ", row " + row);
+        
+        selected = new CellPos(column, row);
+        repaint();
+    }
+    
+    public void ruleClicked(RulePos rp)
+    {
+        System.out.println("Rule " + rp.column + ", " + rp.row + ", " + rp.horizontal);
+     
+        GtRule rk;
+        
+        if (rp.horizontal) {
+            rk = new GtRule(rp.column, rp.row, rp.column + 1, rp.row);
+        } else {
+            rk = new GtRule(rp.column, rp.row, rp.column, rp.row + 1);
+        }
+        
+        rk = rk.getCanonPosForm();
+        
+        GtRule rule = futoshiki.getRule(rk);
+        
+        if (rule == null) {
+            futoshiki.addGtRule(rk.getGreaterColumn(), rk.getGreaterRow(),
+                    rk.getLesserColumn(), rk.getLesserRow());
+        } else if (rk.equals(rule)) {
+            futoshiki.addGtRule(rk.getLesserColumn(), rk.getLesserRow(),
+                    rk.getGreaterColumn(), rk.getGreaterRow());
+        } else {
+            futoshiki.removeRule(rk);
+        }
+        
+//        clickedRule = rp;
+        changed();
+    }
+    
+    public void numberTyped(int n)
+    {
+        System.out.println("Number " + n);
+        if (selected != null) {
+            futoshiki.set(selected.column, selected.row, n);
+            cellEditStates.put(selected, EditState.MANUAL);
+            changed();
+        }
+    }
+    
+    public void numberCleared()
+    {
+        System.out.println("Number cleared");
+        if (selected != null) {
+            futoshiki.clear(selected.column, selected.row);
+            changed();
+        }
+    }
+    
+    public void solve()
+    {
+        SolutionInProgress sip = new SolutionInProgress();
+
+        // Do this in another thread?
+        new Solver(sip).solve(futoshiki.clone());
+        
+        if (sip.solution != null) {
+            for (CellPos cp : futoshiki.blankCells()) {
+                cellEditStates.put(cp, EditState.AUTOMATIC);
+            }
+            futoshiki = sip.solution;
+            changed();
+            
+            if (sip.multipleSolutions) {
+                System.err.println("Multiple solutions");
+            }
+        } else {
+            System.err.println("No solutions");
+        }
     }
     
     public static RulePos rulePosition(GtRule r)
@@ -223,5 +368,121 @@ public class FutoshikiPanel extends JPanel
             this.horizontal = horizontal;
             this.gt = gt;
         }
+    }
+    
+    private class ClickListener extends MouseAdapter
+    {
+        @Override
+        public void mouseClicked(MouseEvent e)
+        {
+            Point p = e.getPoint();
+            
+            Dimension d = getSize();
+
+            int px = d.width / (Futoshiki.LENGTH * 3 + 1),
+            py = d.height / (Futoshiki.LENGTH * 3 + 1);
+            
+            int x = p.x / px,
+                y = p.y / py;
+            
+            /* Out of bounds in a way that messes up arithmetic? */
+            if (x == 0 || y == 0) {
+                return;
+            }
+            
+            if ((x - 1) % 3 != 2) {
+                int column = ((x - 1) / 3) + 1;
+
+                if (column >= 1 && column <= Futoshiki.LENGTH) {
+                    if ((y - 1) % 3 != 2) {
+                        int row = ((y - 1) / 3) + 1;
+                        
+                        if (row >= 1 && row <= Futoshiki.LENGTH) {
+                            cellClicked(column, row);
+                        }
+                    } else {
+                        int rowAfter = ((y - 1) / 3) + 1;
+                        
+                        if (rowAfter >= 1 && rowAfter < Futoshiki.LENGTH) {
+                            RulePos rp = new RulePos(column, rowAfter, false, false);
+                            ruleClicked(rp);
+                        }
+                    }
+                }
+            } else {
+                int columnAfter = ((x - 1) / 3) + 1;
+                if (columnAfter >= 1 && columnAfter < Futoshiki.LENGTH) {
+                    if ((y - 1) % 3 != 2) {
+                        int row = ((y - 1) / 3) + 1;
+                        
+                        if (row >= 1 && row <= Futoshiki.LENGTH) {
+                            RulePos rp = new RulePos(columnAfter, row, true, false);
+                            ruleClicked(rp);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private class TypedNumberListener extends KeyAdapter
+    {
+        @Override
+        public void keyTyped(KeyEvent e)
+        {
+            char c = e.getKeyChar();
+            
+            int n = Character.digit(c, 10);
+            if (n == 0) {
+                numberCleared();
+            } else if (n > 0) {
+                numberTyped(n);
+            }
+        }
+        
+        public void keyPressed(KeyEvent e)
+        {
+            if (e.getKeyCode() == KeyEvent.VK_DELETE
+                || e.getKeyCode() == KeyEvent.VK_BACK_SPACE
+                || e.getKeyCode() == KeyEvent.VK_SPACE)
+            {
+                numberCleared();
+            } else if (e.getKeyCode() == KeyEvent.VK_C && ((e.getModifiers() & Event.CTRL_MASK) != 0))
+            {
+                Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+                Transferable trans = new StringSelection(FutoshikiPrinter.toString(futoshiki));
+                
+                cb.setContents(trans, null);
+            } else if (e.getKeyCode() == KeyEvent.VK_Z && ((e.getModifiers() & Event.CTRL_MASK) != 0))
+            {
+                // attemptUndo();
+            }
+            
+        }
+    }
+    
+    private class SolutionInProgress implements Solver.SolutionTarget
+    {
+        Futoshiki solution;
+        boolean multipleSolutions = false;
+        
+        public boolean solution(Futoshiki f)
+        {
+            if (solution == null) {
+                solution = f;
+                return true;
+            } else {
+                multipleSolutions = true;
+                return false;
+            }
+        }
+    }
+    
+    private enum EditState
+    {
+        DESIGNED,
+        MANUAL,
+        AUTOMATIC;
     }
 }

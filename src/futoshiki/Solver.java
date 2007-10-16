@@ -19,34 +19,36 @@ public class Solver
     
     public void solve(Futoshiki f)
     {
-        List<Futoshiki.CellPos> blanks = new ArrayList<Futoshiki.CellPos>(f.blankCells());
+        List<CellPos> blanks = new ArrayList<CellPos>(f.blankCells());
         solve(f, blanks);
     }
     
     /**
-     * Accept a puzzle state and, if there are still blank squares, try every
-     * number. Recurse for all attempts that are still valid. If there are
-     * no blanks remaining then print what must be a solution.
+     * Accept a puzzle state and, if it is valid and if there are still blank
+     * squares, try every number. Recurse for all attempts. If there are no
+     * blanks remaining then print what must be a solution.
      * 
      * @param f
      * @param blank
      */
-    private boolean solve(Futoshiki f, List<Futoshiki.CellPos> blank)
+    private boolean solve(Futoshiki f, List<CellPos> blank)
     {
+        if (!f.isValid()) {
+            return true;
+        }
+        
         if (blank.isEmpty()) {
             return target.solution(f);
         }
         
-        Futoshiki.CellPos p = blank.get(0);
-        List<Futoshiki.CellPos> remaining = blank.subList(1, blank.size());
+        CellPos p = blank.get(0);
+        List<CellPos> remaining = blank.subList(1, blank.size());
         
         for (int v = 1; v <= 5; v++) {
             f.set(p.column, p.row, v);
-            if (f.isValid()) {
-                boolean more = solve(f.clone(), remaining);
-                if (!more) {
-                    return false;
-                }
+            boolean more = solve(f.clone(), remaining);
+            if (!more) {
+                return false;
             }
         }
         

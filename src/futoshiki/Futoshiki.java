@@ -2,6 +2,9 @@ package futoshiki;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A Futoshiki puzzle state, with any number of cells filled in and
@@ -16,7 +19,8 @@ public class Futoshiki
     
     private final byte[] data = new byte[25];
     
-    final Collection<ValidatingGtRule> rules = new ArrayList<ValidatingGtRule>();
+    private final Map<GtRule, ValidatingRule> rules = new HashMap<GtRule, ValidatingRule>();
+    private final Iterable<GtRule> origRuleIterable = new OrigRuleIterable();
 
     private static final int idx(int column, int row)
     {
@@ -54,7 +58,7 @@ public class Futoshiki
         }
         
         /* Obey rules */
-        for (ValidatingGtRule r : rules) {
+        for (ValidatingRule r : rules.values()) {
             if (!r.isValid(this))
                 return false;
         }
@@ -81,16 +85,25 @@ public class Futoshiki
         data[idx(column, row)] = (byte) v;
     }
 
+    public void clear(int column, int row)
+    {
+        data[idx(column, row)] = 0;
+    }
+    
     public void addGtRule(int columnA, int rowA, int columnB, int rowB)
     {
-        rules.add(new ValidatingGtRule(columnA, rowA, columnB, rowB));
+        GtRule newRule = new GtRule(columnA, rowA, columnB, rowB);
+
+        GtRule k = newRule.getCanonPosForm();
+        
+        rules.put(k, new ValidatingRule(newRule));
     }
     
     public Futoshiki clone()
     {
         Futoshiki f = new Futoshiki();
         System.arraycopy(data, 0, f.data, 0, data.length);
-        f.rules.addAll(rules);
+        f.rules.putAll(rules);
         return f;
     }
 
@@ -114,16 +127,40 @@ public class Futoshiki
         return blank;
     }
 
-    private static class ValidatingGtRule extends GtRule
+    public Iterable<? extends GtRule> getRules()
+    {
+        return origRuleIterable;
+    }
+    
+    public GtRule getRule(GtRule ruleKey)
+    {
+        GtRule k = ruleKey.getCanonPosForm();
+
+        ValidatingRule r = rules.get(k);
+        if (r != null) {
+            return r.getOrigRule();
+        } else {
+            return null;
+        }
+    }
+    
+    public void removeRule(GtRule ruleKey)
+    {
+        GtRule k = ruleKey.getCanonPosForm();
+        
+        rules.remove(k);
+    }
+    
+    private static class ValidatingRule
     {
         private final int idxA, idxB;
+        private final GtRule origRule;
         
-        ValidatingGtRule(int columnA, int rowA, int columnB, int rowB)
+        ValidatingRule(GtRule gtr)
         {
-            super(columnA, rowA, columnB, rowB);
-            
-            idxA = idx(columnA, rowA);
-            idxB = idx(columnB, rowB);
+            idxA = idx(gtr.getGreaterColumn(), gtr.getGreaterRow());
+            idxB = idx(gtr.getLesserColumn(), gtr.getLesserRow());
+            origRule = gtr;
         }
         
         boolean isValid(Futoshiki f)
@@ -134,16 +171,35 @@ public class Futoshiki
 
             return f.data[idxA] > f.data[idxB];
         }
+        
+        GtRule getOrigRule()
+        {
+            return origRule;
+        }
     }
     
-    public static class CellPos
+    private class OrigRuleIterable implements Iterable<GtRule>
     {
-        final int column, row;
-        
-        private CellPos(int column, int row)
+        public Iterator<GtRule> iterator()
         {
-            this.column = column;
-            this.row = row;
+            final Iterator<ValidatingRule> i = rules.values().iterator();
+            
+            return new Iterator<GtRule>() {
+                public boolean hasNext()
+                {
+                    return i.hasNext();
+                }
+
+                public GtRule next()
+                {
+                    return i.next().getOrigRule();
+                }
+                
+                public void remove()
+                {
+                    throw new UnsupportedOperationException();
+                }
+            };
         }
     }
 }
