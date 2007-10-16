@@ -26,10 +26,13 @@ import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class FutoshikiPanel extends JPanel implements FocusListener
 {
+    private static final String TITLE = "Futoshiki Solver";
+    
     private Futoshiki futoshiki = new Futoshiki();
     private Boolean valid;
     private Map<CellPos, EditState> cellEditStates = new HashMap<CellPos, EditState>();
@@ -89,11 +92,11 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         Dimension d = getSize();
 
-        if (hasFocus()) {
+//        if (hasFocus()) {
             g.setColor(Color.LIGHT_GRAY);
-        } else {
-            g.setColor(Color.DARK_GRAY);
-        }
+//        } else {
+//            g.setColor(Color.DARK_GRAY);
+//        }
         
         g.fillRect(0, 0, d.width, d.height);
 
@@ -120,7 +123,8 @@ public class FutoshikiPanel extends JPanel implements FocusListener
                 g.setColor(Color.WHITE);
                 g.fillRect(x, y, px * 2, py * 2);
 
-                boolean isSelected = selected != null
+                boolean isSelected = hasFocus()
+                        && selected != null
                         && (column == selected.column && row == selected.row);
                 
                 if (isSelected) {
@@ -154,11 +158,11 @@ public class FutoshikiPanel extends JPanel implements FocusListener
                             g.setFont(bf);
                             break;
                             
-                        case MANUAL:
-                            g.setColor(Color.DARK_GRAY);
-                            g.setColor(Color.YELLOW);
-                            g.setFont(f);
-                            break;
+//                        case MANUAL:
+//                            g.setColor(Color.DARK_GRAY);
+//                            g.setColor(Color.YELLOW);
+//                            g.setFont(f);
+//                            break;
                             
                         case AUTOMATIC:
                             g.setColor(Color.BLUE);
@@ -240,6 +244,16 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         changed();
     }
     
+    private void clearSolutionCells()
+    {
+        /* After a change, clear all transient solution cells */
+        for (Map.Entry<CellPos, EditState> e : cellEditStates.entrySet()) {
+            if (e.getValue() == EditState.AUTOMATIC) {
+                futoshiki.clear(e.getKey().column, e.getKey().row);
+            }
+        }
+    }
+    
     private void changed()
     {
         Boolean nowValid = Boolean.valueOf(futoshiki.isValid());
@@ -254,6 +268,7 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         System.out.println("Cell column " + column + ", row " + row);
         
         selected = new CellPos(column, row);
+        requestFocus();
         repaint();
     }
     
@@ -284,6 +299,7 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         }
         
 //        clickedRule = rp;
+        clearSolutionCells();
         changed();
     }
     
@@ -292,7 +308,8 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         System.out.println("Number " + n);
         if (selected != null) {
             futoshiki.set(selected.column, selected.row, n);
-            cellEditStates.put(selected, EditState.MANUAL);
+            cellEditStates.put(selected, EditState.DESIGNED); //EditState.MANUAL);
+            clearSolutionCells();
             changed();
         }
     }
@@ -302,6 +319,7 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         System.out.println("Number cleared");
         if (selected != null) {
             futoshiki.clear(selected.column, selected.row);
+            clearSolutionCells();
             changed();
         }
     }
@@ -318,13 +336,17 @@ public class FutoshikiPanel extends JPanel implements FocusListener
                 cellEditStates.put(cp, EditState.AUTOMATIC);
             }
             futoshiki = sip.solution;
+            selected = null;
             changed();
             
             if (sip.multipleSolutions) {
-                System.err.println("Multiple solutions");
+                JOptionPane.showMessageDialog(this,
+                        "There are multiple solutions", TITLE,
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
-            System.err.println("No solutions");
+            JOptionPane.showMessageDialog(this, "There are no solutions",
+                    TITLE, JOptionPane.WARNING_MESSAGE);
         }
     }
     
@@ -482,7 +504,7 @@ public class FutoshikiPanel extends JPanel implements FocusListener
     private enum EditState
     {
         DESIGNED,
-        MANUAL,
+//        MANUAL,
         AUTOMATIC;
     }
 }

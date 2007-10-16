@@ -94,13 +94,13 @@ public class FutoshikiPanelSample
             }
         });
         
-        jb.setFocusable(false);
+//        jb.setFocusable(false);
         
         buttonPanel.add(jb);
 
         buttonPanel.add(Box.createVerticalStrut(PAD));
         JButton cb = new JButton("Clear");
-        cb.setFocusable(false);
+//        cb.setFocusable(false);
         cb.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e)
             {
