@@ -9,6 +9,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -109,7 +110,22 @@ public class FutoshikiPanelSample
         });
         buttonPanel.add(cb);
         
+        buttonPanel.add(Box.createVerticalStrut(PAD));
+        JButton undoButton = new JButton("Undo");
+        
+//        cb.setFocusable(false);
+        undoButton.addActionListener(new ActionListener(){
+           public void actionPerformed(ActionEvent e)
+            {
+               fp.undo();
+            } 
+        });
+        buttonPanel.add(undoButton);
 
+        undoButton.setEnabled(false);
+        fp.addPropertyChangeListener("futoshiki.undoable",
+                new UndoabilityListener(undoButton));
+        
         buttonPanel.add(Box.createVerticalStrut(PAD));
         buttonPanel.add(Box.createGlue());
         
@@ -151,8 +167,8 @@ public class FutoshikiPanelSample
         public void propertyChange(PropertyChangeEvent evt)
         {
             if (evt.getPropertyName().equals("futoshiki.valid")) {
-                System.err.println(evt.getNewValue());
-                setValid(Boolean.TRUE.equals((evt.getNewValue())));
+//                System.err.println(evt.getNewValue());
+                setValid(Boolean.TRUE.equals(evt.getNewValue()));
             }
         }
         
@@ -164,6 +180,23 @@ public class FutoshikiPanelSample
             } else {
                 label.setText("Invalid");
                 label.setForeground(Color.RED);
+            }
+        }
+    }
+    
+    private static class UndoabilityListener implements PropertyChangeListener
+    {
+        private final JComponent comp;
+        
+        public UndoabilityListener(JComponent c)
+        {
+            this.comp = c;
+        }
+        
+        public void propertyChange(PropertyChangeEvent evt)
+        {
+            if (evt.getPropertyName().equals("futoshiki.undoable")) {
+                comp.setEnabled(Boolean.TRUE.equals(evt.getNewValue()));
             }
         }
     }

@@ -23,8 +23,10 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -32,12 +34,18 @@ import javax.swing.JPanel;
 public class FutoshikiPanel extends JPanel implements FocusListener
 {
     private static final String TITLE = "Futoshiki Solver";
+ 
+    private static final int MAX_UNDO = 10;
     
     private Futoshiki futoshiki = new Futoshiki();
     private Boolean valid;
-    private Map<CellPos, EditState> cellEditStates = new HashMap<CellPos, EditState>();
+    private Boolean undoable;
+//    private Map<CellPos, EditState> cellEditStates = new HashMap<CellPos, EditState>();
+    private Set<CellPos> solvedCells = new HashSet<CellPos>();
     
     private CellPos selected;
+    
+    private List<Futoshiki> undoRecord = new ArrayList<Futoshiki>();
     
     public FutoshikiPanel()
     {
@@ -136,8 +144,10 @@ public class FutoshikiPanel extends JPanel implements FocusListener
                 g.drawRect(x, y, px * 2, py * 2);
                 
                 int v = futoshiki.get(column, row);
-                EditState es = cellEditStates.get(new CellPos(column, row));
-                if (es == null) {
+                EditState es;
+                if (solvedCells.contains(new CellPos(column, row))) {
+                    es = EditState.AUTOMATIC;
+                } else {
                     es = EditState.DESIGNED;
                 }
                 
@@ -240,6 +250,7 @@ public class FutoshikiPanel extends JPanel implements FocusListener
     
     public void setFutoshiki(Futoshiki f)
     {
+        recordHistory();
         this.futoshiki = f.clone();
         changed();
     }
@@ -247,25 +258,29 @@ public class FutoshikiPanel extends JPanel implements FocusListener
     private void clearSolutionCells()
     {
         /* After a change, clear all transient solution cells */
-        for (Map.Entry<CellPos, EditState> e : cellEditStates.entrySet()) {
-            if (e.getValue() == EditState.AUTOMATIC) {
-                futoshiki.clear(e.getKey().column, e.getKey().row);
-            }
+        for (CellPos ecp : solvedCells) {
+            futoshiki.clear(ecp.column, ecp.row);
         }
+        
+        solvedCells.clear();
     }
     
     private void changed()
     {
-        Boolean nowValid = Boolean.valueOf(futoshiki.isValid());
+        Boolean wasValid = valid;
+        valid = Boolean.valueOf(futoshiki.isValid());
+        firePropertyChange("futoshiki.valid", wasValid, valid);
         
-        firePropertyChange("futoshiki.valid", valid, nowValid);
+        Boolean wasUndoable = undoable;
+        undoable = Boolean.valueOf(isUndoable());
+        firePropertyChange("futoshiki.undoable", wasUndoable, undoable);
+        
         repaint();
-        valid = nowValid;
     }
     
     public void cellClicked(int column, int row)
     {
-        System.out.println("Cell column " + column + ", row " + row);
+//        System.out.println("Cell column " + column + ", row " + row);
         
         selected = new CellPos(column, row);
         requestFocus();
@@ -274,8 +289,11 @@ public class FutoshikiPanel extends JPanel implements FocusListener
     
     public void ruleClicked(RulePos rp)
     {
-        System.out.println("Rule " + rp.column + ", " + rp.row + ", " + rp.horizontal);
+//        System.out.println("Rule " + rp.column + ", " + rp.row + ", " + rp.horizontal);
      
+        clearSolutionCells();
+        recordHistory();
+        
         GtRule rk;
         
         if (rp.horizontal) {
@@ -299,25 +317,28 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         }
         
 //        clickedRule = rp;
-        clearSolutionCells();
         changed();
     }
     
     public void numberTyped(int n)
     {
-        System.out.println("Number " + n);
+//        System.out.println("Number " + n);
         if (selected != null) {
-            futoshiki.set(selected.column, selected.row, n);
-            cellEditStates.put(selected, EditState.DESIGNED); //EditState.MANUAL);
             clearSolutionCells();
+            recordHistory();
+
+            futoshiki.set(selected.column, selected.row, n);
             changed();
         }
     }
     
     public void numberCleared()
     {
-        System.out.println("Number cleared");
+//        System.out.println("Number cleared");
         if (selected != null) {
+            clearSolutionCells();
+            recordHistory();
+            
             futoshiki.clear(selected.column, selected.row);
             clearSolutionCells();
             changed();
@@ -333,7 +354,7 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         
         if (sip.solution != null) {
             for (CellPos cp : futoshiki.blankCells()) {
-                cellEditStates.put(cp, EditState.AUTOMATIC);
+                solvedCells.add(cp);
             }
             futoshiki = sip.solution;
             selected = null;
@@ -341,12 +362,41 @@ public class FutoshikiPanel extends JPanel implements FocusListener
             
             if (sip.multipleSolutions) {
                 JOptionPane.showMessageDialog(this,
-                        "There are multiple solutions", TITLE,
+                        "There are multiple solutions.", TITLE,
                         JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "There are no solutions",
+            JOptionPane.showMessageDialog(this, "There are no solutions.",
                     TITLE, JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    
+    private boolean isUndoable()
+    {
+        return !solvedCells.isEmpty() || !undoRecord.isEmpty();
+    }
+    
+    private void recordHistory()
+    {
+        if (undoRecord.size() >= MAX_UNDO) {
+            undoRecord.remove(0);
+        }
+        
+        undoRecord.add(futoshiki.clone());
+    }
+    
+    void undo()
+    {
+        if (!solvedCells.isEmpty()) {
+            clearSolutionCells();
+            changed();
+        } else {
+            if (!undoRecord.isEmpty()) {
+                Futoshiki f = undoRecord.remove(undoRecord.size() - 1);
+
+                this.futoshiki = f;
+                changed();
+            }
         }
     }
     
