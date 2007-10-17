@@ -28,7 +28,7 @@ public class Futoshiki
             throw new IllegalArgumentException("Bad column " + column);
 
         if (row < 1 || row > 5)
-            throw new IllegalArgumentException("Bad row " + column);
+            throw new IllegalArgumentException("Bad row " + row);
         
         return (row - 1) * 5 + (column - 1);
     }
