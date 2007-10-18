@@ -2,6 +2,7 @@ package futoshiki;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -12,7 +13,10 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
 public class FutoshikiPanelSample
@@ -50,19 +54,6 @@ public class FutoshikiPanelSample
         f.addGtRule(5, 5, 4, 5);
 
 //        f = new Futoshiki();
-        
-        SolutionCatcher sc = new SolutionCatcher();
-        
-        new Solver(sc).solve(f);
-        
-        if (sc.f == null) {
-            System.err.println("No solutions");
-        } else  {
-            f = sc.f;
-            if (sc.multiple) {
-                System.out.println("Multiple solutions");
-            }
-        }
         
         final FutoshikiPanel fp = new FutoshikiPanel();
         
@@ -127,8 +118,19 @@ public class FutoshikiPanelSample
                 new UndoabilityListener(undoButton));
         
         buttonPanel.add(Box.createVerticalStrut(PAD));
+
+        JButton editButton = new JButton("Edit...");
+        editButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+            {
+                attemptEdit(fp);
+            }
+        });
+
+        buttonPanel.add(editButton);
+        buttonPanel.add(Box.createVerticalStrut(PAD));
+
         buttonPanel.add(Box.createGlue());
-        
         
         fp.setFutoshiki(f);
         vlc.setValid(f.isValid());
@@ -198,6 +200,22 @@ public class FutoshikiPanelSample
             if (evt.getPropertyName().equals("futoshiki.undoable")) {
                 comp.setEnabled(Boolean.TRUE.equals(evt.getNewValue()));
             }
+        }
+    }
+    
+    private static void attemptEdit(FutoshikiPanel fp)
+    {
+        JTextArea jta = new JTextArea(FutoshikiPrinter.STR_LENGTH, FutoshikiPrinter.STR_LENGTH + 1);
+        
+        jta.setText(FutoshikiPrinter.toString(fp.getFutoshiki()).trim());
+        
+        jta.setFont(new Font("Monospaced", 0, jta.getFont().getSize()));
+        JComponent jc = new JScrollPane(jta);
+        
+        int res = JOptionPane.showConfirmDialog(fp, jc, "Title", JOptionPane.OK_CANCEL_OPTION);
+        
+        if (res == JOptionPane.OK_OPTION) {
+            fp.setFutoshiki(FutoshikiPrinter.parse(jta.getText()));
         }
     }
 }

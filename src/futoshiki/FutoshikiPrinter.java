@@ -2,13 +2,15 @@ package futoshiki;
 
 public class FutoshikiPrinter
 {
+    static final int STR_LENGTH = Futoshiki.LENGTH * 2 - 1;
+    
     public static String toString(Futoshiki f)
     {
-        String[][] caa = new String[9][9];
+        String[][] caa = new String[STR_LENGTH][STR_LENGTH];
 
         /* Data */
-        for (int row = 1; row <= 5; row++) {
-            for (int column = 1; column <= 5; column++) {
+        for (int row = 1; row <= Futoshiki.LENGTH; row++) {
+            for (int column = 1; column <= Futoshiki.LENGTH; column++) {
                 int v = f.get(column, row);
                 
                 String s;
@@ -66,9 +68,9 @@ public class FutoshikiPrinter
         String[] lines = s.split("[\r\n]");
 
         /* Number lines */
-        for (int i = 0; i < Math.min(9, lines.length); i += 2) {
+        for (int i = 0; i < Math.min(STR_LENGTH, lines.length); i += 2) {
             char[] ca = lines[i].toCharArray();
-            for (int j = 0; j < Math.min(9, ca.length); j++) {
+            for (int j = 0; j < Math.min(STR_LENGTH, ca.length); j++) {
                 int column = (j / 2) + 1;
                 int row = (i / 2) + 1;
                 char c = ca[j];
@@ -88,9 +90,9 @@ public class FutoshikiPrinter
         }
         
         /* Rule lines */
-        for (int i = 1; i < Math.min(9, lines.length); i += 2) {
+        for (int i = 1; i < Math.min(STR_LENGTH, lines.length); i += 2) {
             char[] ca = lines[i].toCharArray();
-            for (int j = 0; j < Math.min(9, ca.length); j += 2) {
+            for (int j = 0; j < Math.min(STR_LENGTH, ca.length); j += 2) {
                 int column = (j / 2) + 1;
                 int row = (i / 2) + 1;
                 char c = ca[j];
@@ -101,8 +103,8 @@ public class FutoshikiPrinter
                     f.addGtRule(column, row, column, row + 1);
                 }
             }
-            
         }
+        
         return f;
     }
 }

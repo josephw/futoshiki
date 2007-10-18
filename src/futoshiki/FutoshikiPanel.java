@@ -250,9 +250,15 @@ public class FutoshikiPanel extends JPanel implements FocusListener
     
     public void setFutoshiki(Futoshiki f)
     {
+        clearSolutionCells();
         recordHistory();
         this.futoshiki = f.clone();
         changed();
+    }
+    
+    public Futoshiki getFutoshiki()
+    {
+        return this.futoshiki.clone();
     }
     
     private void clearSolutionCells()
