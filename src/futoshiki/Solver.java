@@ -1,7 +1,5 @@
 package futoshiki;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Recursive solver for Futoshiki puzzles.
@@ -10,6 +8,8 @@ import java.util.List;
  */
 public class Solver
 {
+    private static final CellPos[] CELLPOS_ARRAY = {};
+    
     private final SolutionTarget target;
     
     public Solver(SolutionTarget target)
@@ -19,8 +19,9 @@ public class Solver
     
     public void solve(Futoshiki f)
     {
-        List<CellPos> blanks = new ArrayList<CellPos>(f.blankCells());
-        solve(f, blanks);
+        CellPos[] blanks = f.blankCells().toArray(CELLPOS_ARRAY);
+//        List<CellPos> blanks = new ArrayList<CellPos>(f.blankCells());
+        solve(f, blanks, 0);
     }
     
     /**
@@ -30,23 +31,23 @@ public class Solver
      * 
      * @param f
      * @param blank
+     * @param nb the index of the next remaining blank
      */
-    private boolean solve(Futoshiki f, List<CellPos> blank)
+    private boolean solve(Futoshiki f, CellPos[] blank, int nb)
     {
         if (!f.isValid()) {
             return true;
         }
         
-        if (blank.isEmpty()) {
+        if (nb >= blank.length) {
             return target.solution(f);
         }
         
-        CellPos p = blank.get(0);
-        List<CellPos> remaining = blank.subList(1, blank.size());
+        CellPos p = blank[nb];
         
         for (int v = 1; v <= 5; v++) {
             f.set(p.column, p.row, v);
-            boolean more = solve(f.clone(), remaining);
+            boolean more = solve(f.clone(), blank, nb + 1);
             if (!more) {
                 return false;
             }

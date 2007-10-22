@@ -22,6 +22,8 @@ public class Futoshiki
     private final Map<GtRule, ValidatingRule> rules = new HashMap<GtRule, ValidatingRule>();
     private final Iterable<GtRule> origRuleIterable = new OrigRuleIterable();
 
+    private ValidatingRule[] vraCache;
+    
     private static final int idx(int column, int row)
     {
         if (column < 1 || column > 5)
@@ -29,36 +31,47 @@ public class Futoshiki
 
         if (row < 1 || row > 5)
             throw new IllegalArgumentException("Bad row " + row);
-        
+
+        return idxInternal(column, row);
+    }
+
+    private static final int idxInternal(int column, int row)
+    {
         return (row - 1) * 5 + (column - 1);
     }
     
     public boolean isValid()
     {
         /* Check for duplicates */
-        byte[] rows = new byte[5],
-            columns = new byte[5];
         
-        for (int row = 1; row <= 5; row++) {
-            for (int column = 1; column <= 5; column++) {
-                int v = data[idx(column, row)];
+        int columnMask = 0;
+        
+        for (int row = 1; row <= LENGTH; row++) {
+            int rowMask = 0;
+
+            for (int column = 1; column <= LENGTH; column++) {
+                int v = data[idxInternal(column, row)];
                 if (v == 0)
                     continue;
                 
-                byte bit = (byte) (1 << v);
-                if ((rows[row - 1] & bit) != 0)
+                int bit = (1 << v);
+                if ((rowMask & bit) != 0)
                     return false;
                 
-                if ((columns[column - 1] & bit) != 0)
+                if ((columnMask >> (column * LENGTH) & bit) != 0)
                     return false;
                 
-                rows[row - 1] |= bit;
-                columns[column - 1] |= bit;
+                rowMask |= bit;
+                columnMask |= (bit << column * LENGTH);
             }
         }
         
         /* Obey rules */
-        for (ValidatingRule r : rules.values()) {
+        if (vraCache == null) {
+            vraCache = rules.values().toArray(new ValidatingRule[0]);
+        }
+        
+        for (ValidatingRule r : vraCache) {
             if (!r.isValid(this))
                 return false;
         }
@@ -96,6 +109,7 @@ public class Futoshiki
 
         GtRule k = newRule.getCanonPosForm();
         
+        vraCache = null;
         rules.put(k, new ValidatingRule(newRule));
     }
     
@@ -148,6 +162,7 @@ public class Futoshiki
     {
         GtRule k = ruleKey.getCanonPosForm();
         
+        vraCache = null;
         rules.remove(k);
     }
     
