@@ -26,10 +26,10 @@ public class Futoshiki
     
     private static final int idx(int column, int row)
     {
-        if (column < 1 || column > 5)
+        if (column < 1 || column > LENGTH)
             throw new IllegalArgumentException("Bad column " + column);
 
-        if (row < 1 || row > 5)
+        if (row < 1 || row > LENGTH)
             throw new IllegalArgumentException("Bad row " + row);
 
         return idxInternal(column, row);
@@ -37,7 +37,7 @@ public class Futoshiki
 
     private static final int idxInternal(int column, int row)
     {
-        return (row - 1) * 5 + (column - 1);
+        return (row - 1) * LENGTH + (column - 1);
     }
     
     public boolean isValid()
@@ -92,7 +92,7 @@ public class Futoshiki
 
     public void set(int column, int row, int v)
     {
-        if (v < 1 || v > 5)
+        if (v < 1 || v > LENGTH)
             throw new IllegalArgumentException("Bad cell value " + v);
         
         data[idx(column, row)] = (byte) v;
@@ -128,11 +128,11 @@ public class Futoshiki
     
     public Collection<CellPos> blankCells()
     {
-        Collection<CellPos> blank = new ArrayList<CellPos>(25);
+        Collection<CellPos> blank = new ArrayList<CellPos>(LENGTH * LENGTH);
         
-        for (int row = 1; row <= 5; row++) {
-            for (int column = 1; column <= 5; column++) {
-                if (data[idx(column, row)] == 0) {
+        for (int row = 1; row <= LENGTH; row++) {
+            for (int column = 1; column <= LENGTH; column++) {
+                if (data[idxInternal(column, row)] == 0) {
                     blank.add(new CellPos(column, row));
                 }
             }
