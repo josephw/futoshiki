@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -18,6 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 
 public class FutoshikiPanelSample
 {
@@ -63,80 +66,50 @@ public class FutoshikiPanelSample
         JPanel jp = new JPanel(new BorderLayout());
         jp.add(BorderLayout.CENTER, fp);
 
-        final int PAD = 10;
+        FPControls controls = new FPControls();
         
-        Box buttonPanel = Box.createVerticalBox();
+        JComponent controlPanel = controls.createControlPanel();
+        
+        
+        ValidityLabelChanger vlc = new ValidityLabelChanger(controls.vlcLabel);
 
-        buttonPanel.add(Box.createGlue());
-        buttonPanel.add(Box.createVerticalStrut(PAD));
-//        JComboBox solveMode = new JComboBox(new String[]{"Solve", "Design"});
-//        solveMode.setEditable(false);
-//        solveMode.setFocusable(false);
-//        buttonPanel.add(solveMode);
-        
-        ValidityLabelChanger vlc = new ValidityLabelChanger();
-        buttonPanel.add(vlc.label);
-        
-        
-        JButton jb = new JButton("Solve");
-        jb.addActionListener(new ActionListener(){
+        controls.solve.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e)
             {
                 fp.solve();
             }
         });
-        
-//        jb.setFocusable(false);
-        
-        buttonPanel.add(jb);
 
-        buttonPanel.add(Box.createVerticalStrut(PAD));
-        JButton cb = new JButton("Clear");
-//        cb.setFocusable(false);
-        cb.addActionListener(new ActionListener(){
+        controls.clear.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e)
             {
                fp.setFutoshiki(new Futoshiki());
             } 
         });
-        buttonPanel.add(cb);
         
-        buttonPanel.add(Box.createVerticalStrut(PAD));
-        JButton undoButton = new JButton("Undo");
-        
-//        cb.setFocusable(false);
-        undoButton.addActionListener(new ActionListener(){
+        controls.undo.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e)
             {
                fp.undo();
             } 
         });
-        buttonPanel.add(undoButton);
 
-        undoButton.setEnabled(false);
+        controls.undo.setEnabled(false);
         fp.addPropertyChangeListener("futoshiki.undoable",
-                new UndoabilityListener(undoButton));
-        
-        buttonPanel.add(Box.createVerticalStrut(PAD));
-
-        JButton editButton = new JButton("Edit...");
-        editButton.addActionListener(new ActionListener() {
+                new UndoabilityListener(controls.undo));
+ 
+        controls.editButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
             {
                 attemptEdit(fp);
             }
         });
 
-        buttonPanel.add(editButton);
-        buttonPanel.add(Box.createVerticalStrut(PAD));
-
-        buttonPanel.add(Box.createGlue());
-        
         fp.setFutoshiki(f);
         vlc.setValid(f.isValid());
         fp.addPropertyChangeListener("futoshiki.valid", vlc);
 
-        jp.add(BorderLayout.AFTER_LINE_ENDS, buttonPanel);
+        jp.add(BorderLayout.AFTER_LINE_ENDS, controlPanel);
         
         jf.getContentPane().add(jp);
         
@@ -164,7 +137,12 @@ public class FutoshikiPanelSample
     
     private static class ValidityLabelChanger implements PropertyChangeListener
     {
-        private final JLabel label = new JLabel();
+        private final JLabel label;
+        
+        public ValidityLabelChanger(JLabel label)
+        {
+            this.label = label;
+        }
         
         public void propertyChange(PropertyChangeEvent evt)
         {
@@ -216,6 +194,73 @@ public class FutoshikiPanelSample
         
         if (res == JOptionPane.OK_OPTION) {
             fp.setFutoshiki(FutoshikiPrinter.parse(jta.getText()));
+        }
+    }
+    
+    private static final int PAD = 6;
+
+    private static class FPControls
+    {
+        JLabel vlcLabel = new JLabel("(Unknown)");
+        
+        JButton solve = new JButton("Solve");
+        JButton undo = new JButton("Undo");
+        JButton clear = new JButton("Clear");
+        JButton editButton = new JButton("Edit...");
+        
+    
+        JComponent createControlPanel()
+        {
+            Box b = Box.createHorizontalBox();
+            
+            Border bdr = BorderFactory.createCompoundBorder(
+                    BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), "Current state"),
+                    BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD));
+            b.setBorder(bdr);
+
+            b.add(Box.createHorizontalGlue());
+            b.add(vlcLabel);
+            b.add(Box.createHorizontalGlue());
+            
+            Box bba = Box.createHorizontalBox();
+            
+            bba.add(Box.createHorizontalStrut(PAD));
+            bba.add(solve);
+    
+            bba.add(Box.createHorizontalStrut(PAD));
+            bba.add(undo);
+            bba.add(Box.createHorizontalStrut(PAD));
+            
+            
+            Box bbb = Box.createHorizontalBox();
+            
+            bbb.add(Box.createHorizontalStrut(PAD));
+            bbb.add(clear);
+            
+            bbb.add(Box.createHorizontalStrut(PAD));
+    
+            bbb.add(editButton);
+            bbb.add(Box.createHorizontalStrut(PAD));
+            
+            Box b2 = Box.createVerticalBox();
+            b2.add(Box.createVerticalGlue());
+            b2.add(bba);
+            b2.add(Box.createVerticalStrut(PAD));
+            b2.add(bbb);
+            b2.add(Box.createVerticalGlue());
+            
+    
+            Box buttonPanel;
+            buttonPanel = Box.createVerticalBox();
+            buttonPanel.add(Box.createVerticalGlue());
+            buttonPanel.add(Box.createVerticalStrut(PAD));
+            buttonPanel.add(b);
+            buttonPanel.add(Box.createVerticalStrut(PAD));
+            buttonPanel.add(b2);
+            buttonPanel.add(Box.createVerticalStrut(PAD));
+            buttonPanel.add(Box.createVerticalGlue());
+    
+            return buttonPanel;
         }
     }
 }
