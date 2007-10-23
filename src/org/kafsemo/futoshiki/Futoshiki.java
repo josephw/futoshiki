@@ -1,4 +1,4 @@
-package futoshiki;
+package org.kafsemo.futoshiki;
 
 import java.util.ArrayList;
 import java.util.Collection;

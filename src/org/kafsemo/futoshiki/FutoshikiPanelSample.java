@@ -1,4 +1,4 @@
-package futoshiki;
+package org.kafsemo.futoshiki;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

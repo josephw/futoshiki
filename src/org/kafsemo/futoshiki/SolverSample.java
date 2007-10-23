@@ -1,4 +1,4 @@
-package futoshiki;
+package org.kafsemo.futoshiki;
 
 public class SolverSample
 {

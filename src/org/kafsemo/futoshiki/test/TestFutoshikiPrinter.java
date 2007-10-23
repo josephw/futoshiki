@@ -1,4 +1,4 @@
-package futoshiki.test;
+package org.kafsemo.futoshiki.test;
 
 import futoshiki.Futoshiki;
 import futoshiki.FutoshikiPrinter;
