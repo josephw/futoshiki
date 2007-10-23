@@ -1,8 +1,9 @@
 package org.kafsemo.futoshiki.test;
 
 import junit.framework.TestCase;
-import futoshiki.FutoshikiPanel;
-import futoshiki.GtRule;
+
+import org.kafsemo.futoshiki.FutoshikiPanel;
+import org.kafsemo.futoshiki.GtRule;
 
 public class TestFutoshikiPanel extends TestCase
 {

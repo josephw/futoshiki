@@ -1,8 +1,9 @@
 package org.kafsemo.futoshiki.test;
 
-import futoshiki.Futoshiki;
-import futoshiki.FutoshikiPrinter;
 import junit.framework.TestCase;
+
+import org.kafsemo.futoshiki.Futoshiki;
+import org.kafsemo.futoshiki.FutoshikiPrinter;
 
 public class TestFutoshikiPrinter extends TestCase
 {

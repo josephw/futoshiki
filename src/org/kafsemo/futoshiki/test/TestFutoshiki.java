@@ -5,9 +5,10 @@ import java.util.Collection;
 import java.util.List;
 
 import junit.framework.TestCase;
-import futoshiki.CellPos;
-import futoshiki.Futoshiki;
-import futoshiki.GtRule;
+
+import org.kafsemo.futoshiki.CellPos;
+import org.kafsemo.futoshiki.Futoshiki;
+import org.kafsemo.futoshiki.GtRule;
 
 public class TestFutoshiki extends TestCase
 {
