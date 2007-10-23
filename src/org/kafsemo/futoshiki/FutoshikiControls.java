@@ -164,7 +164,14 @@ public class FutoshikiControls
     {
         JTextArea jta = new JTextArea(FutoshikiPrinter.STR_LENGTH, FutoshikiPrinter.STR_LENGTH + 1);
         
-        jta.setText(FutoshikiPrinter.toString(fp.getFutoshiki()).trim());
+        String s = FutoshikiPrinter.toString(fp.getFutoshiki());
+        
+        /* Trim a trailing newline on the last line */
+        if (s.endsWith("\n")) {
+            s = s.substring(0, s.length() - 1);
+        }
+        
+        jta.setText(s);
         
         jta.setFont(new Font("Monospaced", 0, jta.getFont().getSize()));
         JComponent jc = new JScrollPane(jta);
