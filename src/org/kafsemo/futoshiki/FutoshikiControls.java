@@ -40,7 +40,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
-public class FutoshikiPanelSample
+public class FutoshikiControls
 {
     public static void main(String[] args)
     {
