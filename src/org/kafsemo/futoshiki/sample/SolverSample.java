@@ -21,6 +21,7 @@ package org.kafsemo.futoshiki.sample;
 import org.kafsemo.futoshiki.Futoshiki;
 import org.kafsemo.futoshiki.FutoshikiPrinter;
 import org.kafsemo.futoshiki.Solver;
+import org.kafsemo.futoshiki.Solver.SolutionTarget;
 
 public class SolverSample
 {
@@ -30,7 +31,7 @@ public class SolverSample
         
         System.out.print(FutoshikiPrinter.toString(f));
         
-        new Solver(new Solver.PrintingSolutionTarget()).solve(f);
+        new Solver(new PrintingSolutionTarget()).solve(f);
     }
 
     static Futoshiki g36()
@@ -80,5 +81,15 @@ public class SolverSample
         f.set(4, 4, 5);
         
         return f;
+    }
+
+    public static class PrintingSolutionTarget implements SolutionTarget
+    {
+        public boolean solution(Futoshiki f)
+        {
+            System.out.println("Solution:");
+            System.out.println(FutoshikiPrinter.toString(f));
+            return true;
+        }
     }
 }

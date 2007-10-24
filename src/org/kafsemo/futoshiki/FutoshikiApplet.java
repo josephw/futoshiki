@@ -22,6 +22,12 @@ import java.awt.BorderLayout;
 
 import javax.swing.JApplet;
 
+/**
+ * An applet containing a panel along with controls, to edit and solve
+ * puzzles.
+ * 
+ * @author Joseph Walton
+ */
 public class FutoshikiApplet extends JApplet
 {
     private final FutoshikiPanel fPanel;

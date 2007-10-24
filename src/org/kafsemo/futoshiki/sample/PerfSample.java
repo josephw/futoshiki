@@ -21,6 +21,11 @@ package org.kafsemo.futoshiki.sample;
 import org.kafsemo.futoshiki.Futoshiki;
 import org.kafsemo.futoshiki.Solver;
 
+/**
+ * Scratch code to benchmark {@link Solver}.
+ * 
+ * @author Joseph Walton
+ */
 public class PerfSample
 {
     public static void main(String[] args)
@@ -47,7 +52,7 @@ public class PerfSample
     {
         Futoshiki f = new Futoshiki();
         
-        Solver s = new Solver(new Solver.SolutionTarget(){
+        Solver s = new Solver(new Solver.SolutionTarget() {
             int i = 0;
             
             public boolean solution(Futoshiki f)
@@ -99,7 +104,7 @@ public class PerfSample
         f.addGtRule(5, 5, 4, 5);
 
         for (int i = 0; i < 10000000; i++) {
-            Solver s = new Solver(new Solver.SolutionTarget(){
+            Solver s = new Solver(new Solver.SolutionTarget() {
                 public boolean solution(Futoshiki f)
                 {
                     return false;

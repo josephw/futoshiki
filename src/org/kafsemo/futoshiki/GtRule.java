@@ -18,6 +18,11 @@
 
 package org.kafsemo.futoshiki;
 
+/**
+ * A puzzle rule requiring that one cell be greater than another.
+ * 
+ * @author Joseph Walton
+ */
 public final class GtRule
 {
     final int columnA, rowA, columnB, rowB;

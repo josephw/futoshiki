@@ -73,7 +73,10 @@ public class Solver
         
         return true;
     }
-    
+
+    /**
+     * A callback interface to receive complete puzzle solutions.
+     */
     public interface SolutionTarget
     {
         /**
@@ -81,15 +84,5 @@ public class Solver
          * @return whether or not more solutions are required
          */
         boolean solution(Futoshiki f);
-    }
-    
-    public static class PrintingSolutionTarget implements SolutionTarget
-    {
-        public boolean solution(Futoshiki f)
-        {
-            System.out.println("Solution:");
-            System.out.println(FutoshikiPrinter.toString(f));
-            return true;
-        }
     }
 }

@@ -18,6 +18,11 @@
 
 package org.kafsemo.futoshiki;
 
+/**
+ * A class to convert puzzle state to, and from, a textual representation.
+ * 
+ * @author Joseph Walton
+ */
 public class FutoshikiPrinter
 {
     static final int STR_LENGTH = Futoshiki.LENGTH * 2 - 1;

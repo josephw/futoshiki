@@ -28,6 +28,12 @@ import org.kafsemo.futoshiki.Futoshiki;
 import org.kafsemo.futoshiki.FutoshikiControls;
 import org.kafsemo.futoshiki.FutoshikiPanel;
 
+/**
+ * A puzzle along with controls in a JFrame, with a sample puzzle state
+ * to begin.
+ * 
+ * @author Joseph Walton
+ */
 public class FutoshikiPanelSample
 {
     public static void main(String[] args)
@@ -62,7 +68,7 @@ public class FutoshikiPanelSample
         f.addGtRule(4, 5, 3, 5);
         f.addGtRule(5, 5, 4, 5);
 
-        SwingUtilities.invokeLater(new Runnable(){
+        SwingUtilities.invokeLater(new Runnable() {
             public void run()
             {
                 FutoshikiPanel fp = new FutoshikiPanel();
