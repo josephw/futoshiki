@@ -63,7 +63,7 @@ public class Solver
         
         CellPos p = blank[nb];
         
-        for (int v = 1; v <= 5; v++) {
+        for (int v = 1; v <= Futoshiki.LENGTH; v++) {
             f.set(p.column, p.row, v);
             boolean more = solve(f.clone(), blank, nb + 1);
             if (!more) {

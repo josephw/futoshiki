@@ -37,12 +37,13 @@ public class Futoshiki
     
     private final byte[] data = new byte[25];
     
-    private final Map<GtRule, ValidatingRule> rules = new HashMap<GtRule, ValidatingRule>();
+    private final Map<GtRule, ValidatingRule> rules
+                    = new HashMap<GtRule, ValidatingRule>();
     private final Iterable<GtRule> origRuleIterable = new OrigRuleIterable();
 
     private ValidatingRule[] vraCache;
     
-    private static final int idx(int column, int row)
+    private static int idx(int column, int row)
     {
         if (column < 1 || column > LENGTH)
             throw new IllegalArgumentException("Bad column " + column);
@@ -53,7 +54,7 @@ public class Futoshiki
         return idxInternal(column, row);
     }
 
-    private static final int idxInternal(int column, int row)
+    private static int idxInternal(int column, int row)
     {
         return (row - 1) * LENGTH + (column - 1);
     }

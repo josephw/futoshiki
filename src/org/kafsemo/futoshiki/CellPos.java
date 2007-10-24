@@ -18,14 +18,19 @@
 
 package org.kafsemo.futoshiki;
 
+/**
+ * The position of a single numeric cell on a puzzle.
+ * 
+ * @author Joseph Walton
+ */
 public final class CellPos
 {
     final int column, row;
     
-    public CellPos(int column, int row)
+    public CellPos(int cellColumn, int cellRow)
     {
-        this.column = column;
-        this.row = row;
+        this.column = cellColumn;
+        this.row = cellRow;
     }
 
     public String toString()

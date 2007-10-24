@@ -57,25 +57,25 @@ public class FutoshikiControls
         
         ValidityLabelChanger vlc = new ValidityLabelChanger(vlcLabel);
 
-        solve.addActionListener(new ActionListener(){
+        solve.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
             {
                 fp.solve();
             }
         });
 
-        clear.addActionListener(new ActionListener(){
-           public void actionPerformed(ActionEvent e)
+        clear.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
             {
                fp.setFutoshiki(new Futoshiki());
-            } 
+            }
         });
         
-        undo.addActionListener(new ActionListener(){
-           public void actionPerformed(ActionEvent e)
+        undo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
             {
                fp.undo();
-            } 
+            }
         });
 
         undo.setEnabled(false);
