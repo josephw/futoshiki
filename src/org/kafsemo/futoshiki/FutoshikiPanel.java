@@ -139,7 +139,7 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         
         Font f = getFont();
 
-        f = f.deriveFont((float)py);
+        f = f.deriveFont((float) py);
         
         g.setFont(f);
         FontMetrics fm = g.getFontMetrics();
@@ -250,7 +250,7 @@ public class FutoshikiPanel extends JPanel implements FocusListener
                 int x = (-2 + rp.column * 3) * px,
                     y = (0 + rp.row * 3) * py;
                 
-                t = AffineTransform.getTranslateInstance(x + px * 2, y);;
+                t = AffineTransform.getTranslateInstance(x + px * 2, y);
                 t.scale((px * 2) / 100.0, py / 50.0);
                 t.rotate(Math.PI / 2.0);
             }
@@ -457,6 +457,9 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         }
     }
     
+    /**
+     * The position of a rule suitable for rendering.
+     */
     public static class RulePos
     {
         public final int row, column;

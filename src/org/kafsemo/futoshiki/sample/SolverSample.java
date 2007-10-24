@@ -88,7 +88,7 @@ public class SolverSample
         return f;
     }
 
-    public static class PrintingSolutionTarget implements SolutionTarget
+    private static class PrintingSolutionTarget implements SolutionTarget
     {
         public boolean solution(Futoshiki f)
         {
