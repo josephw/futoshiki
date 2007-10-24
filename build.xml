@@ -1,0 +1,52 @@
+<project default="jar">
+
+ <property file='build.properties'/>
+
+ <property name='src.dir' location='src'/>
+ <property name='classes.dir' location='build/classes'/>
+
+ <target name="compile">
+  <mkdir dir="${classes.dir}" />
+
+  <javac srcdir="${src.dir}" destdir="${classes.dir}" debug='true' source="1.5" deprecation="yes"/>
+ </target>
+ 
+ <target name='clean'>
+  <delete dir='${classes.dir}' />
+  <delete dir='build'/>
+ </target>
+ 
+ <target name='test' depends='compile'>
+  <junit dir="." fork="true" haltonfailure="yes">
+   <classpath>
+    <pathelement location="${classes.dir}"/>
+   </classpath>
+   <batchtest>
+    <formatter type="plain" usefile="false"/>
+    <fileset dir="${classes.dir}">
+     <include name="**/Test*.class"/>
+     <exclude name="**/*$*"/>
+    </fileset>
+   </batchtest>
+  </junit>
+ </target>
+
+ <path id='checkstyle.classpath'>
+  <fileset dir='/usr/share/java'>
+   <include name='checkstyle.jar'/>
+   <include name='commons-beanutils.jar'/>
+   <include name='commons-logging.jar'/>
+   <include name='antlrall.jar'/>
+  </fileset>
+ </path>
+ 
+ <target name='checkstyle'>
+  <taskdef resource='checkstyletask.properties' classpathref='checkstyle.classpath'/>
+  <checkstyle config='checkstyle-rules.xml'>
+   <fileset dir='src'>
+    <include name='**/*.java'/>
+   </fileset>
+  </checkstyle>
+ </target>
+
+</project>
