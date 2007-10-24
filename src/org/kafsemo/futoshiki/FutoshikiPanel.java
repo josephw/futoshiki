@@ -49,6 +49,11 @@ import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+/**
+ * A graphical display for a puzzle that the user can edit.
+ * 
+ * @author Joseph Walton
+ */
 public class FutoshikiPanel extends JPanel implements FocusListener
 {
     private static final String TITLE = "Futoshiki Solver";
@@ -58,7 +63,6 @@ public class FutoshikiPanel extends JPanel implements FocusListener
     private Futoshiki futoshiki = new Futoshiki();
     private Boolean valid;
     private Boolean undoable;
-//    private Map<CellPos, EditState> cellEditStates = new HashMap<CellPos, EditState>();
     private Set<CellPos> solvedCells = new HashSet<CellPos>();
     
     private CellPos selected;
@@ -96,8 +100,10 @@ public class FutoshikiPanel extends JPanel implements FocusListener
 
         Graphics g = getGraphics();
         
+        /* Get a bounding box for all digits */
         for (int i = 0; i < 10; i++) {
-            Rectangle bounds = fm.getStringBounds(Integer.toString(i), g).getBounds();
+            String s = Integer.toString(i);
+            Rectangle bounds = fm.getStringBounds(s, g).getBounds();
 
             maxWidth = Math.max(maxWidth, bounds.width);
             maxHeight = Math.max(maxHeight, bounds.height);
@@ -115,7 +121,8 @@ public class FutoshikiPanel extends JPanel implements FocusListener
     {
         Graphics2D g = (Graphics2D) origGfx;
 
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                            RenderingHints.VALUE_ANTIALIAS_ON);
         Dimension d = getSize();
 
 //        if (hasFocus()) {
@@ -313,8 +320,6 @@ public class FutoshikiPanel extends JPanel implements FocusListener
     
     public void ruleClicked(RulePos rp)
     {
-//        System.out.println("Rule " + rp.column + ", " + rp.row + ", " + rp.horizontal);
-     
         clearSolutionCells();
         recordHistory();
         
@@ -500,7 +505,8 @@ public class FutoshikiPanel extends JPanel implements FocusListener
                         int rowAfter = ((y - 1) / 3) + 1;
                         
                         if (rowAfter >= 1 && rowAfter < Futoshiki.LENGTH) {
-                            RulePos rp = new RulePos(column, rowAfter, false, false);
+                            RulePos rp =
+                                new RulePos(column, rowAfter, false, false);
                             ruleClicked(rp);
                         }
                     }
@@ -512,7 +518,8 @@ public class FutoshikiPanel extends JPanel implements FocusListener
                         int row = ((y - 1) / 3) + 1;
                         
                         if (row >= 1 && row <= Futoshiki.LENGTH) {
-                            RulePos rp = new RulePos(columnAfter, row, true, false);
+                            RulePos rp =
+                                new RulePos(columnAfter, row, true, false);
                             ruleClicked(rp);
                         }
                     }
@@ -543,16 +550,19 @@ public class FutoshikiPanel extends JPanel implements FocusListener
                 || e.getKeyCode() == KeyEvent.VK_SPACE)
             {
                 numberCleared();
-            } else if (e.getKeyCode() == KeyEvent.VK_C && ((e.getModifiers() & Event.CTRL_MASK) != 0))
+            } else if (e.getKeyCode() == KeyEvent.VK_C
+                    && ((e.getModifiers() & Event.CTRL_MASK) != 0))
             {
                 Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
 
-                Transferable trans = new StringSelection(FutoshikiPrinter.toString(futoshiki));
+                Transferable trans =
+                    new StringSelection(FutoshikiPrinter.toString(futoshiki));
                 
                 cb.setContents(trans, null);
-            } else if (e.getKeyCode() == KeyEvent.VK_Z && ((e.getModifiers() & Event.CTRL_MASK) != 0))
-            {
-                // attemptUndo();
+//            } else if (e.getKeyCode() == KeyEvent.VK_Z
+//                    && ((e.getModifiers() & Event.CTRL_MASK) != 0))
+//            {
+//                // attemptUndo();
             }
             
         }

@@ -23,6 +23,11 @@ import junit.framework.TestCase;
 import org.kafsemo.futoshiki.FutoshikiPanel;
 import org.kafsemo.futoshiki.GtRule;
 
+/**
+ * Tests for {@link FutoshikiPanel}, calculating positions for puzzle parts.
+ * 
+ * @author Joseph Walton
+ */
 public class TestFutoshikiPanel extends TestCase
 {
     public void testRulePositionInvalid()

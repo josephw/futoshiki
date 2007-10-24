@@ -36,6 +36,11 @@ import javax.swing.JTextArea;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
+/**
+ * A set of control buttons for a graphical puzzle panel.
+ * 
+ * @author Joseph Walton
+ */
 public class FutoshikiControls
 {
     private final FutoshikiPanel fp;
@@ -162,7 +167,8 @@ public class FutoshikiControls
     
     private static void attemptEdit(FutoshikiPanel fp)
     {
-        JTextArea jta = new JTextArea(FutoshikiPrinter.STR_LENGTH, FutoshikiPrinter.STR_LENGTH + 1);
+        JTextArea jta = new JTextArea(FutoshikiPrinter.STR_LENGTH,
+                                        FutoshikiPrinter.STR_LENGTH + 1);
         
         String s = FutoshikiPrinter.toString(fp.getFutoshiki());
         
@@ -176,7 +182,8 @@ public class FutoshikiControls
         jta.setFont(new Font("Monospaced", 0, jta.getFont().getSize()));
         JComponent jc = new JScrollPane(jta);
         
-        int res = JOptionPane.showConfirmDialog(fp, jc, "Title", JOptionPane.OK_CANCEL_OPTION);
+        int res = JOptionPane.showConfirmDialog(fp, jc,
+                            "Title", JOptionPane.OK_CANCEL_OPTION);
         
         if (res == JOptionPane.OK_OPTION) {
             fp.setFutoshiki(FutoshikiPrinter.parse(jta.getText()));
@@ -190,7 +197,9 @@ public class FutoshikiControls
         Box b = Box.createHorizontalBox();
         
         Border bdr = BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED), "Current state"),
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createEtchedBorder(EtchedBorder.RAISED),
+                        "Current state"),
                 BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD));
         b.setBorder(bdr);
 
