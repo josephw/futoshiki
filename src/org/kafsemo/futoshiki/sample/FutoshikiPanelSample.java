@@ -16,13 +16,17 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.kafsemo.futoshiki;
+package org.kafsemo.futoshiki.sample;
 
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+
+import org.kafsemo.futoshiki.Futoshiki;
+import org.kafsemo.futoshiki.FutoshikiControls;
+import org.kafsemo.futoshiki.FutoshikiPanel;
 
 public class FutoshikiPanelSample
 {

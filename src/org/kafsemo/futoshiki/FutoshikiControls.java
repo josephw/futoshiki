@@ -93,7 +93,7 @@ public class FutoshikiControls
         fp.addPropertyChangeListener("futoshiki.valid", vlc);
     }
     
-    JComponent getControlPanel()
+    public JComponent getControlPanel()
     {
         return futoshikiControlPanel;
     }

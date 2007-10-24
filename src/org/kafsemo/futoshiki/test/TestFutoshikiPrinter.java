@@ -55,7 +55,7 @@ public class TestFutoshikiPrinter extends TestCase
             }
         }
         
-        String expected = 
+        String expected =
               "5 1 4 3 2\n"
             + "         \n"
             + "3 2 5 1 4\n"
@@ -87,7 +87,7 @@ public class TestFutoshikiPrinter extends TestCase
         f.addGtRule(4, 5, 3, 5);
         f.addGtRule(5, 5, 4, 5);
         
-        String expected = 
+        String expected =
             "         \n"
           + "  ^   v  \n"
           + "         \n"
@@ -133,7 +133,7 @@ public class TestFutoshikiPrinter extends TestCase
         f.addGtRule(4, 5, 3, 5);
         f.addGtRule(5, 5, 4, 5);
         
-        String expected = 
+        String expected =
             "5 1 4 3 2\n"
           + "  ^   v  \n"
           + "3 2 5 1 4\n"
@@ -179,7 +179,7 @@ public class TestFutoshikiPrinter extends TestCase
     
     public void testParseWithNumbers()
     {
-        String withNumbersString = 
+        String withNumbersString =
             "5 1 4 3 2\n"
           + "         \n"
           + "3 2 5 1 4\n"
@@ -214,7 +214,7 @@ public class TestFutoshikiPrinter extends TestCase
     
     public void testParseWithRules()
     {
-        String withRulesString = 
+        String withRulesString =
             "         \n"
             + "  ^   v  \n"
             + "         \n"
@@ -249,7 +249,7 @@ public class TestFutoshikiPrinter extends TestCase
     
     public void testParseFullExample()
     {
-        String fullExampleString = 
+        String fullExampleString =
               "5 1 4 3 2\n"
             + "  ^   v  \n"
             + "3 2 5 1 4\n"
@@ -297,7 +297,7 @@ public class TestFutoshikiPrinter extends TestCase
     
     public void testParseWithRulesCRLF()
     {
-        String withRulesString = 
+        String withRulesString =
             "         \r\n"
             + "  ^   v  \r\n"
             + "         \r\n"
@@ -332,7 +332,7 @@ public class TestFutoshikiPrinter extends TestCase
     
     public void testParseFullExampleShortLines()
     {
-        String fullExampleString = 
+        String fullExampleString =
               "5 1 4 3 2\n"
             + "  ^   v\n"
             + "3 2 5 1 4\n"
@@ -380,7 +380,7 @@ public class TestFutoshikiPrinter extends TestCase
     
     public void testParseIncomplete()
     {
-        String fullExampleString = 
+        String fullExampleString =
               "5 1 4\n"
             + "  ^   v\n"
             + "\n"

@@ -16,7 +16,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.kafsemo.futoshiki;
+package org.kafsemo.futoshiki.sample;
+
+import org.kafsemo.futoshiki.Futoshiki;
+import org.kafsemo.futoshiki.FutoshikiPrinter;
+import org.kafsemo.futoshiki.Solver;
 
 public class SolverSample
 {
