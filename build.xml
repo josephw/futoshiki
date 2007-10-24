@@ -1,4 +1,4 @@
-<project default="jar">
+<project default="dist">
 
  <property file='build.properties'/>
 
@@ -49,4 +49,23 @@
   </checkstyle>
  </target>
 
+ <target name='jar' depends='compile'>
+  <jar destfile='build/futoshiki.jar'>
+   <fileset dir='${classes.dir}'>
+    <exclude name='**/sample/*'/>
+    <exclude name='**/test/*'/>
+   </fileset>
+  </jar>
+ </target>
+
+ <target name='zipsrc'>
+  <zip destfile='build/futoshiki-src.zip'>
+   <fileset dir='src'/>
+   <fileset dir='/usr/share/common-licenses'>
+    <include name='GPL-3'/>
+   </fileset>
+  </zip>
+ </target>
+
+ <target name='dist' depends='jar,zipsrc'/>
 </project>
