@@ -28,6 +28,11 @@ import org.kafsemo.futoshiki.CellPos;
 import org.kafsemo.futoshiki.Futoshiki;
 import org.kafsemo.futoshiki.GtRule;
 
+/**
+ * Tests for {@link Futoshiki}, modifying and examining puzzle state.
+ * 
+ * @author Joseph Walton
+ */
 public class TestFutoshiki extends TestCase
 {
     public void testInitialState()
@@ -45,33 +50,24 @@ public class TestFutoshiki extends TestCase
         f.set(1, 1, 2);
         assertEquals(2, f.get(1, 1));
         
-        try
-        {
+        try {
             f.set(1, 1, 0);
             fail("Out of range numbers should fail");
-        }
-        catch (IllegalArgumentException iae)
-        {
+        } catch (IllegalArgumentException iae) {
             // Okay
         }
 
-        try
-        {
+        try {
             f.set(0, 0, 1);
             fail("Out of range coordinates should fail");
-        }
-        catch (IllegalArgumentException iae)
-        {
+        } catch (IllegalArgumentException iae) {
             // Okay
         }
 
-        try
-        {
+        try {
             f.set(6, 6, 1);
             fail("Out of range coordinates should fail");
-        }
-        catch (IllegalArgumentException iae)
-        {
+        } catch (IllegalArgumentException iae) {
             // Okay
         }
     }
@@ -231,7 +227,8 @@ public class TestFutoshiki extends TestCase
         
         f.addGtRule(2, 1, 1, 1);
         r = gather(f.getRules());
-        assertEquals("A rule in the same position should replace the previous one",
+        assertEquals(
+                "A rule in the same position should replace the previous one",
                 1, r.size());
         
         /* Make sure it's the more recent rule */

@@ -23,6 +23,11 @@ import org.kafsemo.futoshiki.FutoshikiPrinter;
 import org.kafsemo.futoshiki.Solver;
 import org.kafsemo.futoshiki.Solver.SolutionTarget;
 
+/**
+ * Simple command-line sample to demonstrate solving a puzzle.
+ * 
+ * @author Joseph Walton
+ */
 public class SolverSample
 {
     public static void main(String[] args)

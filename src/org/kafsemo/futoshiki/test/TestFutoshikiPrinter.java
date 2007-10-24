@@ -23,6 +23,12 @@ import junit.framework.TestCase;
 import org.kafsemo.futoshiki.Futoshiki;
 import org.kafsemo.futoshiki.FutoshikiPrinter;
 
+/**
+ * Tests for {@link FutoshikiPrinter}, converting puzzle state to
+ * and from strings.
+ * 
+ * @author Joseph Walton
+ */
 public class TestFutoshikiPrinter extends TestCase
 {
     public void testEmpty()
@@ -149,7 +155,8 @@ public class TestFutoshikiPrinter extends TestCase
 
     private void assertEquals(Futoshiki e, Futoshiki f)
     {
-        assertEquals(FutoshikiPrinter.toString(e), FutoshikiPrinter.toString(f));
+        assertEquals(FutoshikiPrinter.toString(e),
+                FutoshikiPrinter.toString(f));
     }
     
     public void testParseEmpty()
