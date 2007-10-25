@@ -210,6 +210,7 @@ public class TestFutoshiki extends TestCase
         }
         return c;
     }
+    
     public void testSettingRulesOverwritesExistingRules()
     {
         Futoshiki f = new Futoshiki();

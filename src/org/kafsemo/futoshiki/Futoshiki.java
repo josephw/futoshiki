@@ -59,6 +59,12 @@ public class Futoshiki
         return (row - 1) * LENGTH + (column - 1);
     }
     
+    /**
+     * Is this puzzle state currently valid? Checks for duplicate numbers
+     * in rows or columns and that all rules are followed.
+     * 
+     * @return
+     */
     public boolean isValid()
     {
         /* Check for duplicates */
