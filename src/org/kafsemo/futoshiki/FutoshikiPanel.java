@@ -356,8 +356,10 @@ public class FutoshikiPanel extends JPanel implements FocusListener
             clearSolutionCells();
             recordHistory();
 
-            futoshiki.set(selected.column, selected.row, n);
-            changed();
+            if (n >= 0 && n <= Futoshiki.LENGTH) {
+                futoshiki.set(selected.column, selected.row, n);
+                changed();
+            }
         }
     }
     
