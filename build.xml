@@ -2,7 +2,7 @@
 
  <property file='build.properties'/>
 
- <property name='src.dir' location='src'/>
+ <property name='src.dir' location='src/main/java'/>
  <property name='classes.dir' location='build/classes'/>
 
  <target name="compile">
@@ -43,7 +43,7 @@
  <target name='checkstyle'>
   <taskdef resource='checkstyletask.properties' classpathref='checkstyle.classpath'/>
   <checkstyle config='checkstyle-rules.xml'>
-   <fileset dir='src'>
+   <fileset dir='${src.dir}'>
     <include name='**/*.java'/>
    </fileset>
   </checkstyle>
@@ -60,7 +60,7 @@
 
  <target name='zipsrc'>
   <zip destfile='build/futoshiki-src.zip'>
-   <fileset dir='src'/>
+   <fileset dir='${src.dir}'/>
    <fileset dir='/usr/share/common-licenses'>
     <include name='GPL-3'/>
    </fileset>
