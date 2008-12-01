@@ -3,10 +3,6 @@
 "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 
 <module name='Checker'>
- <module name='SuppressionFilter'>
-  <property name='file' value='checkstyle-suppressions.xml'/>
- </module>
-
  <module name='TreeWalker'>
   <module name='TabCharacter'/>
   <module name="JavadocType">
@@ -21,7 +17,7 @@
   <module name="TypeName"/>
 
   <module name="Header">
-   <property name='headerFile' value='${basedir}/BOILERPLATE'/>
+   <property name='headerFile' value='BOILERPLATE'/>
   </module>
 
   <module name="AvoidStarImport"/>
