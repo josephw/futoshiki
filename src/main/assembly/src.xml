@@ -9,15 +9,11 @@
     <include>BOILERPLATE</include>
     <include>pom.xml</include>
     <include>checkstyle-rules.xml</include>
+    <include>GPL-3</include>
    </includes>
   </fileSet>
   <fileSet>
    <directory>src</directory>
   </fileSet>
  </fileSets>
- <files>
-  <file>
-   <source>/usr/share/common-licenses/GPL-3</source>
-  </file>
- </files>
 </assembly>
