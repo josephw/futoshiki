@@ -1,0 +1,23 @@
+<assembly>
+ <id>src</id>
+ <formats>
+  <format>zip</format>
+ </formats>
+ <fileSets>
+  <fileSet>
+   <includes>
+    <include>BOILERPLATE</include>
+    <include>pom.xml</include>
+    <include>checkstyle-rules.xml</include>
+   </includes>
+  </fileSet>
+  <fileSet>
+   <directory>src</directory>
+  </fileSet>
+ </fileSets>
+ <files>
+  <file>
+   <source>/usr/share/common-licenses/GPL-3</source>
+  </file>
+ </files>
+</assembly>
