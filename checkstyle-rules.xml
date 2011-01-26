@@ -3,8 +3,20 @@
 "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 
 <module name='Checker'>
+ <module name='FileTabCharacter'/>
+
+ <module name="Header">
+  <property name='headerFile' value='BOILERPLATE'/>
+ </module>
+
+ <module name="FileLength"/>
+
+ <module name="RegexpSingleline">
+  <property name="format" value="[^*\s]+\s+$"/>
+  <property name="message" value="Line has trailing spaces."/>
+ </module>
+
  <module name='TreeWalker'>
-  <module name='TabCharacter'/>
   <module name="JavadocType">
    <property name='scope' value='package'/>
   </module>
@@ -16,16 +28,11 @@
   <module name="StaticVariableName"/>
   <module name="TypeName"/>
 
-  <module name="Header">
-   <property name='headerFile' value='BOILERPLATE'/>
-  </module>
-
   <module name="AvoidStarImport"/>
   <module name="IllegalImport"/>
   <module name="RedundantImport"/>
   <module name="UnusedImports"/>
 
-  <module name="FileLength"/>
   <module name="LineLength"/>
 
   <module name="MethodParamPad"/>
@@ -63,10 +70,6 @@
   <module name="InterfaceIsType"/>
   <module name="ArrayTypeStyle"/>
 
-  <module name="GenericIllegalRegexp">
-    <property name="format" value="[^*\s]+\s+$"/>
-    <property name="message" value="Line has trailing spaces."/>
-  </module>
   <module name="UpperEll"/>
 
 
