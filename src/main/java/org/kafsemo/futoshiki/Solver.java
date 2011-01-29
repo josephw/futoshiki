@@ -1,6 +1,6 @@
 /*
  *  A Futoshiki puzzle editor and solver.
- *  Copyright © 2007 Joseph Walton
+ *  Copyright © 2007, 2011 Joseph Walton
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ public class Solver
         
         CellPos p = blank[nb];
         
-        for (int v = 1; v <= Futoshiki.LENGTH; v++) {
+        for (int v = 1; v <= f.getLength(); v++) {
             f.set(p.column, p.row, v);
             boolean more = solve(f.clone(), blank, nb + 1);
             if (!more) {

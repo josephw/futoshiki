@@ -1,6 +1,6 @@
 /*
  *  A Futoshiki puzzle editor and solver.
- *  Copyright © 2007 Joseph Walton
+ *  Copyright © 2007, 2011 Joseph Walton
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -167,8 +167,10 @@ public class FutoshikiControls
     
     private static void attemptEdit(FutoshikiPanel fp)
     {
-        JTextArea jta = new JTextArea(FutoshikiPrinter.STR_LENGTH,
-                                        FutoshikiPrinter.STR_LENGTH + 1);
+        int stringLength = FutoshikiPrinter.stringLength(fp.getFutoshiki());
+        
+        JTextArea jta = new JTextArea(stringLength,
+                                        stringLength + 1);
         
         String s = FutoshikiPrinter.toString(fp.getFutoshiki());
         

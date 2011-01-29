@@ -1,6 +1,6 @@
 /*
  *  A Futoshiki puzzle editor and solver.
- *  Copyright © 2007 Joseph Walton
+ *  Copyright © 2007, 2011 Joseph Walton
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,12 +18,17 @@
 
 package org.kafsemo.futoshiki.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import org.kafsemo.futoshiki.CellPos;
 import org.kafsemo.futoshiki.Futoshiki;
 import org.kafsemo.futoshiki.GtRule;
@@ -33,8 +38,9 @@ import org.kafsemo.futoshiki.GtRule;
  * 
  * @author Joseph Walton
  */
-public class TestFutoshiki extends TestCase
+public class TestFutoshiki
 {
+    @Test
     public void testInitialState()
     {
         Futoshiki f = new Futoshiki();
@@ -42,6 +48,7 @@ public class TestFutoshiki extends TestCase
         assertFalse(f.isFull());
     }
     
+    @Test
     public void testSimpleModification()
     {
         Futoshiki f = new Futoshiki();
@@ -72,6 +79,7 @@ public class TestFutoshiki extends TestCase
         }
     }
     
+    @Test
     public void testFull()
     {
         Futoshiki f = new Futoshiki();
@@ -86,6 +94,7 @@ public class TestFutoshiki extends TestCase
         assertTrue(f.isFull());
     }
     
+    @Test
     public void testSimpleInvalidation()
     {
         Futoshiki f = new Futoshiki();
@@ -94,6 +103,7 @@ public class TestFutoshiki extends TestCase
         assertFalse("Two 1s in a line is invalid", f.isValid());
     }
     
+    @Test
     public void testSimpleRuleViolation()
     {
         Futoshiki f = new Futoshiki();
@@ -105,6 +115,7 @@ public class TestFutoshiki extends TestCase
         assertFalse("1 < 2 is invalid", f.isValid());
     }
     
+    @Test
     public void testNoRuleViolationWithoutNumbers()
     {
         Futoshiki f = new Futoshiki();
@@ -121,6 +132,7 @@ public class TestFutoshiki extends TestCase
         assertFalse("Rule violation with 2 < 3", f.isValid());
     }
     
+    @Test
     public void testClone()
     {
         Futoshiki f = new Futoshiki();
@@ -137,6 +149,7 @@ public class TestFutoshiki extends TestCase
         assertEquals(1, f.get(1, 1));
     }
     
+    @Test
     public void testCloneRules()
     {
         Futoshiki f = new Futoshiki();
@@ -148,6 +161,7 @@ public class TestFutoshiki extends TestCase
         assertFalse("Rules should also be cloned", f2.isValid());
     }
     
+    @Test
     public void testFullSampleIsValid()
     {
         Futoshiki f = new Futoshiki();
@@ -184,6 +198,7 @@ public class TestFutoshiki extends TestCase
         assertTrue(f.isValid());
     }
     
+    @Test
     public void testBlankCells()
     {
         Futoshiki f = new Futoshiki();
@@ -192,6 +207,7 @@ public class TestFutoshiki extends TestCase
         assertEquals(25, blank.size());
     }
     
+    @Test
     public void testClear()
     {
         Futoshiki f = new Futoshiki();
@@ -211,6 +227,7 @@ public class TestFutoshiki extends TestCase
         return c;
     }
     
+    @Test
     public void testSettingRulesOverwritesExistingRules()
     {
         Futoshiki f = new Futoshiki();
@@ -240,6 +257,7 @@ public class TestFutoshiki extends TestCase
         assertEquals(1, gtr.getLesserRow());
     }
     
+    @Test
     public void testGetRuleByPosition()
     {
         Futoshiki f = new Futoshiki();
@@ -252,6 +270,7 @@ public class TestFutoshiki extends TestCase
         assertEquals(expected, r);
     }
     
+    @Test
     public void testRemoveRule()
     {
         Futoshiki f = new Futoshiki();
@@ -261,5 +280,74 @@ public class TestFutoshiki extends TestCase
         
         assertFalse("Deleting a single rule should leave no rules",
                 f.getRules().iterator().hasNext());
+    }
+    
+    @Test
+    public void testSizeDefaultsToFive()
+    {
+        Futoshiki f = new Futoshiki();
+        assertEquals("A default puzzle is 5 square", 5, f.getLength());
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testFutoshikiSizeMustBePositive()
+    {
+        new Futoshiki(0);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testFutoshikiSizeMustNotExceedNumberOfDigits()
+    {
+        new Futoshiki(10);
+    }
+    
+    @Test
+    public void testFutoshikiWithSizeOneBehaves()
+    {
+        Futoshiki f = new Futoshiki(1);
+        assertEquals(1, f.getLength());
+        assertEquals(0, f.get(1, 1));
+        f.set(1, 1, 1);
+        assertEquals(1, f.get(1, 1));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void futoshikiWithSizeOneRespectsBounds()
+    {
+        Futoshiki f = new Futoshiki(1);
+        f.set(2, 1, 1);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void futoshikiWithSizeOneRejectsTooLargeNumbers()
+    {
+        Futoshiki f = new Futoshiki(1);
+        f.set(1, 1, 2);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void futoshikiWithSizeOneRejectsTooSmallNumbers()
+    {
+        Futoshiki f = new Futoshiki(1);
+        f.set(1, 1, -1);
+    }
+    
+    @Test
+    public void largeFutoshikiCanBeSet()
+    {
+        Futoshiki f = new Futoshiki(9);
+        f.set(9, 9, 9);
+        assertEquals(9, f.get(9, 9));
+    }
+    
+    @Test
+    public void largeFutoshikiCanBeCloned()
+    {
+        Futoshiki f = new Futoshiki(9);
+        f.set(9, 9, 9);
+        f = f.clone();
+        assertEquals(9, f.get(9, 9));
+        f.set(9, 9, 8);
+        assertEquals(8, f.get(9, 9));
     }
 }

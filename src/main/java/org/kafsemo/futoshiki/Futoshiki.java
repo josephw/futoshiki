@@ -1,6 +1,6 @@
 /*
  *  A Futoshiki puzzle editor and solver.
- *  Copyright © 2007 Joseph Walton
+ *  Copyright © 2007, 2011 Joseph Walton
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,9 +33,8 @@ import java.util.Map;
  */
 public class Futoshiki
 {
-    public static final int LENGTH = 5;
-    
-    private final byte[] data = new byte[25];
+    private final int length;
+    private final byte[] data;
     
     private final Map<GtRule, ValidatingRule> rules
                     = new HashMap<GtRule, ValidatingRule>();
@@ -43,22 +42,42 @@ public class Futoshiki
 
     private ValidatingRule[] vraCache;
     
-    private static int idx(int column, int row)
+    public Futoshiki()
     {
-        if (column < 1 || column > LENGTH)
+        this(5);
+    }
+    
+    public Futoshiki(int length)
+    {
+        if ((length < 1) || (length > 9)) {
+            throw new IllegalArgumentException("Size must be 1 to 9");
+        }
+        
+        this.length = length;
+        this.data = new byte[length * length];
+    }
+    
+    public int getLength()
+    {
+        return length;
+    }
+    
+    private int idx(int column, int row)
+    {
+        if (column < 1 || column > length)
             throw new IllegalArgumentException("Bad column " + column);
 
-        if (row < 1 || row > LENGTH)
+        if (row < 1 || row > length)
             throw new IllegalArgumentException("Bad row " + row);
 
         return idxInternal(column, row);
     }
 
-    private static int idxInternal(int column, int row)
+    private int idxInternal(int column, int row)
     {
-        return (row - 1) * LENGTH + (column - 1);
+        return (row - 1) * length + (column - 1);
     }
-    
+
     /**
      * Is this puzzle state currently valid? Checks for duplicate numbers
      * in rows or columns and that all rules are followed.
@@ -71,10 +90,10 @@ public class Futoshiki
         
         int columnMask = 0;
         
-        for (int row = 1; row <= LENGTH; row++) {
+        for (int row = 1; row <= length; row++) {
             int rowMask = 0;
 
-            for (int column = 1; column <= LENGTH; column++) {
+            for (int column = 1; column <= length; column++) {
                 int v = data[idxInternal(column, row)];
                 if (v == 0)
                     continue;
@@ -83,11 +102,11 @@ public class Futoshiki
                 if ((rowMask & bit) != 0)
                     return false;
                 
-                if ((columnMask >> (column * LENGTH) & bit) != 0)
+                if ((columnMask >> (column * length) & bit) != 0)
                     return false;
                 
                 rowMask |= bit;
-                columnMask |= (bit << column * LENGTH);
+                columnMask |= (bit << column * length);
             }
         }
         
@@ -117,7 +136,7 @@ public class Futoshiki
 
     public void set(int column, int row, int v)
     {
-        if (v < 1 || v > LENGTH)
+        if (v < 1 || v > length)
             throw new IllegalArgumentException("Bad cell value " + v);
         
         data[idx(column, row)] = (byte) v;
@@ -140,7 +159,7 @@ public class Futoshiki
     
     public Futoshiki clone()
     {
-        Futoshiki f = new Futoshiki();
+        Futoshiki f = new Futoshiki(length);
         System.arraycopy(data, 0, f.data, 0, data.length);
         f.rules.putAll(rules);
         return f;
@@ -153,10 +172,10 @@ public class Futoshiki
     
     public Collection<CellPos> blankCells()
     {
-        Collection<CellPos> blank = new ArrayList<CellPos>(LENGTH * LENGTH);
+        Collection<CellPos> blank = new ArrayList<CellPos>(length * length);
         
-        for (int row = 1; row <= LENGTH; row++) {
-            for (int column = 1; column <= LENGTH; column++) {
+        for (int row = 1; row <= length; row++) {
+            for (int column = 1; column <= length; column++) {
                 if (data[idxInternal(column, row)] == 0) {
                     blank.add(new CellPos(column, row));
                 }
@@ -191,7 +210,7 @@ public class Futoshiki
         rules.remove(k);
     }
     
-    private static class ValidatingRule
+    private class ValidatingRule
     {
         private final int idxA, idxB;
         private final GtRule origRule;

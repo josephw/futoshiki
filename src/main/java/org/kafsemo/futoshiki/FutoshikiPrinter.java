@@ -1,6 +1,6 @@
 /*
  *  A Futoshiki puzzle editor and solver.
- *  Copyright © 2007 Joseph Walton
+ *  Copyright © 2007, 2011 Joseph Walton
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,6 +18,12 @@
 
 package org.kafsemo.futoshiki;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * A class to convert puzzle state to, and from, a textual representation.
  * 
@@ -25,15 +31,20 @@ package org.kafsemo.futoshiki;
  */
 public class FutoshikiPrinter
 {
-    static final int STR_LENGTH = Futoshiki.LENGTH * 2 - 1;
+    static int stringLength(Futoshiki f)
+    {
+        return f.getLength() * 2 - 1;
+    }
     
     public static String toString(Futoshiki f)
     {
-        String[][] caa = new String[STR_LENGTH][STR_LENGTH];
+        final int stringLength = stringLength(f);
+        
+        String[][] caa = new String[stringLength][stringLength];
 
         /* Data */
-        for (int row = 1; row <= Futoshiki.LENGTH; row++) {
-            for (int column = 1; column <= Futoshiki.LENGTH; column++) {
+        for (int row = 1; row <= f.getLength(); row++) {
+            for (int column = 1; column <= f.getLength(); column++) {
                 int v = f.get(column, row);
                 
                 String s;
@@ -84,48 +95,78 @@ public class FutoshikiPrinter
 
     public static Futoshiki parse(String s)
     {
-        Futoshiki f = new Futoshiki();
-        
         s = s.replaceAll("\r\n", "\n");
 
-        String[] lines = s.split("[\r\n]");
+        String[] lines = s.split("[\r\n]", -1);
 
+        Map<CellPos, Integer> filledCells = new HashMap<CellPos, Integer>();
+        Collection<GtRule> rules = new ArrayList<GtRule>();
+
+        int knownSize = 0;
+        
         /* Number lines */
-        for (int i = 0; i < Math.min(STR_LENGTH, lines.length); i += 2) {
+        for (int i = 0; i < lines.length; i += 2) {
+            int row = (i / 2) + 1;
+            knownSize = Math.max(knownSize, row);
             char[] ca = lines[i].toCharArray();
-            for (int j = 0; j < Math.min(STR_LENGTH, ca.length); j++) {
+            for (int j = 0; j < ca.length; j++) {
                 int column = (j / 2) + 1;
-                int row = (i / 2) + 1;
+                knownSize = Math.max(knownSize, column);
                 char c = ca[j];
                 if (j % 2 == 0) {
                     int v = Character.digit(c, 10);
-                    if (v >= 1 && v <= 5) {
-                        f.set(column, row, v);
+                    if (v >= 0) {
+                        filledCells.put(new CellPos(column, row),
+                                        Integer.valueOf(v));
                     }
                 } else {
                     if (c == '<') {
-                        f.addGtRule(column + 1, row, column, row);
+                        rules.add(new GtRule(column + 1, row, column, row));
+                        knownSize = Math.max(knownSize, column + 1);
                     } else if (c == '>') {
-                        f.addGtRule(column, row, column + 1, row);
+                        rules.add(new GtRule(column, row, column + 1, row));
+                        knownSize = Math.max(knownSize, column + 1);
                     }
                 }
             }
         }
         
         /* Rule lines */
-        for (int i = 1; i < Math.min(STR_LENGTH, lines.length); i += 2) {
+        for (int i = 1; i < lines.length; i += 2) {
             char[] ca = lines[i].toCharArray();
-            for (int j = 0; j < Math.min(STR_LENGTH, ca.length); j += 2) {
+            for (int j = 0; j < ca.length; j += 2) {
                 int column = (j / 2) + 1;
                 int row = (i / 2) + 1;
                 char c = ca[j];
 
                 if (c == '^') {
-                    f.addGtRule(column, row + 1, column, row);
+                    rules.add(new GtRule(column, row + 1, column, row));
+                    knownSize = Math.max(knownSize, row + 1);
                 } else if (c == 'v' || c == 'V') {
-                    f.addGtRule(column, row, column, row + 1);
+                    rules.add(new GtRule(column, row, column, row + 1));
+                    knownSize = Math.max(knownSize, row + 1);
                 }
             }
+        }
+
+        /* How big must the puzzle be? */
+        int size = 1;
+
+        size = Math.max(size, knownSize);
+        
+        if (filledCells.size() > 0) {
+            size = Math.max(size, Collections.max(filledCells.values()));
+        }
+
+        /* Fill it in */
+        Futoshiki f = new Futoshiki(size);
+        
+        for (CellPos p : filledCells.keySet()) {
+            f.set(p.column, p.row, filledCells.get(p));
+        }
+        
+        for (GtRule gtr : rules) {
+            f.addGtRule(gtr.columnA, gtr.rowA, gtr.columnB, gtr.rowB);
         }
         
         return f;

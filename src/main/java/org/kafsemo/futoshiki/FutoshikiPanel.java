@@ -1,6 +1,6 @@
 /*
  *  A Futoshiki puzzle editor and solver.
- *  Copyright © 2007 Joseph Walton
+ *  Copyright © 2007, 2011 Joseph Walton
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -111,7 +111,7 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         
         int m = Math.max(maxWidth, maxHeight);
         
-        int l = (m + 10) * (Futoshiki.LENGTH * 3 + 1);
+        int l = (m + 10) * (futoshiki.getLength() * 3 + 1);
         
         return new Dimension(l, l);
     }
@@ -133,8 +133,8 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         
         g.fillRect(0, 0, d.width, d.height);
 
-        int px = d.width / (Futoshiki.LENGTH * 3 + 1),
-            py = d.height / (Futoshiki.LENGTH * 3 + 1);
+        int px = d.width / (futoshiki.getLength() * 3 + 1),
+            py = d.height / (futoshiki.getLength() * 3 + 1);
         
         
         Font f = getFont();
@@ -147,8 +147,8 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         Font bf = g.getFont().deriveFont(Font.BOLD);
         
         /* Numbers */
-        for (int row = 1; row <= Futoshiki.LENGTH; row++) {
-            for (int column = 1; column <= Futoshiki.LENGTH; column++) {
+        for (int row = 1; row <= futoshiki.getLength(); row++) {
+            for (int column = 1; column <= futoshiki.getLength(); column++) {
                 
                 int x = (column * 3 - 2) * px,
                     y = (row * 3 - 2) * py;
@@ -275,10 +275,16 @@ public class FutoshikiPanel extends JPanel implements FocusListener
     
     public void setFutoshiki(Futoshiki f)
     {
+        int previousLength = futoshiki.getLength();
+        
         clearSolutionCells();
         recordHistory();
         this.futoshiki = f.clone();
         changed();
+        
+        if (previousLength != futoshiki.getLength()) {
+            invalidate();
+        }
     }
     
     public Futoshiki getFutoshiki()
@@ -356,7 +362,7 @@ public class FutoshikiPanel extends JPanel implements FocusListener
             clearSolutionCells();
             recordHistory();
 
-            if (n >= 0 && n <= Futoshiki.LENGTH) {
+            if (n >= 0 && n <= futoshiki.getLength()) {
                 futoshiki.set(selected.column, selected.row, n);
                 changed();
             }
@@ -485,8 +491,8 @@ public class FutoshikiPanel extends JPanel implements FocusListener
             
             Dimension d = getSize();
 
-            int px = d.width / (Futoshiki.LENGTH * 3 + 1),
-            py = d.height / (Futoshiki.LENGTH * 3 + 1);
+            int px = d.width / (futoshiki.getLength() * 3 + 1),
+            py = d.height / (futoshiki.getLength() * 3 + 1);
             
             int x = p.x / px,
                 y = p.y / py;
@@ -499,17 +505,17 @@ public class FutoshikiPanel extends JPanel implements FocusListener
             if ((x - 1) % 3 != 2) {
                 int column = ((x - 1) / 3) + 1;
 
-                if (column >= 1 && column <= Futoshiki.LENGTH) {
+                if (column >= 1 && column <= futoshiki.getLength()) {
                     if ((y - 1) % 3 != 2) {
                         int row = ((y - 1) / 3) + 1;
                         
-                        if (row >= 1 && row <= Futoshiki.LENGTH) {
+                        if (row >= 1 && row <= futoshiki.getLength()) {
                             cellClicked(column, row);
                         }
                     } else {
                         int rowAfter = ((y - 1) / 3) + 1;
                         
-                        if (rowAfter >= 1 && rowAfter < Futoshiki.LENGTH) {
+                        if (rowAfter >= 1 && rowAfter < futoshiki.getLength()) {
                             RulePos rp =
                                 new RulePos(column, rowAfter, false, false);
                             ruleClicked(rp);
@@ -518,11 +524,11 @@ public class FutoshikiPanel extends JPanel implements FocusListener
                 }
             } else {
                 int columnAfter = ((x - 1) / 3) + 1;
-                if (columnAfter >= 1 && columnAfter < Futoshiki.LENGTH) {
+                if (columnAfter >= 1 && columnAfter < futoshiki.getLength()) {
                     if ((y - 1) % 3 != 2) {
                         int row = ((y - 1) / 3) + 1;
                         
-                        if (row >= 1 && row <= Futoshiki.LENGTH) {
+                        if (row >= 1 && row <= futoshiki.getLength()) {
                             RulePos rp =
                                 new RulePos(columnAfter, row, true, false);
                             ruleClicked(rp);

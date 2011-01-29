@@ -1,6 +1,6 @@
 /*
  *  A Futoshiki puzzle editor and solver.
- *  Copyright © 2007 Joseph Walton
+ *  Copyright © 2007, 2011 Joseph Walton
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 
 import org.kafsemo.futoshiki.Futoshiki;
 import org.kafsemo.futoshiki.FutoshikiPrinter;
+import org.kafsemo.futoshiki.GtRule;
 
 /**
  * Tests for {@link FutoshikiPrinter}, converting puzzle state to
@@ -181,7 +182,7 @@ public class TestFutoshikiPrinter extends TestCase
     {
         Futoshiki empty = FutoshikiPrinter.parse("");
         
-        assertEquals(new Futoshiki(), empty);
+        assertEquals(new Futoshiki(1), empty);
     }
     
     public void testParseWithNumbers()
@@ -214,7 +215,6 @@ public class TestFutoshikiPrinter extends TestCase
                 expected.set(column, row, sample[row - 1][column - 1]);
             }
         }
-        
 
         assertEquals(expected, withNumbers);
     }
@@ -431,5 +431,72 @@ public class TestFutoshikiPrinter extends TestCase
         expected.addGtRule(5, 5, 4, 5);
         
         assertEquals(expected, fullExample);
+    }
+    
+    public void testSmallestToString()
+    {
+        Futoshiki f = new Futoshiki(1);
+        
+        assertEquals(" \n", FutoshikiPrinter.toString(f));
+        
+        f.set(1, 1, 1);
+        assertEquals("1\n", FutoshikiPrinter.toString(f));
+    }
+    
+    public void testParsingSmallestPuzzle()
+    {
+        Futoshiki f;
+        
+        f = FutoshikiPrinter.parse(" \n");
+        assertEquals(1, f.getLength());
+        assertEquals(0, f.get(1, 1));
+        
+        f = FutoshikiPrinter.parse("1");
+        assertEquals(1, f.getLength());
+        assertEquals(1, f.get(1, 1));
+    }
+    
+    public void testParsedResultLargeEnoughToHoldDigit()
+    {
+        Futoshiki f;
+        
+        f = FutoshikiPrinter.parse("9");
+        assertEquals(9, f.getLength());
+        assertEquals(9, f.get(1, 1));
+    }
+    
+    public void testParseTallEmptyPuzzle()
+    {
+        // Seventeen blank lines
+        String s = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+
+        assertEquals(17, s.length());
+        
+        Futoshiki f;
+        
+        f = FutoshikiPrinter.parse(s);
+        assertEquals(9, f.getLength());
+        assertEquals(new Futoshiki(9), f);
+    }
+    
+    public void testEmptyPuzzleWithNumberInFinalSquare()
+    {
+        // Seventeen blank lines
+        String s = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n                1";
+
+        Futoshiki f;
+        
+        f = FutoshikiPrinter.parse(s);
+        assertEquals(9, f.getLength());
+        assertEquals(1, f.get(9, 9));
+    }
+    
+    public void testPuzzleWithNoCellAfterRule()
+    {
+        Futoshiki f = FutoshikiPrinter.parse(" <");
+        
+        assertEquals(2, f.getLength());
+        
+        assertEquals(new GtRule(2, 1, 1, 1), f.getRules().iterator().next());
     }
 }
