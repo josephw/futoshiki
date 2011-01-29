@@ -350,4 +350,13 @@ public class TestFutoshiki
         f.set(9, 9, 8);
         assertEquals(8, f.get(9, 9));
     }
+    
+    @Test
+    public void largeFutoshikiIsValid()
+    {
+        Futoshiki f = new Futoshiki(9);
+        f.set(1, 1, 9);
+        f.set(9, 1, 1);
+        assertTrue(f.isValid());
+    }
 }

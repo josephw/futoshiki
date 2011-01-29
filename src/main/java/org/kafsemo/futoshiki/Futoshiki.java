@@ -19,6 +19,7 @@
 package org.kafsemo.futoshiki;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -88,11 +89,15 @@ public class Futoshiki
     {
         /* Check for duplicates */
         
-        int columnMask = 0;
+        BitSet columnMask = new BitSet(length * length);
+
+        assert (length * length) <= columnMask.size();
         
         for (int row = 1; row <= length; row++) {
             int rowMask = 0;
 
+            assert length < 32;
+            
             for (int column = 1; column <= length; column++) {
                 int v = data[idxInternal(column, row)];
                 if (v == 0)
@@ -102,11 +107,13 @@ public class Futoshiki
                 if ((rowMask & bit) != 0)
                     return false;
                 
-                if ((columnMask >> (column * length) & bit) != 0)
+                int columnContainsValueBit = (column - 1) * length + v;
+                
+                if (columnMask.get(columnContainsValueBit))
                     return false;
                 
                 rowMask |= bit;
-                columnMask |= (bit << column * length);
+                columnMask.set(columnContainsValueBit);
             }
         }
         
