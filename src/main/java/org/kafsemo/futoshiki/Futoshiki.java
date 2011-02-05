@@ -32,9 +32,8 @@ import java.util.Map;
  * 
  * @author Joseph Walton
  */
-public class Futoshiki
+public class Futoshiki extends Grid
 {
-    private final int length;
     private final byte[] data;
     
     private final Map<GtRule, ValidatingRule> rules
@@ -50,35 +49,10 @@ public class Futoshiki
     
     public Futoshiki(int length)
     {
-        if ((length < 1) || (length > 9)) {
-            throw new IllegalArgumentException("Size must be 1 to 9");
-        }
-        
-        this.length = length;
+        super(length);
         this.data = new byte[length * length];
     }
     
-    public int getLength()
-    {
-        return length;
-    }
-    
-    private int idx(int column, int row)
-    {
-        if (column < 1 || column > length)
-            throw new IllegalArgumentException("Bad column " + column);
-
-        if (row < 1 || row > length)
-            throw new IllegalArgumentException("Bad row " + row);
-
-        return idxInternal(column, row);
-    }
-
-    private int idxInternal(int column, int row)
-    {
-        return (row - 1) * length + (column - 1);
-    }
-
     /**
      * Is this puzzle state currently valid? Checks for duplicate numbers
      * in rows or columns and that all rules are followed.

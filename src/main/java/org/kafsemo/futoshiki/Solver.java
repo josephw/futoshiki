@@ -18,6 +18,9 @@
 
 package org.kafsemo.futoshiki;
 
+import java.math.BigInteger;
+import java.util.logging.Logger;
+
 
 /**
  * Recursive solver for Futoshiki puzzles.
@@ -26,7 +29,10 @@ package org.kafsemo.futoshiki;
  */
 public class Solver
 {
+    private static final Logger log = Logger.getLogger(Solver.class.getName());
     private static final CellPos[] CELLPOS_ARRAY = {};
+    private static final BigInteger FIVE_BY_FIVE_COMBINATIONS =
+        new BigInteger("298023223876953125");
     
     private final SolutionTarget target;
     
@@ -38,8 +44,14 @@ public class Solver
     public void solve(Futoshiki f)
     {
         CellPos[] blanks = f.blankCells().toArray(CELLPOS_ARRAY);
-//        List<CellPos> blanks = new ArrayList<CellPos>(f.blankCells());
-        solve(f, blanks, 0);
+        Possibilities poss = new Possibilities(f.getLength());
+        poss.use(f);
+        BigInteger count = poss.size();
+        log.info("Solution possibilities: " + poss.size());
+        if (count.compareTo(FIVE_BY_FIVE_COMBINATIONS) > 0) {
+            log.warning("This may take an extremely long time");
+        }
+        solve(f, blanks, 0, poss);
     }
     
     /**
@@ -51,7 +63,7 @@ public class Solver
      * @param blank
      * @param nb the index of the next remaining blank
      */
-    private boolean solve(Futoshiki f, CellPos[] blank, int nb)
+    private boolean solve(Futoshiki f, CellPos[] blank, int nb, Possibilities poss)
     {
         if (!f.isValid()) {
             return true;
@@ -64,10 +76,14 @@ public class Solver
         CellPos p = blank[nb];
         
         for (int v = 1; v <= f.getLength(); v++) {
-            f.set(p.column, p.row, v);
-            boolean more = solve(f.clone(), blank, nb + 1);
-            if (!more) {
-                return false;
+            if (poss.isPossible(p.column, p.row, v)) {
+                f.set(p.column, p.row, v);
+                Possibilities ps = poss.clone();
+                ps.use(p.column, p.row, v);
+                boolean more = solve(f.clone(), blank, nb + 1, ps);
+                if (!more) {
+                    return false;
+                }
             }
         }
         
