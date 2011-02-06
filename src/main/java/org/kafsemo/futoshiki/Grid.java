@@ -25,7 +25,7 @@ public class Grid
     public Grid(int length)
     {
         if ((length < 1) || (length > 9)) {
-            throw new IllegalArgumentException("Size must be 1 to 9");
+            throw new IllegalArgumentException("Size must be 1 to 9: " + length);
         }
         
         this.length = length;

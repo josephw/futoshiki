@@ -19,6 +19,7 @@
 package org.kafsemo.futoshiki;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
@@ -166,6 +167,24 @@ public class Futoshiki extends Grid
         return blank;
     }
 
+    public int hashCode()
+    {
+        return length ^ Arrays.hashCode(data) ^ rules.hashCode();
+    }
+    
+    public boolean equals(Object o)
+    {
+        if (o instanceof Futoshiki) {
+            Futoshiki f = (Futoshiki) o;
+            
+            return length == f.length
+                && Arrays.equals(data, f.data)
+                && rules.keySet().equals(f.rules.keySet());
+        } else {
+            return false;
+        }
+    }
+    
     public Iterable<? extends GtRule> getRules()
     {
         return origRuleIterable;

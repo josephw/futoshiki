@@ -359,4 +359,65 @@ public class TestFutoshiki
         f.set(9, 1, 1);
         assertTrue(f.isValid());
     }
+
+    @Test
+    public void puzzlesAreEqualIfSameSize()
+    {
+        Futoshiki f1 = new Futoshiki(1);
+
+        assertFalse(f1.equals(new Futoshiki(2)));
+        assertTrue(f1.equals(new Futoshiki(1)));
+        assertEquals(f1.hashCode(), new Futoshiki(1).hashCode());
+    }
+    
+    @Test
+    public void puzzlesAreEqualIfInSameState()
+    {
+        Futoshiki f1 = new Futoshiki(1);
+        f1.set(1, 1, 1);
+        
+        assertFalse(f1.equals(new Futoshiki(1)));
+        
+        Futoshiki f2 = new Futoshiki(1);
+        f2.set(1, 1, 1);
+        assertTrue(f1.equals(f2));
+    }
+    
+    @Test
+    public void puzzlesAreEqualIfSameRule()
+    {
+        Futoshiki f1 = new Futoshiki(2);
+        f1.addGtRule(1, 1, 2, 1);
+        
+        Futoshiki f2 = new Futoshiki(2);
+        
+        assertFalse(f1.equals(f2));
+        
+        f2.addGtRule(1, 1, 2, 1);
+        assertTrue(f1.equals(f2));
+        
+        f2.removeRule(new GtRule(1, 1, 2, 1));
+        assertTrue(f2.equals(new Futoshiki(2)));
+    }
+    
+    @Test
+    public void puzzlesAreEqualIfSameMultipleRules()
+    {
+        Futoshiki f1 = new Futoshiki(2);
+        f1.addGtRule(1, 1, 2, 1);
+        f1.addGtRule(1, 1, 1, 2);
+        f1.addGtRule(2, 2, 2, 1);
+        f1.addGtRule(2, 2, 1, 2);
+        
+        Futoshiki f2 = new Futoshiki(2);
+        assertFalse(f1.equals(f2));
+        f2.addGtRule(1, 1, 2, 1);
+        assertFalse(f1.equals(f2));
+        f2.addGtRule(1, 1, 1, 2);
+        assertFalse(f1.equals(f2));
+        f2.addGtRule(2, 2, 2, 1);
+        assertFalse(f1.equals(f2));
+        f2.addGtRule(2, 2, 1, 2);
+        assertTrue("Puzzles are equal when all rules match", f1.equals(f2));
+    }
 }
