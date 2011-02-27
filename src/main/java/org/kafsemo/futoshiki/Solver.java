@@ -78,6 +78,8 @@ public class Solver
             return target.solution(f);
         }
         
+        blank = moveBlankWithLeastPossibilitiesIntoPlace(blank, nb, poss);
+        
         CellPos p = blank[nb];
 
         // Generate a collection of possibilities
@@ -120,6 +122,36 @@ public class Solver
         return true;
     }
 
+    private CellPos[] moveBlankWithLeastPossibilitiesIntoPlace(CellPos[] blanks, int p, Possibilities poss)
+    {
+        int fewestIdx = -1;
+        
+        for (int i = p; i < blanks.length; i++) {
+            if (fewestIdx >= 0) {
+                int p1 = poss.possibleCount(blanks[fewestIdx]);
+                int p2 = poss.possibleCount(blanks[i]);
+                
+                if (p2 < p1) {
+                    fewestIdx = i;
+                }
+                
+                
+            } else {
+                fewestIdx = i;
+            }
+        }
+        
+        if (fewestIdx >= 0 && fewestIdx != p) {
+            // Only necessary with multiple threads
+//            blanks = blanks.clone();
+            CellPos cp = blanks[p];
+            blanks[p] = blanks[fewestIdx];
+            blanks[fewestIdx] = cp;
+        }
+        
+        return blanks;
+    }
+    
     private static BigInteger sum(BigInteger[] a, int maxIndex)
     {
         BigInteger total = BigInteger.ZERO;

@@ -23,6 +23,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigInteger;
+import java.util.TreeSet;
 
 import org.junit.Test;
 import org.kafsemo.futoshiki.Futoshiki;
@@ -38,11 +39,11 @@ public class TestPossibilities
     }
     
     @Test
-    public void notPossibleWhenUsed()
+    public void stillPossibleWhenUsed()
     {
         Possibilities p = new Possibilities(1);
         p.use(1, 1, 1);
-        assertFalse(p.isPossible(1, 1, 1));
+        assertTrue(p.isPossible(1, 1, 1));
     }
     
     @Test
@@ -50,7 +51,7 @@ public class TestPossibilities
     {
         Possibilities p = new Possibilities(2);
         p.use(1, 1, 1);
-        assertFalse(p.isPossible(1, 1, 1));
+        assertTrue(p.isPossible(1, 1, 1));
         assertFalse(p.isPossible(1, 2, 1));
         assertFalse(p.isPossible(2, 1, 1));
         assertTrue(p.isPossible(2, 2, 1));
@@ -92,15 +93,22 @@ public class TestPossibilities
         p = new Possibilities(3);
         assertEquals(BigInteger.valueOf(19683), p.size());
     }
+
+    @Test
+    public void totalPossibilitiesIsConstantForOneByOne()
+    {
+        Possibilities p;
+        
+        p = new Possibilities(1);
+        assertEquals(BigInteger.ONE, p.size());
+        p.use(1, 1, 1);
+        assertEquals(BigInteger.ONE, p.size());
+    }
     
     @Test
     public void totalNumberReducedWhenNumbersAreFixed()
     {
         Possibilities p;
-        
-        p = new Possibilities(1);
-        p.use(1, 1, 1);
-        assertEquals(BigInteger.ZERO, p.size());
         
         p = new Possibilities(2);
         p.use(1, 1, 1);
@@ -134,5 +142,90 @@ public class TestPossibilities
         f.set(1, 1, 1);
         p.use(f);
         assertEquals(BigInteger.valueOf(2), p.size());
+    }
+    
+    @Test
+    public void useExistingPuzzleRulesToReducePossibilities()
+    {
+        Possibilities p = new Possibilities(2);
+        
+        Futoshiki f = new Futoshiki(2);
+
+        f.addGtRule(1, 1, 2, 1);
+        p.use(f);
+        
+        assertFalse(p.isPossible(1, 1, 1));
+        assertTrue(p.isPossible(1, 1, 2));
+        
+        assertTrue(p.isPossible(2, 1, 1));
+        assertFalse(p.isPossible(2, 1, 2));
+    }
+    
+    @Test
+    public void useExistingPuzzleRulesWithNumbersToReducePossibilities()
+    {
+        Possibilities p = new Possibilities(3);
+        
+        Futoshiki f = new Futoshiki(3);
+
+        f.set(1, 1, 2);
+        f.addGtRule(2, 1, 1, 1);
+        p.use(f);
+        
+        assertFalse(p.isPossible(2, 1, 1));
+        assertFalse(p.isPossible(2, 1, 2));
+        assertTrue(p.isPossible(2, 1, 3));
+    }
+    
+    @Test
+    public void getPossibilityCountForSpecificCell()
+    {
+        Possibilities p;
+        
+        p = new Possibilities(1);
+        assertEquals(1, p.possibleCount(1, 1));
+        
+        p = new Possibilities(9);
+        assertEquals(9, p.possibleCount(1, 1));
+    }
+    
+    @Test
+    public void specificCellPossibilityCountIsReduced()
+    {
+        Possibilities p;
+        
+        p = new Possibilities(2);
+        assertEquals(2, p.possibleCount(1, 1));
+        
+        p.use(1, 1, 1);
+        assertEquals(1, p.possibleCount(1, 1));
+        assertEquals(1, p.possibleCount(2, 1));
+        
+        p = new Possibilities(9);
+        p.use(1, 1, 1);
+        assertEquals(8, p.possibleCount(2, 1));
+    }
+    
+    public static String toString(Possibilities p)
+    {
+        StringBuilder sb = new StringBuilder();
+        
+        for (int r = 1; r <= p.getLength(); r++) {
+            for (int c = 1; c <= p.getLength(); c++) {
+                TreeSet<Integer> ts = new TreeSet<Integer>();
+                for (int v = 1; v <= p.getLength(); v++) {
+                    if (p.isPossible(c, r, v)) {
+                        ts.add(v);
+                    }
+                }
+                
+                sb.append(ts);
+                sb.append(" | ");
+            }
+            sb.append("\n");
+        }
+        sb.append("--\n");
+        
+        return sb.toString();
     }
 }

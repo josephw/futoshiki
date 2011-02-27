@@ -23,12 +23,12 @@ import java.util.BitSet;
 
 public class Possibilities extends Grid
 {
-    final BitSet possibilities;
+    private final BitSet possibilities;
 
     public Possibilities(int length)
     {
         super(length);
-        this.possibilities = new BitSet(length * length * 3);
+        this.possibilities = new BitSet(length * length * length);
     }
     
     private Possibilities(int length, BitSet p)
@@ -37,24 +37,55 @@ public class Possibilities extends Grid
         this.possibilities = p;
     }
 
-    int bit(boolean isRow, int pos, int value)
+    int bit(int column, int row, int value)
     {
-        return ((pos - 1) * length) + (value - 1)
-            + (isRow ? 0 : length * length);
-    }
-    
-    int usedBit(int column, int row)
-    {
-        return length * length * 2 + idxInternal(column, row);
+        return (((column - 1) * length) + row - 1) * length + value - 1;
     }
     
     public void use(int column, int row, int value)
     {
         if (value < 1 || value > length)
             throw new IllegalArgumentException("Bad cell value " + value);
-        possibilities.set(bit(false, column, value));
-        possibilities.set(bit(true, row, value));
-        possibilities.set(usedBit(column,row));
+        
+        for (int c = 1; c <= length; c++) {
+            if (c != column) {
+                possibilities.set(bit(c, row, value));
+            }
+        }
+        
+        for (int r = 1; r <= length; r++) {
+            if (r != row) {
+                possibilities.set(bit(column, r, value));
+            }
+        }
+        
+        for (int v = 1; v <= length; v++) {
+            if (v != value) {
+                possibilities.set(bit(column, row, v));
+            }
+        }
+    }
+    
+    int minPossible(int column, int row)
+    {
+        for (int v = 1; v < length; v++) {
+            if (isPossible(column, row, v)) {
+                return v;
+            }
+        }
+        
+        return 0;
+    }
+    
+    int maxPossible(int column, int row)
+    {
+        for (int v = length; v >= 1; v--) {
+            if (isPossible(column, row, v)) {
+                return v;
+            }
+        }
+        
+        return 0;
     }
     
     public void use(Futoshiki f)
@@ -67,13 +98,23 @@ public class Possibilities extends Grid
                 }
             }
         }
+        
+        for (GtRule r : f.getRules()) {
+            int greatestMoreThan = minPossible(r.getLesserColumn(), r.getLesserRow());
+            for (int v = 1; v <=  greatestMoreThan; v++) {
+                possibilities.set(bit(r.getGreaterColumn(), r.getGreaterRow(), v));
+            }
+            
+            int leastLessThan = maxPossible(r.getGreaterColumn(), r.getGreaterRow());
+            for (int v = leastLessThan; v <= length; v++) {
+                possibilities.set(bit(r.getLesserColumn(), r.getLesserRow(), v));
+            }
+        }
     }
     
     public boolean isPossible(int column, int row, int value)
     {
-        return !(possibilities.get(usedBit(column, row))
-                || possibilities.get(bit(false, column, value))
-                || possibilities.get(bit(true, row, value)));
+        return !possibilities.get(bit(column, row, value));
     }
     
     public Possibilities clone()
@@ -84,29 +125,33 @@ public class Possibilities extends Grid
     public BigInteger size()
     {
         BigInteger total = BigInteger.ONE;
-        int blankCount = 0;
         
         for (int r = 1; r <= length; r++) {
             for (int c = 1; c <= length; c++) {
-                if (!possibilities.get(usedBit(c,r))) {
-                    blankCount++;
-                    int available = 0;
-                    
-                    for (int v = 1; v <= length; v++) {
-                        if (isPossible(c, r, v)) {
-                            available++;
-                        }
-                    }
-
-                    total = total.multiply(BigInteger.valueOf(available));
-                }
+                int available = possibleCount(c, r);
+                
+                total = total.multiply(BigInteger.valueOf(available));
             }
         }
 
-        if (blankCount > 0) {
-            return total;
-        } else {
-            return BigInteger.ZERO;
+        return total;
+    }
+    
+    public int possibleCount(int column, int row)
+    {
+        int available = 0;
+        
+        for (int v = 1; v <= length; v++) {
+            if (isPossible(column, row, v)) {
+                available++;
+            }
         }
+        
+        return available;
+    }
+    
+    public int possibleCount(CellPos cell)
+    {
+        return possibleCount(cell.column, cell.row);
     }
 }
