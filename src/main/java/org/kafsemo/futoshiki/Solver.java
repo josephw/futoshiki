@@ -51,7 +51,12 @@ public class Solver
         if (count.compareTo(FIVE_BY_FIVE_COMBINATIONS) > 0) {
             log.warning("This may take an extremely long time");
         }
-        solve(f, blanks, 0, poss);
+        if (!target.remainingPossibilities(count)) {
+            return;
+        }
+        if (solve(f, blanks, 0, poss, BigInteger.ZERO)) {
+            target.remainingPossibilities(BigInteger.ZERO);
+        }
     }
     
     /**
@@ -63,7 +68,7 @@ public class Solver
      * @param blank
      * @param nb the index of the next remaining blank
      */
-    private boolean solve(Futoshiki f, CellPos[] blank, int nb, Possibilities poss)
+    private boolean solve(Futoshiki f, CellPos[] blank, int nb, Possibilities poss, BigInteger possibilitiesAfter)
     {
         if (!f.isValid()) {
             return true;
@@ -74,22 +79,58 @@ public class Solver
         }
         
         CellPos p = blank[nb];
+
+        // Generate a collection of possibilities
+        // Calculate the remaining number if each choice was made
+        // Before each recursion, report back the total
+        
+        int[] possibleValues = new int[f.getLength()];
+        BigInteger[] possibilitiesForValue = new BigInteger[f.getLength()];
+        Possibilities[] possibilities = new Possibilities[f.getLength()];
+        
+        int i = 0;
         
         for (int v = 1; v <= f.getLength(); v++) {
             if (poss.isPossible(p.column, p.row, v)) {
-                f.set(p.column, p.row, v);
+                possibleValues[i] = v;
                 Possibilities ps = poss.clone();
                 ps.use(p.column, p.row, v);
-                boolean more = solve(f.clone(), blank, nb + 1, ps);
-                if (!more) {
-                    return false;
-                }
+                possibilities[i] = ps;
+                possibilitiesForValue[i] = ps.size();
+                i++;
+            }
+        }
+
+        BigInteger remainingPossibilities = sum(possibilitiesForValue, i);
+        remainingPossibilities = remainingPossibilities.add(possibilitiesAfter);
+        
+        for (int j = 0; j < i; j++) {
+            if (!target.remainingPossibilities(remainingPossibilities)) {
+                return false;
+            }
+            int v = possibleValues[j];
+            f.set(p.column, p.row, v);
+            remainingPossibilities = remainingPossibilities.subtract(possibilitiesForValue[j]);
+            boolean more = solve(f.clone(), blank, nb + 1, possibilities[j], remainingPossibilities);
+            if (!more) {
+                return false;
             }
         }
         
         return true;
     }
 
+    private static BigInteger sum(BigInteger[] a, int maxIndex)
+    {
+        BigInteger total = BigInteger.ZERO;
+        
+        for (int i = 0; i < maxIndex; i++) {
+            total = total.add(a[i]);
+        }
+        
+        return total;
+    }
+    
     /**
      * A callback interface to receive complete puzzle solutions.
      */
@@ -100,5 +141,7 @@ public class Solver
          * @return whether or not more solutions are required
          */
         boolean solution(Futoshiki f);
+
+        boolean remainingPossibilities(BigInteger count);
     }
 }

@@ -103,23 +103,6 @@ public class FutoshikiControls
         return futoshikiControlPanel;
     }
     
-    private static class SolutionCatcher implements Solver.SolutionTarget
-    {
-        Futoshiki f;
-        boolean multiple;
-        
-        public boolean solution(Futoshiki f)
-        {
-            if (this.f == null) {
-                this.f = f;
-                return true;
-            } else {
-                multiple = true;
-                return false;
-            }
-        }
-    }
-    
     private static class ValidityLabelChanger implements PropertyChangeListener
     {
         private final JLabel label;

@@ -18,6 +18,8 @@
 
 package org.kafsemo.futoshiki.sample;
 
+import java.math.BigInteger;
+
 import org.kafsemo.futoshiki.Futoshiki;
 import org.kafsemo.futoshiki.Solver;
 
@@ -57,6 +59,11 @@ public class LatinSquares
 //                System.out.println("Solutions: " + count);
 //            }
             
+            return true;
+        }
+        
+        public boolean remainingPossibilities(BigInteger count)
+        {
             return true;
         }
     }

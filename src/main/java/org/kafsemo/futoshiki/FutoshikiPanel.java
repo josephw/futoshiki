@@ -41,6 +41,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -593,6 +594,11 @@ public class FutoshikiPanel extends JPanel implements FocusListener
                 multipleSolutions = true;
                 return false;
             }
+        }
+        
+        public boolean remainingPossibilities(BigInteger count)
+        {
+            return true;
         }
     }
     

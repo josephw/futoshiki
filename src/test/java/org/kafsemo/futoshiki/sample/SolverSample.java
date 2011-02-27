@@ -18,6 +18,8 @@
 
 package org.kafsemo.futoshiki.sample;
 
+import java.math.BigInteger;
+
 import org.kafsemo.futoshiki.Futoshiki;
 import org.kafsemo.futoshiki.FutoshikiPrinter;
 import org.kafsemo.futoshiki.Solver;
@@ -88,12 +90,53 @@ public class SolverSample
         return f;
     }
 
-    private static class PrintingSolutionTarget implements SolutionTarget
+    static class PrintingSolutionTarget implements SolutionTarget
     {
+        private BigInteger total;
+        private long startTime;
+        private long reports = 0;
+
+        private long nextStats;
+        
         public boolean solution(Futoshiki f)
         {
             System.out.println("Solution:");
             System.out.println(FutoshikiPrinter.toString(f));
+            return true;
+        }
+
+        private static final BigInteger ONE_HUNDRED = BigInteger.valueOf(100);
+        
+        public boolean remainingPossibilities(BigInteger count)
+        {
+            reports++;
+            
+            if (total != null) {
+                long now = System.currentTimeMillis();
+
+                if (now >= nextStats) {
+                    BigInteger eliminated = total.subtract(count);
+                    
+//                    BigInteger percentage = eliminated.multiply(ONE_HUNDRED).divide(total);
+
+//                    System.out.println(total);
+//                    System.out.println(count);
+//                    System.out.println("Possibilities eliminated: " + percentage + "%");
+
+                    long duration = now - startTime;
+
+                    System.out.println(reports + "," + duration + "," + eliminated);
+                    
+//                    BigInteger totalTime = total.multiply(BigInteger.valueOf(duration)).divide(total);
+//
+//                    System.out.println("Expected solution by: " + (totalTime) + "ms");
+                    nextStats = now + 5000;
+                }
+            } else {
+                total = count;
+                startTime = System.currentTimeMillis();
+                nextStats = Long.MIN_VALUE;
+            }
             return true;
         }
     }

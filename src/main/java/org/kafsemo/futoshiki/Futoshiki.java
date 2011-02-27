@@ -185,6 +185,11 @@ public class Futoshiki extends Grid
         }
     }
     
+    public String toString()
+    {
+        return FutoshikiPrinter.toString(this);
+    }
+    
     public Iterable<? extends GtRule> getRules()
     {
         return origRuleIterable;
