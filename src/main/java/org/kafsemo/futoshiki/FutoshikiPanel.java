@@ -215,8 +215,6 @@ public class FutoshikiPanel extends JPanel implements FocusListener
             }
         }
 
-//        g.setStroke(new BasicStroke(Math.min(px, py) / 10));
-
         final int LW = 3;
         GeneralPath gp = new GeneralPath();
         gp.moveTo(10, 40 - LW);
@@ -256,15 +254,7 @@ public class FutoshikiPanel extends JPanel implements FocusListener
                 t.rotate(Math.PI / 2.0);
             }
             
-//            if (clickedRule != null
-//                && rp.column == clickedRule.column
-//                && rp.row == clickedRule.row
-//                && rp.horizontal == clickedRule.horizontal)
-//            {
-//                g.setColor(Color.YELLOW);
-//            } else {
-                g.setColor(Color.BLACK);
-//            }
+            g.setColor(Color.BLACK);
             
             AffineTransform ot = g.getTransform();
             g.transform(t);
@@ -286,6 +276,11 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         if (previousLength != futoshiki.getLength()) {
             invalidate();
         }
+    }
+    
+    public void clearFutoshiki()
+    {
+        setFutoshiki(new Futoshiki(futoshiki.getLength()));
     }
     
     public Futoshiki getFutoshiki()
@@ -318,8 +313,6 @@ public class FutoshikiPanel extends JPanel implements FocusListener
     
     public void cellClicked(int column, int row)
     {
-//        System.out.println("Cell column " + column + ", row " + row);
-        
         selected = new CellPos(column, row);
         requestFocus();
         repaint();
@@ -352,13 +345,11 @@ public class FutoshikiPanel extends JPanel implements FocusListener
             futoshiki.removeRule(rk);
         }
         
-//        clickedRule = rp;
         changed();
     }
     
     public void numberTyped(int n)
     {
-//        System.out.println("Number " + n);
         if (selected != null) {
             clearSolutionCells();
             recordHistory();
@@ -372,7 +363,6 @@ public class FutoshikiPanel extends JPanel implements FocusListener
     
     public void numberCleared()
     {
-//        System.out.println("Number cleared");
         if (selected != null) {
             clearSolutionCells();
             recordHistory();

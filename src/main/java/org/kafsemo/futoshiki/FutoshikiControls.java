@@ -72,7 +72,7 @@ public class FutoshikiControls
         clear.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
             {
-               fp.setFutoshiki(new Futoshiki());
+               fp.clearFutoshiki();
             }
         });
         

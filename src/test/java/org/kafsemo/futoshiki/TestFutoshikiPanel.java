@@ -18,18 +18,20 @@
 
 package org.kafsemo.futoshiki;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import org.kafsemo.futoshiki.FutoshikiPanel;
-import org.kafsemo.futoshiki.GtRule;
+import org.junit.Test;
 
 /**
  * Tests for {@link FutoshikiPanel}, calculating positions for puzzle parts.
  * 
  * @author Joseph Walton
  */
-public class TestFutoshikiPanel extends TestCase
+public class TestFutoshikiPanel
 {
+    @Test
     public void testRulePositionInvalid()
     {
         GtRule r = new GtRule(1, 1, 3, 1);
@@ -38,6 +40,7 @@ public class TestFutoshikiPanel extends TestCase
         assertNull(rp);
     }
     
+    @Test
     public void testRulePositionHorizontal()
     {
         GtRule r;
@@ -62,6 +65,7 @@ public class TestFutoshikiPanel extends TestCase
         assertEquals(false, rp.gt);
     }
 
+    @Test
     public void testRulePositionVertical()
     {
         GtRule r;
@@ -84,5 +88,22 @@ public class TestFutoshikiPanel extends TestCase
         assertEquals(1, rp.row);
         assertEquals(false, rp.horizontal);
         assertEquals(false, rp.gt);
+    }
+    
+    @Test
+    public void clearKeepsTheSamePuzzleSize()
+    {
+        FutoshikiPanel fp = new FutoshikiPanel();
+
+        Futoshiki f = new Futoshiki(1);
+        f.set(1, 1, 1);
+        fp.setFutoshiki(f);
+        assertEquals(1, fp.getFutoshiki().getLength());
+        
+        fp.clearFutoshiki();
+        assertEquals("The new puzzle is empty",
+                0, fp.getFutoshiki().get(1, 1));
+        assertEquals("The new puzzle is the same size",
+                1, fp.getFutoshiki().getLength());
     }
 }
