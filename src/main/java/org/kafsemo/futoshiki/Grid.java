@@ -18,6 +18,11 @@
 
 package org.kafsemo.futoshiki;
 
+/**
+ * A square grid of between one and nine squares across.
+ * 
+ * @author Joseph Walton
+ */
 public class Grid
 {
     protected final int length;
@@ -30,6 +35,7 @@ public class Grid
         
         this.length = length;
     }
+    
     public int getLength()
     {
         return length;

@@ -21,6 +21,11 @@ package org.kafsemo.futoshiki;
 import java.math.BigInteger;
 import java.util.BitSet;
 
+/**
+ * Moves that are still possible given the current numbers.
+ * 
+ * @author Joseph Walton
+ */
 public class Possibilities extends Grid
 {
     private final BitSet possibilities;

@@ -68,7 +68,8 @@ public class Solver
      * @param blank
      * @param nb the index of the next remaining blank
      */
-    private boolean solve(Futoshiki f, CellPos[] blank, int nb, Possibilities poss, BigInteger possibilitiesAfter)
+    private boolean solve(Futoshiki f, CellPos[] blank, int nb,
+            Possibilities poss, BigInteger possibilitiesAfter)
     {
         if (!f.isValid()) {
             return true;
@@ -112,8 +113,10 @@ public class Solver
             }
             int v = possibleValues[j];
             f.set(p.column, p.row, v);
-            remainingPossibilities = remainingPossibilities.subtract(possibilitiesForValue[j]);
-            boolean more = solve(f.clone(), blank, nb + 1, possibilities[j], remainingPossibilities);
+            remainingPossibilities =
+                remainingPossibilities.subtract(possibilitiesForValue[j]);
+            boolean more = solve(f.clone(), blank, nb + 1, possibilities[j],
+                                    remainingPossibilities);
             if (!more) {
                 return false;
             }
@@ -122,7 +125,8 @@ public class Solver
         return true;
     }
 
-    private CellPos[] moveBlankWithLeastPossibilitiesIntoPlace(CellPos[] blanks, int p, Possibilities poss)
+    private CellPos[] moveBlankWithLeastPossibilitiesIntoPlace(CellPos[] blanks,
+            int p, Possibilities poss)
     {
         int fewestIdx = -1;
         
