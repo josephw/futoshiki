@@ -47,9 +47,9 @@ public class Solver
         Possibilities poss = new Possibilities(f.getLength());
         poss.use(f);
         BigInteger count = poss.size();
-        log.info("Solution possibilities: " + poss.size());
+        log.fine("Solution possibilities: " + poss.size());
         if (count.compareTo(FIVE_BY_FIVE_COMBINATIONS) > 0) {
-            log.warning("This may take an extremely long time");
+            log.fine("This may take an extremely long time");
         }
         if (!target.remainingPossibilities(count)) {
             return;
