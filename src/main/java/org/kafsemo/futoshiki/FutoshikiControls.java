@@ -20,6 +20,9 @@ package org.kafsemo.futoshiki;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -28,9 +31,11 @@ import java.beans.PropertyChangeListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
@@ -51,6 +56,7 @@ public class FutoshikiControls
     private final JButton undo = new JButton("Undo");
     private final JButton clear = new JButton("Clear");
     private final JButton editButton = new JButton("Edit...");
+    private final JComboBox size = new JComboBox(sizeNames());
     
     private final JComponent futoshikiControlPanel;
     
@@ -96,6 +102,17 @@ public class FutoshikiControls
 
         vlc.setValid(fp.getFutoshiki().isValid());
         fp.addPropertyChangeListener("futoshiki.valid", vlc);
+        
+        PuzzleSizeListener psl = new PuzzleSizeListener(size);
+        psl.setSize(fp.getFutoshiki().getLength());
+        fp.addPropertyChangeListener("futoshiki.size", psl);
+        size.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0)
+            {
+                int newSize = size.getSelectedIndex() + 1;
+                fp.setFutoshikiSize(newSize);
+            }
+        });
     }
     
     public JComponent getControlPanel()
@@ -148,6 +165,28 @@ public class FutoshikiControls
         }
     }
     
+    private static class PuzzleSizeListener implements PropertyChangeListener
+    {
+        private final JComboBox sizeControl;
+        
+        public PuzzleSizeListener(JComboBox sizeControl)
+        {
+            this.sizeControl = sizeControl;
+        }
+        
+        public void propertyChange(PropertyChangeEvent evt)
+        {
+            if (evt.getPropertyName().equals("futoshiki.size")) {
+                setSize(((Integer) evt.getNewValue()).intValue());
+            }
+        }
+        
+        public void setSize(int length)
+        {
+            sizeControl.setSelectedIndex(length - 1);
+        }
+    }
+    
     private static void attemptEdit(FutoshikiPanel fp)
     {
         int stringLength = FutoshikiPrinter.stringLength(fp.getFutoshiki());
@@ -168,7 +207,7 @@ public class FutoshikiControls
         JComponent jc = new JScrollPane(jta);
         
         int res = JOptionPane.showConfirmDialog(fp, jc,
-                            "Title", JOptionPane.OK_CANCEL_OPTION);
+                            "Edit Puzzle", JOptionPane.OK_CANCEL_OPTION);
         
         if (res == JOptionPane.OK_OPTION) {
             fp.setFutoshiki(FutoshikiPrinter.parse(jta.getText()));
@@ -178,6 +217,33 @@ public class FutoshikiControls
     private static final int PAD = 6;
 
     private JComponent createControlPanel()
+    {
+        JPanel panel = new JPanel(new GridBagLayout());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(PAD, PAD, PAD, PAD);
+
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel.add(createStatusPanel(), gbc);
+
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        panel.add(solve, gbc);
+        panel.add(undo, gbc);
+        
+        gbc.gridy = 2;
+        panel.add(clear, gbc);
+        panel.add(editButton, gbc);
+        
+        gbc.gridy = 3;
+        gbc.fill = GridBagConstraints.NONE;
+        panel.add(size, gbc);
+        
+        return panel;
+    }
+
+    private JComponent createStatusPanel()
     {
         Box b = Box.createHorizontalBox();
         
@@ -191,45 +257,15 @@ public class FutoshikiControls
         b.add(Box.createHorizontalGlue());
         b.add(vlcLabel);
         b.add(Box.createHorizontalGlue());
-        
-        Box bba = Box.createHorizontalBox();
-        
-        bba.add(Box.createHorizontalStrut(PAD));
-        bba.add(solve);
-
-        bba.add(Box.createHorizontalStrut(PAD));
-        bba.add(undo);
-        bba.add(Box.createHorizontalStrut(PAD));
-        
-        
-        Box bbb = Box.createHorizontalBox();
-        
-        bbb.add(Box.createHorizontalStrut(PAD));
-        bbb.add(clear);
-        
-        bbb.add(Box.createHorizontalStrut(PAD));
-
-        bbb.add(editButton);
-        bbb.add(Box.createHorizontalStrut(PAD));
-        
-        Box b2 = Box.createVerticalBox();
-        b2.add(Box.createVerticalGlue());
-        b2.add(bba);
-        b2.add(Box.createVerticalStrut(PAD));
-        b2.add(bbb);
-        b2.add(Box.createVerticalGlue());
-        
-
-        Box buttonPanel;
-        buttonPanel = Box.createVerticalBox();
-        buttonPanel.add(Box.createVerticalGlue());
-        buttonPanel.add(Box.createVerticalStrut(PAD));
-        buttonPanel.add(b);
-        buttonPanel.add(Box.createVerticalStrut(PAD));
-        buttonPanel.add(b2);
-        buttonPanel.add(Box.createVerticalStrut(PAD));
-        buttonPanel.add(Box.createVerticalGlue());
-
-        return buttonPanel;
+        return b;
+    }
+    
+    private static String[] sizeNames()
+    {
+        String[] sa = new String[9];
+        for (int s = 1; s <= sa.length; s++) {
+            sa[s - 1] = s + "x" + s;
+        }
+        return sa;
     }
 }

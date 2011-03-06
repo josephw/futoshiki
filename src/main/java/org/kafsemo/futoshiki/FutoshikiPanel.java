@@ -261,7 +261,6 @@ public class FutoshikiPanel extends JPanel implements FocusListener
             g.fill(rp.gt ? gp : gp2);
             g.setTransform(ot);
         }
-        
     }
     
     public void setFutoshiki(Futoshiki f)
@@ -271,10 +270,15 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         clearSolutionCells();
         recordHistory();
         this.futoshiki = f.clone();
-        changed();
         
-        if (previousLength != futoshiki.getLength()) {
-            invalidate();
+        changedSize(previousLength, futoshiki.getLength());
+        changed();
+    }
+    
+    public void setFutoshikiSize(int size)
+    {
+        if (size != futoshiki.getLength()) {
+            setFutoshiki(new Futoshiki(size));
         }
     }
     
@@ -309,6 +313,14 @@ public class FutoshikiPanel extends JPanel implements FocusListener
         firePropertyChange("futoshiki.undoable", wasUndoable, undoable);
         
         repaint();
+    }
+    
+    private void changedSize(int oldSize, int newSize)
+    {
+        if (oldSize != newSize) {
+            firePropertyChange("futoshiki.size", oldSize, newSize);
+            invalidate();
+        }
     }
     
     public void cellClicked(int column, int row)
@@ -420,9 +432,11 @@ public class FutoshikiPanel extends JPanel implements FocusListener
             changed();
         } else {
             if (!undoRecord.isEmpty()) {
+                int oldSize = futoshiki.getLength();
                 Futoshiki f = undoRecord.remove(undoRecord.size() - 1);
 
                 this.futoshiki = f;
+                changedSize(oldSize, f.getLength());
                 changed();
             }
         }

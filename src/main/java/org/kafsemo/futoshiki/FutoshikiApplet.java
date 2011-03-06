@@ -40,8 +40,8 @@ public class FutoshikiApplet extends JApplet
         fPanel = new FutoshikiPanel();
         controls = new FutoshikiControls(fPanel);
         
-        getContentPane().add(BorderLayout.CENTER, fPanel);
-        getContentPane().add(BorderLayout.AFTER_LINE_ENDS,
-                controls.getControlPanel());
+        getContentPane().add(fPanel, BorderLayout.CENTER);
+        getContentPane().add(controls.getControlPanel(),
+                                BorderLayout.AFTER_LINE_ENDS);
     }
 }

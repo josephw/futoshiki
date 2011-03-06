@@ -22,7 +22,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 /**
  * Tests for {@link FutoshikiPanel}, calculating positions for puzzle parts.
@@ -105,5 +110,64 @@ public class TestFutoshikiPanel
                 0, fp.getFutoshiki().get(1, 1));
         assertEquals("The new puzzle is the same size",
                 1, fp.getFutoshiki().getLength());
+    }
+    
+    @Test
+    public void puzzleSizeCausesPropertyChange()
+    {
+        FutoshikiPanel fp = new FutoshikiPanel();
+        PropertyChangeListener pcl = Mockito.mock(PropertyChangeListener.class);
+        fp.addPropertyChangeListener("futoshiki.size", pcl);
+        fp.setFutoshiki(new Futoshiki(1));
+        fp.setFutoshiki(new Futoshiki(2));
+        
+        ArgumentCaptor<PropertyChangeEvent> pceCaptor = ArgumentCaptor.forClass(PropertyChangeEvent.class);
+        Mockito.verify(pcl, Mockito.times(2)).propertyChange(pceCaptor.capture());
+        assertEquals(Integer.valueOf(5), pceCaptor.getAllValues().get(0).getOldValue());
+        assertEquals(Integer.valueOf(1), pceCaptor.getAllValues().get(0).getNewValue());
+        assertEquals(Integer.valueOf(1), pceCaptor.getAllValues().get(1).getOldValue());
+        assertEquals(Integer.valueOf(2), pceCaptor.getAllValues().get(1).getNewValue());
+    }
+    
+    @Test
+    public void puzzleSizeCanBeSet()
+    {
+        FutoshikiPanel fp = new FutoshikiPanel();
+        
+        Futoshiki f = new Futoshiki(2);
+        f.set(1, 1, 1);
+        fp.setFutoshiki(f);
+        
+        fp.setFutoshikiSize(1);
+        assertEquals("The puzzle size changes",
+                1, fp.getFutoshiki().getLength());
+        assertEquals("The puzzle is cleared after a size change",
+                0, fp.getFutoshiki().get(1, 1));
+        f = new Futoshiki(1);
+        f.set(1, 1, 1);
+        fp.setFutoshiki(f);
+        fp.setFutoshikiSize(1);
+        assertEquals("The puzzle is not cleared when the size does not change",
+                1, fp.getFutoshiki().get(1, 1));
+    }
+    
+    @Test
+    public void undoingSendsEventsForSizeChanges()
+    {
+        FutoshikiPanel fp = new FutoshikiPanel();
+        PropertyChangeListener pcl = Mockito.mock(PropertyChangeListener.class);
+        fp.setFutoshiki(new Futoshiki(1));
+        
+        fp.addPropertyChangeListener("futoshiki.size", pcl);
+
+        fp.setFutoshiki(new Futoshiki(2));
+        fp.undo();
+        
+        ArgumentCaptor<PropertyChangeEvent> pceCaptor = ArgumentCaptor.forClass(PropertyChangeEvent.class);
+        Mockito.verify(pcl, Mockito.times(2)).propertyChange(pceCaptor.capture());
+        assertEquals(Integer.valueOf(1), pceCaptor.getAllValues().get(0).getOldValue());
+        assertEquals(Integer.valueOf(2), pceCaptor.getAllValues().get(0).getNewValue());
+        assertEquals(Integer.valueOf(2), pceCaptor.getAllValues().get(1).getOldValue());
+        assertEquals(Integer.valueOf(1), pceCaptor.getAllValues().get(1).getNewValue());
     }
 }

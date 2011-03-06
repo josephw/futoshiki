@@ -78,8 +78,8 @@ public class FutoshikiPanelSample
                 JFrame jf = new JFrame();
                 jf.getContentPane().setLayout(new BorderLayout());
         
-                jf.add(BorderLayout.CENTER, fp);
-                jf.add(BorderLayout.AFTER_LINE_ENDS, fc.getControlPanel());
+                jf.add(fp, BorderLayout.CENTER);
+                jf.add(fc.getControlPanel(), BorderLayout.AFTER_LINE_ENDS);
                 
                 jf.pack();
                 jf.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
