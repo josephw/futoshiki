@@ -6,6 +6,7 @@
  <fileSets>
   <fileSet>
    <includes>
+    <include>README</include>
     <include>BOILERPLATE</include>
     <include>pom.xml</include>
     <include>checkstyle-rules.xml</include>
