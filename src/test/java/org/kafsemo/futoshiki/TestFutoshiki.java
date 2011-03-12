@@ -21,6 +21,7 @@ package org.kafsemo.futoshiki;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -419,5 +420,14 @@ public class TestFutoshiki
         assertFalse(f1.equals(f2));
         f2.addGtRule(2, 2, 1, 2);
         assertTrue("Puzzles are equal when all rules match", f1.equals(f2));
+    }
+    
+    @Test
+    public void ruleIteratorReflectsChangedRules()
+    {
+        Futoshiki f = new Futoshiki();
+        Object o = f.getRules();
+        f.addGtRule(1, 1, 2, 1);
+        assertNotSame(o, f.getRules());
     }
 }

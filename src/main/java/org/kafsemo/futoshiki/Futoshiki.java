@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -37,11 +38,9 @@ public class Futoshiki extends Grid
 {
     private final byte[] data;
     
-    private final Map<GtRule, ValidatingRule> rules
-                    = new HashMap<GtRule, ValidatingRule>();
-    private final Iterable<GtRule> origRuleIterable = new OrigRuleIterable();
-
-    private ValidatingRule[] vraCache;
+    private Map<GtRule, ValidatingRule> rules;
+    private Iterable<ValidatingRule> vraCache;
+    private Iterable<GtRule> origRuleIterable;
     
     public Futoshiki()
     {
@@ -52,6 +51,33 @@ public class Futoshiki extends Grid
     {
         super(length);
         this.data = new byte[length * length];
+    }
+    
+    private Iterable<ValidatingRule> getValidatingRules()
+    {
+        if (vraCache == null) {
+            if (rules != null) {
+                vraCache = new ArrayList<ValidatingRule>(rules.values());
+            } else {
+                vraCache = Collections.emptyList();
+            }
+            
+        }
+        return vraCache;
+    }
+    
+    private Map<GtRule, ValidatingRule> ruleMap()
+    {
+        if (rules == null) {
+            rules = new HashMap<GtRule, ValidatingRule>();
+            if (vraCache != null) {
+                for (ValidatingRule vr : vraCache) {
+                    rules.put(vr.getOrigRule().getCanonPosForm(), vr);
+                }
+            }
+        }
+        
+        return rules;
     }
     
     /**
@@ -93,11 +119,7 @@ public class Futoshiki extends Grid
         }
         
         /* Obey rules */
-        if (vraCache == null) {
-            vraCache = rules.values().toArray(new ValidatingRule[0]);
-        }
-        
-        for (ValidatingRule r : vraCache) {
+        for (ValidatingRule r : getValidatingRules()) {
             if (!r.isValid(this))
                 return false;
         }
@@ -136,14 +158,15 @@ public class Futoshiki extends Grid
         GtRule k = newRule.getCanonPosForm();
         
         vraCache = null;
-        rules.put(k, new ValidatingRule(newRule));
+        ruleMap().put(k, new ValidatingRule(newRule, this));
     }
     
     public Futoshiki clone()
     {
         Futoshiki f = new Futoshiki(length);
         System.arraycopy(data, 0, f.data, 0, data.length);
-        f.rules.putAll(rules);
+        f.vraCache = getValidatingRules();
+        f.origRuleIterable = origRuleIterable;
         return f;
     }
 
@@ -169,7 +192,7 @@ public class Futoshiki extends Grid
 
     public int hashCode()
     {
-        return length ^ Arrays.hashCode(data) ^ rules.hashCode();
+        return length ^ Arrays.hashCode(data) ^ ruleMap().hashCode();
     }
     
     public boolean equals(Object o)
@@ -179,7 +202,7 @@ public class Futoshiki extends Grid
             
             return length == f.length
                 && Arrays.equals(data, f.data)
-                && rules.keySet().equals(f.rules.keySet());
+                && ruleMap().keySet().equals(f.ruleMap().keySet());
         } else {
             return false;
         }
@@ -192,6 +215,9 @@ public class Futoshiki extends Grid
     
     public Iterable<? extends GtRule> getRules()
     {
+        if (origRuleIterable == null || vraCache == null) {
+            origRuleIterable = new OrigRuleIterable(getValidatingRules());
+        }
         return origRuleIterable;
     }
     
@@ -199,7 +225,7 @@ public class Futoshiki extends Grid
     {
         GtRule k = ruleKey.getCanonPosForm();
 
-        ValidatingRule r = rules.get(k);
+        ValidatingRule r = ruleMap().get(k);
         if (r != null) {
             return r.getOrigRule();
         } else {
@@ -212,18 +238,18 @@ public class Futoshiki extends Grid
         GtRule k = ruleKey.getCanonPosForm();
         
         vraCache = null;
-        rules.remove(k);
+        ruleMap().remove(k);
     }
     
-    private class ValidatingRule
+    private static class ValidatingRule
     {
         private final int idxA, idxB;
         private final GtRule origRule;
         
-        ValidatingRule(GtRule gtr)
+        ValidatingRule(GtRule gtr, Futoshiki f)
         {
-            idxA = idx(gtr.getGreaterColumn(), gtr.getGreaterRow());
-            idxB = idx(gtr.getLesserColumn(), gtr.getLesserRow());
+            idxA = f.idx(gtr.getGreaterColumn(), gtr.getGreaterRow());
+            idxB = f.idx(gtr.getLesserColumn(), gtr.getLesserRow());
             origRule = gtr;
         }
         
@@ -242,11 +268,18 @@ public class Futoshiki extends Grid
         }
     }
     
-    private class OrigRuleIterable implements Iterable<GtRule>
+    private static class OrigRuleIterable implements Iterable<GtRule>
     {
+        private final Iterable<ValidatingRule> vra;
+        
+        private OrigRuleIterable(Iterable<ValidatingRule> vra)
+        {
+            this.vra = vra;
+        }
+        
         public Iterator<GtRule> iterator()
         {
-            final Iterator<ValidatingRule> i = rules.values().iterator();
+            final Iterator<ValidatingRule> i = vra.iterator();
             
             return new Iterator<GtRule>() {
                 public boolean hasNext()
