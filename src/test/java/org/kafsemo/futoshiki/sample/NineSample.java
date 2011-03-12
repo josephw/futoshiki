@@ -13,9 +13,18 @@ public class NineSample
 {
     public static void main(String[] args) throws IOException
     {
+        InputStream in = NineSample.class.getResourceAsStream("sample-9x9.txt");
+
+        Futoshiki f = fromStream(in);
+        System.out.println(FutoshikiPrinter.toString(f));
+
+        new Solver(new SolverSample.PrintingSolutionTarget()).solve(f);
+    }
+    
+    public static Futoshiki fromStream(InputStream in) throws IOException
+    {
         StringBuilder puzzle = new StringBuilder();
         
-        InputStream in = NineSample.class.getResourceAsStream("sample-9x9.txt");
         BufferedReader br = new BufferedReader(new InputStreamReader(in, "us-ascii"));
 
         try {
@@ -29,10 +38,6 @@ public class NineSample
             br.close();
         }
 
-        Futoshiki f = FutoshikiPrinter.parse(puzzle.toString());
-        
-        System.out.println(FutoshikiPrinter.toString(f));
-
-        new Solver(new SolverSample.PrintingSolutionTarget()).solve(f);
+        return FutoshikiPrinter.parse(puzzle.toString());
     }
 }
