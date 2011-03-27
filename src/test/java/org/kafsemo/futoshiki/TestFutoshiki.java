@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -31,9 +32,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
-import org.kafsemo.futoshiki.CellPos;
-import org.kafsemo.futoshiki.Futoshiki;
-import org.kafsemo.futoshiki.GtRule;
 
 /**
  * Tests for {@link Futoshiki}, modifying and examining puzzle state.
@@ -115,6 +113,15 @@ public class TestFutoshiki
         
         f.addGtRule(1, 1, 2, 1);
         assertFalse("1 < 2 is invalid", f.isValid());
+    }
+    
+    @Test
+    public void duplicateNumbersInColumnAreNotValid()
+    {
+        Futoshiki f = new Futoshiki(2);
+        f.set(1, 1, 1);
+        f.set(1, 2, 1);
+        assertFalse(f.isValid());
     }
     
     @Test
@@ -210,6 +217,17 @@ public class TestFutoshiki
     }
     
     @Test
+    public void onlyBlankCellsIncluded()
+    {
+        Futoshiki f = new Futoshiki();
+        f.set(1, 1, 1);
+        
+        Collection<CellPos> blank = f.blankCells();
+        assertEquals(24, blank.size());
+        assertFalse(blank.contains(new CellPos(1, 1)));
+    }
+    
+    @Test
     public void testClear()
     {
         Futoshiki f = new Futoshiki();
@@ -259,6 +277,12 @@ public class TestFutoshiki
         assertEquals(1, gtr.getLesserRow());
     }
     
+    @Test(expected = UnsupportedOperationException.class)
+    public void unableToRemoveFromRuleIterator()
+    {
+        new Futoshiki().getRules().iterator().remove();
+    }
+    
     @Test
     public void testGetRuleByPosition()
     {
@@ -270,6 +294,15 @@ public class TestFutoshiki
         
         GtRule expected = new GtRule(1, 1, 2, 1);
         assertEquals(expected, r);
+    }
+    
+    @Test
+    public void getRuleReturnsNullWhenNoRule()
+    {
+        Futoshiki f = new Futoshiki(2);
+
+        GtRule r = new GtRule(1, 1, 2, 1);
+        assertNull(f.getRule(r));
     }
     
     @Test
@@ -421,6 +454,12 @@ public class TestFutoshiki
         assertFalse(f1.equals(f2));
         f2.addGtRule(2, 2, 1, 2);
         assertTrue("Puzzles are equal when all rules match", f1.equals(f2));
+    }
+
+    @Test
+    public void puzzlesAreNotEqualToNull()
+    {
+        assertFalse(new Futoshiki().equals(null));
     }
     
     @Test

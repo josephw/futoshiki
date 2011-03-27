@@ -190,4 +190,20 @@ public class TestSolver
         
         Mockito.verify(mockTarget, Mockito.never()).remainingPossibilities(BigInteger.ZERO);
     }
+    
+    @Test
+    public void puzzleWithImpossibleCellIsDetected()
+    {
+        // Valid so far, but impossible to solve
+        Futoshiki f = new Futoshiki(2);
+        f.set(1, 1, 1);
+        f.addGtRule(1, 1, 2, 1);
+        
+        PossibilityCountGatherer pcg = new PossibilityCountGatherer();
+
+        new Solver(pcg).solve(f);
+        
+        assertEquals(Arrays.asList(BigInteger.ZERO, BigInteger.ZERO),
+            pcg.counts);
+    }
 }

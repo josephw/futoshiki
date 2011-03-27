@@ -499,4 +499,15 @@ public class TestFutoshikiPrinter extends TestCase
         
         assertEquals(new GtRule(2, 1, 1, 1), f.getRules().iterator().next());
     }
+    
+    public void testUpperAndLowercaseVsAcceptableAsRules()
+    {
+        GtRule expectedRule = new GtRule(1, 1, 1, 2);
+        String s1 = "   \nv  \n   \n";
+        
+        Futoshiki f1 = FutoshikiPrinter.parse(s1);
+        assertEquals(expectedRule, f1.getRules().iterator().next());
+        
+        assertEquals(f1, FutoshikiPrinter.parse(s1.toUpperCase()));
+    }
 }
