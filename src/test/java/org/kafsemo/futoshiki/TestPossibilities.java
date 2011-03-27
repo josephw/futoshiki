@@ -206,6 +206,26 @@ public class TestPossibilities
         assertEquals(8, p.possibleCount(2, 1));
     }
     
+    @Test
+    public void ruleEliminationsArePropagated()
+    {
+        Possibilities p = new Possibilities(9);
+
+        /* A chain of < rules ... */
+        Futoshiki f = new Futoshiki(9);
+        for (int gtColumn = 2; gtColumn <= 9; gtColumn++) {
+            f.addGtRule(gtColumn, 1, gtColumn - 1, 1);
+        }
+        
+        p.use(f);
+
+        /* ...is only satisfied by the numbers in ascending order */
+        for (int column = 1; column <= 9; column++) {
+            assertEquals(column, p.maxPossible(column, 1));
+            assertEquals(column, p.minPossible(column, 1));
+        }
+    }
+    
     public static String toString(Possibilities p)
     {
         StringBuilder sb = new StringBuilder();

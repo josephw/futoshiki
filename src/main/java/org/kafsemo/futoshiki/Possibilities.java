@@ -73,7 +73,7 @@ public class Possibilities extends Grid
     
     int minPossible(int column, int row)
     {
-        for (int v = 1; v < length; v++) {
+        for (int v = 1; v <= length; v++) {
             if (isPossible(column, row, v)) {
                 return v;
             }
@@ -103,18 +103,25 @@ public class Possibilities extends Grid
                 }
             }
         }
+
+        boolean learnedSomething;
         
-        for (GtRule r : f.getRules()) {
-            int greatestMoreThan = minPossible(r.getLesserColumn(), r.getLesserRow());
-            for (int v = 1; v <=  greatestMoreThan; v++) {
-                possibilities.set(bit(r.getGreaterColumn(), r.getGreaterRow(), v));
+        do {
+            learnedSomething = false;
+            for (GtRule r : f.getRules()) {
+                int greatestMoreThan = minPossible(r.getLesserColumn(), r.getLesserRow());
+                for (int v = 1; v <=  greatestMoreThan; v++) {
+                    learnedSomething |= !possibilities.get(bit(r.getGreaterColumn(), r.getGreaterRow(), v));
+                    possibilities.set(bit(r.getGreaterColumn(), r.getGreaterRow(), v));
+                }
+                
+                int leastLessThan = maxPossible(r.getGreaterColumn(), r.getGreaterRow());
+                for (int v = leastLessThan; v <= length; v++) {
+                    learnedSomething |= !possibilities.get(bit(r.getLesserColumn(), r.getLesserRow(), v));
+                    possibilities.set(bit(r.getLesserColumn(), r.getLesserRow(), v));
+                }
             }
-            
-            int leastLessThan = maxPossible(r.getGreaterColumn(), r.getGreaterRow());
-            for (int v = leastLessThan; v <= length; v++) {
-                possibilities.set(bit(r.getLesserColumn(), r.getLesserRow(), v));
-            }
-        }
+        } while (learnedSomething);
     }
     
     public boolean isPossible(int column, int row, int value)
