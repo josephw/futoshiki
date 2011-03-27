@@ -115,11 +115,23 @@ public class Possibilities extends Grid
                         learnedSomething |= !possibilities.get(bit(r.getGreaterColumn(), r.getGreaterRow(), v));
                         possibilities.set(bit(r.getGreaterColumn(), r.getGreaterRow(), v));
                     }
+                } else {
+                    /* No solutions. */
+                    for (int v = 1; v <=  length; v++) {
+                        learnedSomething |= !possibilities.get(bit(r.getGreaterColumn(), r.getGreaterRow(), v));
+                        possibilities.set(bit(r.getGreaterColumn(), r.getGreaterRow(), v));
+                    }
                 }
                 
                 int leastLessThan = maxPossible(r.getGreaterColumn(), r.getGreaterRow());
                 if (leastLessThan > 0) {
                     for (int v = leastLessThan; v <= length; v++) {
+                        learnedSomething |= !possibilities.get(bit(r.getLesserColumn(), r.getLesserRow(), v));
+                        possibilities.set(bit(r.getLesserColumn(), r.getLesserRow(), v));
+                    }
+                } else {
+                    /* No solutions. */
+                    for (int v = 1; v <= length; v++) {
                         learnedSomething |= !possibilities.get(bit(r.getLesserColumn(), r.getLesserRow(), v));
                         possibilities.set(bit(r.getLesserColumn(), r.getLesserRow(), v));
                     }
