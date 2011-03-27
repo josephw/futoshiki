@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -429,5 +430,27 @@ public class TestFutoshiki
         Object o = f.getRules();
         f.addGtRule(1, 1, 2, 1);
         assertNotSame(o, f.getRules());
+    }
+    
+    @Test
+    public void rulesAddedToCloneAreImmediatelyReturned()
+    {
+        Futoshiki f = new Futoshiki();
+        f.addGtRule(1, 1, 2, 1);
+        
+        f = f.clone();
+        f.addGtRule(2, 1, 3, 1);
+        assertEquals(2, gather(f.getRules()).size());
+    }
+    
+    @Test
+    public void ruleIteratorIsCurrentAfterValidityCheck()
+    {
+        Futoshiki f = new Futoshiki();
+        
+        f.getRules();
+        f.addGtRule(1, 1, 2, 1);
+        f.isValid();
+        assertEquals(1, gather(f.getRules()).size());
     }
 }

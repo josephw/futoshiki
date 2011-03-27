@@ -157,8 +157,9 @@ public class Futoshiki extends Grid
 
         GtRule k = newRule.getCanonPosForm();
         
-        vraCache = null;
         ruleMap().put(k, new ValidatingRule(newRule, this));
+        vraCache = null;
+        origRuleIterable = null;
     }
     
     public Futoshiki clone()
@@ -215,6 +216,7 @@ public class Futoshiki extends Grid
     
     public Iterable<? extends GtRule> getRules()
     {
+        origRuleIterable = null;
         if (origRuleIterable == null || vraCache == null) {
             origRuleIterable = new OrigRuleIterable(getValidatingRules());
         }
@@ -237,8 +239,9 @@ public class Futoshiki extends Grid
     {
         GtRule k = ruleKey.getCanonPosForm();
         
-        vraCache = null;
         ruleMap().remove(k);
+        vraCache = null;
+        origRuleIterable = null;
     }
     
     private static class ValidatingRule
