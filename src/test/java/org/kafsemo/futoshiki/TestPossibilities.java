@@ -248,4 +248,14 @@ public class TestPossibilities
         
         return sb.toString();
     }
+    
+    @Test
+    public void ruleEliminationsSucceedEvenWhenPuzzleCannotBeSolved()
+    {
+        Futoshiki f = new Futoshiki(2);
+        f.addGtRule(1, 1, 2, 1);
+        f.addGtRule(1, 2, 1, 1);
+        
+        new Possibilities(2).use(f);
+    }
 }
