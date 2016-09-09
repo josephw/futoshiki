@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+ <modelVersion>4.0.0</modelVersion>
+
+ <parent>
+  <groupId>org.kafsemo.futoshiki</groupId>
+  <artifactId>futoshiki-project</artifactId>
+  <version>1.0-SNAPSHOT</version>
+ </parent>
+
+ <artifactId>futoshiki-model</artifactId>
+
+ <build>
+  <plugins>
+   <plugin>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <executions>
+     <execution>
+      <id>default-compile</id>
+      <configuration>
+       <compilerArguments>
+        <profile>compact1</profile>
+       </compilerArguments>
+      </configuration>
+     </execution>
+    </executions>
+   </plugin>
+   <plugin>
+    <artifactId>maven-source-plugin</artifactId>
+    <version>3.0.1</version>
+    <executions>
+     <execution>
+      <id>attach-sources</id>
+      <goals>
+       <goal>jar</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
+  </plugins>
+ </build>
+
+</project>

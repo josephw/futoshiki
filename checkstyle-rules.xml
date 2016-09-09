@@ -67,7 +67,6 @@
 
 <!--  <module name="MagicNumber"/> -->
 
-  <module name="RedundantThrows"/>
   <module name="SimplifyBooleanExpression"/>
   <module name="SimplifyBooleanReturn"/>
 
