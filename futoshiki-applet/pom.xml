@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+ <modelVersion>4.0.0</modelVersion>
+
+ <parent>
+  <groupId>org.kafsemo.futoshiki</groupId>
+  <artifactId>futoshiki-project</artifactId>
+  <version>1.0-SNAPSHOT</version>
+ </parent>
+
+ <artifactId>futoshiki-applet</artifactId>
+
+ <dependencies>
+  <dependency>
+   <groupId>org.kafsemo.futoshiki</groupId>
+   <artifactId>futoshiki-model</artifactId>
+   <version>1.0-SNAPSHOT</version>
+  </dependency>
+ </dependencies>
+
+ <build>
+  <plugins>
+   <plugin>
+    <artifactId>maven-shade-plugin</artifactId>
+    <version>2.4.3</version>
+    <executions>
+     <execution>
+      <phase>package</phase>
+      <goals>
+       <goal>shade</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
+  </plugins>
+ </build>
+</project>
