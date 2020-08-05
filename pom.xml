@@ -30,6 +30,15 @@
   <module>futoshiki-applet</module>
  </modules>
 
+ <profiles>
+  <profile>
+   <id>js</id>
+   <modules>
+    <module>futoshiki-js</module>
+   </modules>
+  </profile>
+ </profiles>
+
  <build>
   <plugins>
    <plugin>
