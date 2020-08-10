@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+     "outDir": "lib/",
+     "downlevelIteration": true,
+  },
+  "include": [
+	  "src/org/kafsemo/futoshiki/*.ts",
+	  "test/org/kafsemo/futoshiki/**/*.ts",
+  ]
+}
+

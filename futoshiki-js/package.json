@@ -1,0 +1,17 @@
+{
+  "name": "futoshiki",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "jest lib/"
+  },
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "@types/jest": "^26.0.8",
+    "jest": "^26.2.2",
+    "typescript": "^3.9.7"
+  }
+}
