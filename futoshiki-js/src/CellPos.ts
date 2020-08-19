@@ -1,5 +1,4 @@
 /* Generated from Java with JSweet 2.3.5 - http://www.jsweet.org */
-namespace org.kafsemo.futoshiki {
     /**
      * The position of a single numeric cell on a puzzle.
      * 
@@ -40,14 +39,10 @@ namespace org.kafsemo.futoshiki {
         public equals(obj : any) : boolean {
             if(this === obj) return true;
             if(obj == null) return false;
-            if(!(obj != null && obj instanceof <any>org.kafsemo.futoshiki.CellPos)) return false;
+            if(!(obj != null && obj instanceof <any>CellPos)) return false;
             let other : CellPos = <CellPos>obj;
             if(this.column !== other.column) return false;
             if(this.row !== other.row) return false;
             return true;
         }
     }
-    CellPos["__class"] = "org.kafsemo.futoshiki.CellPos";
-
-}
-

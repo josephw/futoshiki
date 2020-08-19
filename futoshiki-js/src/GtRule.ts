@@ -1,5 +1,4 @@
 /* Generated from Java with JSweet 2.3.5 - http://www.jsweet.org */
-namespace org.kafsemo.futoshiki {
     /**
      * A puzzle rule requiring that one cell be greater than another.
      * 
@@ -69,7 +68,7 @@ namespace org.kafsemo.futoshiki {
         }
 
         public equals(o : any) : boolean {
-            if(o != null && o instanceof <any>org.kafsemo.futoshiki.GtRule) {
+            if(o != null && o instanceof <any>GtRule) {
                 let r : GtRule = <GtRule>o;
                 return this.columnA === r.columnA && this.rowA === r.rowA && this.columnB === r.columnB && this.rowB === r.rowB;
             } else {
@@ -77,7 +76,3 @@ namespace org.kafsemo.futoshiki {
             }
         }
     }
-    GtRule["__class"] = "org.kafsemo.futoshiki.GtRule";
-
-}
-

@@ -1,144 +1,148 @@
-/* Generated from Java with JSweet 2.3.5 - http://www.jsweet.org */
-namespace org.kafsemo.futoshiki {
-    export class TestPossibilities {
-        public emptyByDefault() {
-            let p : org.kafsemo.futoshiki.Possibilities = new org.kafsemo.futoshiki.Possibilities(1);
-            org.junit.Assert.assertTrue(p.isPossible(1, 1, 1));
-        }
+import { Possibilities } from '../src/Possibilities';
+import { Futoshiki } from '../src/Futoshiki';
 
-        public stillPossibleWhenUsed() {
-            let p : org.kafsemo.futoshiki.Possibilities = new org.kafsemo.futoshiki.Possibilities(1);
+test('Empty by default', () => {
+    let p : Possibilities = new Possibilities(1);
+    expect(p.isPossible(1, 1, 1)).toBe(true);
+});
+
+test('Still possible when used', () => {
+    let p : Possibilities = new Possibilities(1);
             p.use(1, 1, 1);
-            org.junit.Assert.assertTrue(p.isPossible(1, 1, 1));
-        }
+    expect(p.isPossible(1, 1, 1)).toBe(true);
+});
 
-        public usedNumberNotAvailableInSameRowOrColumn() {
-            let p : org.kafsemo.futoshiki.Possibilities = new org.kafsemo.futoshiki.Possibilities(2);
+test('Used number not available in same row or column', () => {
+    let p : Possibilities = new Possibilities(2);
             p.use(1, 1, 1);
-            org.junit.Assert.assertTrue(p.isPossible(1, 1, 1));
-            org.junit.Assert.assertFalse(p.isPossible(1, 2, 1));
-            org.junit.Assert.assertFalse(p.isPossible(2, 1, 1));
-            org.junit.Assert.assertTrue(p.isPossible(2, 2, 1));
-        }
+    expect(p.isPossible(1, 1, 1)).toBe(true);
+    expect(p.isPossible(1, 2, 1)).toBe(false);
+    expect(p.isPossible(2, 1, 1)).toBe(false);
+    expect(p.isPossible(2, 2, 1)).toBe(true);
+});
 
-        public usedSquareNotAvailable() {
-            let p : org.kafsemo.futoshiki.Possibilities = new org.kafsemo.futoshiki.Possibilities(2);
+test('Used square not available', () => {
+    let p : Possibilities = new Possibilities(2);
             p.use(1, 1, 1);
-            org.junit.Assert.assertFalse(p.isPossible(1, 1, 2));
-        }
+    expect(p.isPossible(1, 1, 2)).toBe(false);
+});
 
-        public mayNotUseZeroValue() {
-            let p : org.kafsemo.futoshiki.Possibilities = new org.kafsemo.futoshiki.Possibilities(1);
+test('May not use zero value', () => {
+    let p : Possibilities = new Possibilities(2);
+    expect(() => {
             p.use(1, 1, 0);
-        }
+    }).toThrow();
+});
 
-        public mayNotUseInvalidValue() {
-            let p : org.kafsemo.futoshiki.Possibilities = new org.kafsemo.futoshiki.Possibilities(1);
+test('May not use invalid value', () => {
+    let p : Possibilities = new Possibilities(1);
+    expect(() => {
             p.use(1, 1, 2);
-        }
+    }).toThrow();
+});
 
-        public totalNumberOfPossibilitiesKnown() {
-            let p : org.kafsemo.futoshiki.Possibilities;
-            p = new org.kafsemo.futoshiki.Possibilities(1);
-            org.junit.Assert.assertEquals(java.math.BigInteger.ONE, p.size());
-            p = new org.kafsemo.futoshiki.Possibilities(2);
-            org.junit.Assert.assertEquals(java.math.BigInteger.valueOf(16), p.size());
-            p = new org.kafsemo.futoshiki.Possibilities(3);
-            org.junit.Assert.assertEquals(java.math.BigInteger.valueOf(19683), p.size());
-        }
+test('Total number of possibilities known', () => {
+    let p : Possibilities;
+    p = new Possibilities(1);
+    expect(p.size()).toBe(BigInt(1));
+    p = new Possibilities(2);
+    expect(p.size()).toBe(BigInt(16));
+    p = new Possibilities(3);
+    expect(p.size()).toBe(BigInt(19683));
+});
 
-        public totalPossibilitiesIsConstantForOneByOne() {
-            let p : org.kafsemo.futoshiki.Possibilities;
-            p = new org.kafsemo.futoshiki.Possibilities(1);
-            org.junit.Assert.assertEquals(java.math.BigInteger.ONE, p.size());
+test('Total possibilities is constant for one by one', () => {
+    let p : Possibilities = new Possibilities(1);
+    expect(p.size()).toBe(BigInt(1));
             p.use(1, 1, 1);
-            org.junit.Assert.assertEquals(java.math.BigInteger.ONE, p.size());
-        }
+    expect(p.size()).toBe(BigInt(1));
+});
 
-        public totalNumberReducedWhenNumbersAreFixed() {
-            let p : org.kafsemo.futoshiki.Possibilities;
-            p = new org.kafsemo.futoshiki.Possibilities(2);
+test('Total number reduced when numbers are fixed', () => {
+    let p : Possibilities;
+    p = new Possibilities(2);
             p.use(1, 1, 1);
-            org.junit.Assert.assertFalse(p.isPossible(1, 1, 2));
-            org.junit.Assert.assertFalse(p.isPossible(2, 1, 1));
-            org.junit.Assert.assertTrue(p.isPossible(2, 1, 2));
-            org.junit.Assert.assertEquals(java.math.BigInteger.valueOf(2), p.size());
+    expect(p.isPossible(1, 1, 2)).toBe(false);
+    expect(p.isPossible(2, 1, 1)).toBe(false);
+    expect(p.isPossible(2, 1, 2)).toBe(true);
+    expect(p.size()).toBe(BigInt(2));
             p.use(2, 2, 1);
-            org.junit.Assert.assertEquals(java.math.BigInteger.ONE, p.size());
-            p = new org.kafsemo.futoshiki.Possibilities(3);
+    expect(p.size()).toBe(BigInt(1));
+    p = new Possibilities(3);
             p.use(1, 1, 1);
-            org.junit.Assert.assertEquals(java.math.BigInteger.valueOf(16 * 81), p.size());
+    expect(p.size()).toBe(BigInt(16 * 81));
             p.use(2, 1, 2);
-            org.junit.Assert.assertEquals(java.math.BigInteger.valueOf(16 * 9), p.size());
+    expect(p.size()).toBe(BigInt(16 * 9));
             p.use(3, 1, 3);
-            org.junit.Assert.assertEquals(java.math.BigInteger.valueOf(64), p.size());
-        }
+    expect(p.size()).toBe(BigInt(64));
+});
 
-        public useExistingPuzzleToReducePossibilities() {
-            let p : org.kafsemo.futoshiki.Possibilities = new org.kafsemo.futoshiki.Possibilities(2);
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(2);
+test('Use existing puzzle to reduce possibilities', () => {
+    let p : Possibilities = new Possibilities(2);
+    let f : Futoshiki = new Futoshiki(2);
             p.use(f);
-            org.junit.Assert.assertEquals(java.math.BigInteger.valueOf(16), p.size());
+    expect(p.size()).toBe(BigInt(16));
             f.set(1, 1, 1);
             p.use(f);
-            org.junit.Assert.assertEquals(java.math.BigInteger.valueOf(2), p.size());
-        }
+    expect(p.size()).toBe(BigInt(2));
+});
 
-        public useExistingPuzzleRulesToReducePossibilities() {
-            let p : org.kafsemo.futoshiki.Possibilities = new org.kafsemo.futoshiki.Possibilities(2);
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(2);
+test('Use existing puzzle rules to reduce possibilities', () => {
+    let p : Possibilities = new Possibilities(2);
+    let f : Futoshiki = new Futoshiki(2);
             f.addGtRule(1, 1, 2, 1);
             p.use(f);
-            org.junit.Assert.assertFalse(p.isPossible(1, 1, 1));
-            org.junit.Assert.assertTrue(p.isPossible(1, 1, 2));
-            org.junit.Assert.assertTrue(p.isPossible(2, 1, 1));
-            org.junit.Assert.assertFalse(p.isPossible(2, 1, 2));
-        }
+    expect(p.isPossible(1, 1, 1)).toBe(false);
+    expect(p.isPossible(1, 1, 2)).toBe(true);
+    expect(p.isPossible(2, 1, 1)).toBe(true);
+    expect(p.isPossible(2, 1, 2)).toBe(false);
+});
 
-        public useExistingPuzzleRulesWithNumbersToReducePossibilities() {
-            let p : org.kafsemo.futoshiki.Possibilities = new org.kafsemo.futoshiki.Possibilities(3);
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(3);
+test('Use existing puzzle rules with numbers to reduce possibilities', () => {
+    let p : Possibilities = new Possibilities(3);
+    let f : Futoshiki = new Futoshiki(3);
             f.set(1, 1, 2);
             f.addGtRule(2, 1, 1, 1);
             p.use(f);
-            org.junit.Assert.assertFalse(p.isPossible(2, 1, 1));
-            org.junit.Assert.assertFalse(p.isPossible(2, 1, 2));
-            org.junit.Assert.assertTrue(p.isPossible(2, 1, 3));
-        }
+    expect(p.isPossible(2, 1, 1)).toBe(false);
+    expect(p.isPossible(2, 1, 2)).toBe(false);
+    expect(p.isPossible(2, 1, 3)).toBe(true);
+});
 
-        public getPossibilityCountForSpecificCell() {
-            let p : org.kafsemo.futoshiki.Possibilities;
-            p = new org.kafsemo.futoshiki.Possibilities(1);
-            org.junit.Assert.assertEquals(1, p.possibleCount(1, 1));
-            p = new org.kafsemo.futoshiki.Possibilities(9);
-            org.junit.Assert.assertEquals(9, p.possibleCount(1, 1));
-        }
+test('Get possibility count for specific cell', () => {
+    let p : Possibilities = new Possibilities(1);
+    p = new Possibilities(1);
+    expect(p.possibleCount(1, 1)).toBe(1);
+    p = new Possibilities(9);
+    expect(p.possibleCount(1, 1)).toBe(9);
+});
 
-        public specificCellPossibilityCountIsReduced() {
-            let p : org.kafsemo.futoshiki.Possibilities;
-            p = new org.kafsemo.futoshiki.Possibilities(2);
-            org.junit.Assert.assertEquals(2, p.possibleCount(1, 1));
+test('Specific cell possibility count is reduced', () => {
+    let p : Possibilities;
+    p = new Possibilities(2);
+    expect(p.possibleCount(1, 1)).toBe(2);
             p.use(1, 1, 1);
-            org.junit.Assert.assertEquals(1, p.possibleCount(1, 1));
-            org.junit.Assert.assertEquals(1, p.possibleCount(2, 1));
-            p = new org.kafsemo.futoshiki.Possibilities(9);
+    expect(p.possibleCount(1, 1)).toBe(1);
+    expect(p.possibleCount(2, 1)).toBe(1);
+    p = new Possibilities(9);
             p.use(1, 1, 1);
-            org.junit.Assert.assertEquals(8, p.possibleCount(2, 1));
-        }
+    expect(p.possibleCount(2, 1)).toBe(8);
+});
 
-        public ruleEliminationsArePropagated() {
-            let p : org.kafsemo.futoshiki.Possibilities = new org.kafsemo.futoshiki.Possibilities(9);
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(9);
-            for(let gtColumn : number = 2; gtColumn <= 9; gtColumn++) {{
+test('Rule eliminations are propagated', () => {
+    let p : Possibilities = new Possibilities(9);
+    let f : Futoshiki = new Futoshiki(9);
+    for(let gtColumn : number = 2; gtColumn <= 9; gtColumn++) {
                 f.addGtRule(gtColumn, 1, gtColumn - 1, 1);
-            };}
+    }
             p.use(f);
-            for(let column : number = 1; column <= 9; column++) {{
-                org.junit.Assert.assertEquals(column, p.maxPossible(column, 1));
-                org.junit.Assert.assertEquals(column, p.minPossible(column, 1));
-            };}
-        }
+    for(let column : number = 1; column <= 9; column++) {
+        expect(p.maxPossible(column, 1)).toBe(column);
+        expect(p.minPossible(column, 1)).toBe(column);
+    }
+});
 
+/*
         public static toString(p : org.kafsemo.futoshiki.Possibilities) : string {
             let sb : java.lang.StringBuilder = new java.lang.StringBuilder();
             for(let r : number = 1; r <= p.getLength(); r++) {{
@@ -157,15 +161,10 @@ namespace org.kafsemo.futoshiki {
             sb.append("--\n");
             return sb.toString();
         }
-
-        public ruleEliminationsSucceedEvenWhenPuzzleCannotBeSolved() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(2);
+*/
+test('Rule elimination succeeds even when puzzle cannot be solved', () => {
+    let f : Futoshiki = new Futoshiki(2);
             f.addGtRule(1, 1, 2, 1);
             f.addGtRule(1, 2, 1, 1);
-            new org.kafsemo.futoshiki.Possibilities(2).use(f);
-        }
-    }
-    TestPossibilities["__class"] = "org.kafsemo.futoshiki.TestPossibilities";
-
-}
-
+    new Possibilities(2).use(f);
+});

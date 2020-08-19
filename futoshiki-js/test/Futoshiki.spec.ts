@@ -1,116 +1,100 @@
-/* Generated from Java with JSweet 2.3.5 - http://www.jsweet.org */
-namespace org.kafsemo.futoshiki {
-    /**
-     * Tests for {@link Futoshiki}, modifying and examining puzzle state.
-     * 
-     * @author Joseph Walton
-     * @class
-     */
-    export class TestFutoshiki {
-        public testInitialState() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
-            org.junit.Assert.assertTrue(f.isValid());
-            org.junit.Assert.assertFalse(f.isFull());
-        }
+import { CellPos } from '../src/CellPos';
+import { GtRule } from '../src/GtRule';
+import { Futoshiki } from '../src/Futoshiki';
 
-        public testSimpleModification() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
+test('Test initial state', () => {
+    let f : Futoshiki = new Futoshiki();
+    expect(f.isValid()).toBe(true);
+    expect(f.isFull()).toBe(false);
+});
+
+
+test('Test simple modification', () => {
+    let f : Futoshiki = new Futoshiki();
             f.set(1, 1, 1);
-            org.junit.Assert.assertEquals(1, f.get(1, 1));
+    expect(f.get(1, 1)).toBe(1);
             f.set(1, 1, 2);
-            org.junit.Assert.assertEquals(2, f.get(1, 1));
-            try {
-                f.set(1, 1, 0);
-                org.junit.Assert.fail("Out of range numbers should fail");
-            } catch(iae) {
-            };
-            try {
-                f.set(0, 0, 1);
-                org.junit.Assert.fail("Out of range coordinates should fail");
-            } catch(iae) {
-            };
-            try {
-                f.set(6, 6, 1);
-                org.junit.Assert.fail("Out of range coordinates should fail");
-            } catch(iae) {
-            };
-        }
+    expect(f.get(1, 1)).toBe(2);
+    expect(() => {f.set(1, 1, 0);}).toThrow(); // Out of range numbers should fail
+    expect(() => {f.set(0, 0, 1);}).toThrow(); // Out of range coordinates should fail
+    expect(() => {f.set(6, 6, 1);}).toThrow(); // Out of range coordinates should fail
+});
 
-        public testFull() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
+test('Test full', () => {
+    let f : Futoshiki = new Futoshiki();
             for(let row : number = 1; row <= 5; row++) {{
                 for(let column : number = 1; column <= 5; column++) {{
-                    org.junit.Assert.assertFalse(f.isFull());
+                    expect(f.isFull()).toBe(false);
                     f.set(column, row, 1);
                 };}
             };}
-            org.junit.Assert.assertTrue(f.isFull());
-        }
+    expect(f.isFull()).toBe(true);
+});
 
-        public testSimpleInvalidation() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
+test('Test simple invalidation', () => {
+    let f : Futoshiki = new Futoshiki();
             f.set(1, 1, 1);
             f.set(2, 1, 1);
-            org.junit.Assert.assertFalse("Two 1s in a line is invalid", f.isValid());
-        }
+    expect(f.isValid()).toBe(false); // Two 1s in a line is invalid
+});
 
-        public testSimpleRuleViolation() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
+test('Test simple rule violation', () => {
+    let f : Futoshiki = new Futoshiki();
             f.set(1, 1, 1);
             f.set(2, 1, 2);
-            org.junit.Assert.assertTrue(f.isValid());
+    expect(f.isValid()).toBe(true);
             f.addGtRule(1, 1, 2, 1);
-            org.junit.Assert.assertFalse("1 < 2 is invalid", f.isValid());
-        }
+    expect(f.isValid()).toBe(false); // 1 < 2 is invalid
+});
 
-        public duplicateNumbersInColumnAreNotValid() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(2);
+test('Duplicate numbers in column are not valid', () => {
+    let f : Futoshiki = new Futoshiki();
             f.set(1, 1, 1);
             f.set(1, 2, 1);
-            org.junit.Assert.assertFalse(f.isValid());
-        }
+    expect(f.isValid()).toBe(false);
+});
 
-        public testNoRuleViolationWithoutNumbers() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
+test('Test no rule violation without numbers', () => {
+    let f : Futoshiki = new Futoshiki();
             f.addGtRule(1, 1, 2, 1);
-            org.junit.Assert.assertTrue("No rule violation with blank numbers", f.isValid());
-            f.set(1, 1, 2);
-            org.junit.Assert.assertTrue("No rule violation with blank numbers", f.isValid());
-            f.set(2, 1, 1);
-            org.junit.Assert.assertTrue("No rule violation with 2 > 1", f.isValid());
+    expect(f.isValid()).toBe(true); // No rule violation with blank numbers
+            f.set(1, 1, 2); // No rule violation with blank numbers
+    expect(f.isValid()).toBe(true);
+            f.set(2, 1, 1); // No rule violation with 2 > 1
+    expect(f.isValid()).toBe(true);
             f.set(2, 1, 3);
-            org.junit.Assert.assertFalse("Rule violation with 2 < 3", f.isValid());
-        }
+    expect(f.isValid()).toBe(false); // Rule violation with 2 < 3
+});
 
-        public testClone() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
+test('Test clone', () => {
+    let f : Futoshiki = new Futoshiki();
             f.set(1, 1, 1);
             f.set(2, 1, 2);
-            let f2 : org.kafsemo.futoshiki.Futoshiki = /* clone */((o:any) => { if(o.clone!=undefined) { return (<any>o).clone(); } else { let clone = Object.create(o); for(let p in o) { if (o.hasOwnProperty(p)) clone[p] = o[p]; } return clone; } })(f);
-            org.junit.Assert.assertNotNull(f2);
-            org.junit.Assert.assertEquals(1, f.get(1, 1));
-            org.junit.Assert.assertEquals(2, f.get(2, 1));
+    let f2 : Futoshiki = f.clone();
+    expect(f2).toBeTruthy();
+    expect(f.get(1, 1)).toBe(1);
+    expect(f.get(2, 1)).toBe(2);
             f2.set(1, 1, 3);
-            org.junit.Assert.assertEquals(3, f2.get(1, 1));
-            org.junit.Assert.assertEquals(1, f.get(1, 1));
-        }
+    expect(f2.get(1, 1)).toBe(3);
+    expect(f.get(1, 1)).toBe(1);
+});
 
-        public testCloneRules() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
+test('Test clone rules', () => {
+    let f : Futoshiki = new Futoshiki();
             f.set(1, 1, 1);
             f.set(2, 1, 2);
             f.addGtRule(1, 1, 2, 1);
-            let f2 : org.kafsemo.futoshiki.Futoshiki = /* clone */((o:any) => { if(o.clone!=undefined) { return (<any>o).clone(); } else { let clone = Object.create(o); for(let p in o) { if (o.hasOwnProperty(p)) clone[p] = o[p]; } return clone; } })(f);
-            org.junit.Assert.assertFalse("Rules should also be cloned", f2.isValid());
-        }
+    let f2 : Futoshiki = f.clone();
+    expect(f2.isValid()).toBe(false); // Rules should also be cloned
+});
 
-        public testFullSampleIsValid() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
+test('Test full sample is valid', () => {
+    let f : Futoshiki = new Futoshiki();
             let sample : number[][] = [[5, 1, 4, 3, 2], [3, 2, 5, 1, 4], [4, 5, 3, 2, 1], [2, 4, 1, 5, 3], [1, 3, 2, 4, 5]];
             for(let row : number = 1; row <= 5; row++) {{
                 for(let column : number = 1; column <= 5; column++) {{
                     f.set(column, row, sample[row - 1][column - 1]);
-                    org.junit.Assert.assertTrue(f.isValid());
+            expect(f.isValid()).toBe(true);
                 };}
             };}
             f.addGtRule(2, 2, 2, 1);
@@ -125,219 +109,219 @@ namespace org.kafsemo.futoshiki {
             f.addGtRule(2, 5, 3, 5);
             f.addGtRule(4, 5, 3, 5);
             f.addGtRule(5, 5, 4, 5);
-            org.junit.Assert.assertTrue(f.isValid());
-        }
+    expect(f.isValid()).toBe(true);
+});
 
-        public testBlankCells() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
-            let blank : java.util.Collection<org.kafsemo.futoshiki.CellPos> = f.blankCells();
-            org.junit.Assert.assertEquals(25, blank.size());
-        }
+test('Test blank cells', () => {
+    let f : Futoshiki = new Futoshiki();
+    let blank : Array<CellPos> = f.blankCells();
+    expect(blank).toHaveLength(25);
+});
 
-        public onlyBlankCellsIncluded() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
+test('Only blank cells included', () => {
+    let f : Futoshiki = new Futoshiki();
             f.set(1, 1, 1);
-            let blank : java.util.Collection<org.kafsemo.futoshiki.CellPos> = f.blankCells();
-            org.junit.Assert.assertEquals(24, blank.size());
-            org.junit.Assert.assertFalse(blank.contains(new org.kafsemo.futoshiki.CellPos(1, 1)));
-        }
+    let blank : Array<CellPos> = f.blankCells();
+    expect(blank).toHaveLength(24);
+    expect(blank).toEqual(expect.not.arrayContaining([new CellPos(1, 1)]));
+});
 
-        public testClear() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
-            org.junit.Assert.assertEquals(0, f.get(1, 1));
+test('Test clear', () => {
+    let f : Futoshiki = new Futoshiki();
+    expect(f.get(1, 1)).toEqual(0);
             f.set(1, 1, 5);
-            org.junit.Assert.assertEquals(5, f.get(1, 1));
+    expect(f.get(1, 1)).toEqual(5);
             f.clear(1, 1);
-            org.junit.Assert.assertEquals(0, f.get(1, 1));
-        }
+    expect(f.get(1, 1)).toEqual(0);
+});
 
-        /*private*/ static gather(rules : java.lang.Iterable<any>) : java.util.List<org.kafsemo.futoshiki.GtRule> {
-            let c : java.util.List<org.kafsemo.futoshiki.GtRule> = <any>(new java.util.ArrayList<org.kafsemo.futoshiki.GtRule>());
-            for(let index121=rules.iterator();index121.hasNext();) {
-                let r = index121.next();
-                {
-                    c.add(r);
-                }
-            }
-            return c;
-        }
-
-        public testSettingRulesOverwritesExistingRules() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
+test('Test setting rules overwrites existing rules', () => {
+    let f : Futoshiki = new Futoshiki();
             f.addGtRule(1, 1, 2, 1);
-            let r : java.util.List<org.kafsemo.futoshiki.GtRule>;
-            r = TestFutoshiki.gather(f.getRules());
-            org.junit.Assert.assertEquals(1, r.size());
+    let r : Array<GtRule>;
+    r = f.getRules();
+    expect(r).toHaveLength(1);
             f.addGtRule(1, 1, 2, 1);
-            r = TestFutoshiki.gather(f.getRules());
-            org.junit.Assert.assertEquals("A duplicate rule should have no effect", 1, r.size());
+    r = f.getRules();
+    expect(r).toHaveLength(1); // A duplicate rule should have no effect
             f.addGtRule(2, 1, 1, 1);
-            r = TestFutoshiki.gather(f.getRules());
-            org.junit.Assert.assertEquals("A rule in the same position should replace the previous one", 1, r.size());
-            let gtr : org.kafsemo.futoshiki.GtRule = r.get(0);
-            org.junit.Assert.assertEquals(2, gtr.getGreaterColumn());
-            org.junit.Assert.assertEquals(1, gtr.getGreaterRow());
-            org.junit.Assert.assertEquals(1, gtr.getLesserColumn());
-            org.junit.Assert.assertEquals(1, gtr.getLesserRow());
-        }
+    r = f.getRules();
+    expect(r).toHaveLength(1); // A rule in the same position should replace the previous one
+    let gtr : GtRule = r[0];
+    expect(gtr.getGreaterColumn()).toEqual(2)
+    expect(gtr.getGreaterRow()).toEqual(1)
+    expect(gtr.getLesserColumn()).toEqual(1)
+    expect(gtr.getLesserRow()).toEqual(1)
+});
 
-        public unableToRemoveFromRuleIterator() {
-            new org.kafsemo.futoshiki.Futoshiki().getRules().iterator().remove();
-        }
+/*
+test('unableToRemoveFromRuleIterator', () => {
+    expect(() => {
+        new Futoshiki().getRules().iterator().remove();
+    }).toThrow();
+});
+*/
 
-        public testGetRuleByPosition() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
+test('Test get rule by position', () => {
+    let f : Futoshiki = new Futoshiki();
             f.addGtRule(1, 1, 2, 1);
-            let r : org.kafsemo.futoshiki.GtRule = f.getRule(new org.kafsemo.futoshiki.GtRule(1, 1, 2, 1).getCanonPosForm());
-            org.junit.Assert.assertNotNull(r);
-            let expected : org.kafsemo.futoshiki.GtRule = new org.kafsemo.futoshiki.GtRule(1, 1, 2, 1);
-            org.junit.Assert.assertEquals(expected, r);
-        }
+    let r : GtRule = f.getRule(new GtRule(1, 1, 2, 1).getCanonPosForm());
+    expect(r).toBeTruthy();
+    let expected : GtRule = new GtRule(1, 1, 2, 1);
+    expect(r).toEqual(expected);
+});
 
-        public getRuleReturnsNullWhenNoRule() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(2);
-            let r : org.kafsemo.futoshiki.GtRule = new org.kafsemo.futoshiki.GtRule(1, 1, 2, 1);
-            org.junit.Assert.assertNull(f.getRule(r));
-        }
+test('Get rule returns null when no rule', () => {
+    let f : Futoshiki = new Futoshiki(2);
+    let r : GtRule = new GtRule(1, 1, 2, 1);
+    expect(f.getRule(r)).toBeFalsy();
+});
 
-        public testRemoveRule() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
+test('testRemoveRule', () => {
+    let f : Futoshiki = new Futoshiki();
             f.addGtRule(1, 1, 2, 1);
-            f.removeRule(new org.kafsemo.futoshiki.GtRule(1, 1, 2, 1).getCanonPosForm());
-            org.junit.Assert.assertFalse("Deleting a single rule should leave no rules", f.getRules().iterator().hasNext());
-        }
+    f.removeRule(new GtRule(1, 1, 2, 1).getCanonPosForm());
+    expect(f.getRules()).toHaveLength(0); // Deleting a single rule should leave no rules
+});
 
-        public testSizeDefaultsToFive() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
-            org.junit.Assert.assertEquals("A default puzzle is 5 square", 5, f.getLength());
-        }
+test('Test size defaults to five', () => {
+    let f : Futoshiki = new Futoshiki();
+    expect(f.getLength()).toEqual(5); // A default puzzle is 5 square
+});
 
-        public testFutoshikiSizeMustBePositive() {
-            new org.kafsemo.futoshiki.Futoshiki(0);
-        }
+test('Test futoshiki size must be positive', () => {
+    expect(() => {
+        new Futoshiki(0);
+    }).toThrow();
+});
 
-        public testFutoshikiSizeMustNotExceedNumberOfDigits() {
-            new org.kafsemo.futoshiki.Futoshiki(10);
-        }
+test('Test futoshiki size must not exceed number of digits', () => {
+    expect(() => {
+        new Futoshiki(10);
+    }).toThrow();
+});
 
-        public testFutoshikiWithSizeOneBehaves() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(1);
-            org.junit.Assert.assertEquals(1, f.getLength());
-            org.junit.Assert.assertEquals(0, f.get(1, 1));
+test('Test futoshiki with size one behaves', () => {
+    let f : Futoshiki = new Futoshiki(1);
+    expect(f.getLength()).toEqual(1);
+    expect(f.get(1, 1)).toEqual(0);
             f.set(1, 1, 1);
-            org.junit.Assert.assertEquals(1, f.get(1, 1));
-        }
+    expect(f.get(1, 1)).toEqual(1);
+});
 
-        public futoshikiWithSizeOneRespectsBounds() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(1);
-            f.set(2, 1, 1);
-        }
+test('Futoshiki with size one respects bounds', () => {
+    let f : Futoshiki = new Futoshiki(1);
+    expect(() => {
+        f.set(2, 1, 1);
+    }).toThrow();
+});
 
-        public futoshikiWithSizeOneRejectsTooLargeNumbers() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(1);
-            f.set(1, 1, 2);
-        }
+test('Futoshiki with size one rejects too large numbers', () => {
+    let f : Futoshiki = new Futoshiki(1);
+    expect(() => {
+        f.set(1, 1, 2);
+    }).toThrow();
+});
 
-        public futoshikiWithSizeOneRejectsTooSmallNumbers() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(1);
-            f.set(1, 1, -1);
-        }
+test('Futoshiki with size one rejects too small numbers', () => {
+    let f : Futoshiki = new Futoshiki(1);
+    expect(() => {
+        f.set(1, 1, -1);
+    }).toThrow();
+});
 
-        public largeFutoshikiCanBeSet() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(9);
+test('Large futoshiki can be set', () => {
+    let f : Futoshiki = new Futoshiki(9);
             f.set(9, 9, 9);
-            org.junit.Assert.assertEquals(9, f.get(9, 9));
-        }
+    expect(f.get(9, 9)).toEqual(9);
+});
 
-        public largeFutoshikiCanBeCloned() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(9);
+test('Large futoshiki can be cloned', () => {
+    let f : Futoshiki = new Futoshiki(9);
             f.set(9, 9, 9);
             f = /* clone */((o:any) => { if(o.clone!=undefined) { return (<any>o).clone(); } else { let clone = Object.create(o); for(let p in o) { if (o.hasOwnProperty(p)) clone[p] = o[p]; } return clone; } })(f);
-            org.junit.Assert.assertEquals(9, f.get(9, 9));
+    expect(f.get(9, 9)).toEqual(9);
             f.set(9, 9, 8);
-            org.junit.Assert.assertEquals(8, f.get(9, 9));
-        }
+    expect(f.get(9, 9)).toEqual(8);
+});
 
-        public largeFutoshikiIsValid() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(9);
+test('Large futoshiki is valid', () => {
+    let f : Futoshiki = new Futoshiki(9);
             f.set(1, 1, 9);
             f.set(9, 1, 1);
-            org.junit.Assert.assertTrue(f.isValid());
-        }
+    expect(f.isValid()).toBe(true);
+});
 
-        public puzzlesAreEqualIfSameSize() {
-            let f1 : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(1);
-            org.junit.Assert.assertFalse(f1.equals(new org.kafsemo.futoshiki.Futoshiki(2)));
-            org.junit.Assert.assertTrue(f1.equals(new org.kafsemo.futoshiki.Futoshiki(1)));
-            org.junit.Assert.assertEquals(/* hashCode */(<any>((o: any) => { if(o.hashCode) { return o.hashCode(); } else { return o.toString().split('').reduce((prevHash, currVal) => (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0); }})(f1)), /* hashCode */(<any>((o: any) => { if(o.hashCode) { return o.hashCode(); } else { return o.toString().split('').reduce((prevHash, currVal) => (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0); }})(new org.kafsemo.futoshiki.Futoshiki(1))));
-        }
+/*
+test('puzzlesAreEqualIfSameSize', () => {
+    let f1 : Futoshiki = new Futoshiki(1);
+    expect(f1).not.toEqual(new Futoshiki(2));
+    expect(f1).toEqual(new Futoshiki(1));
+    expect(f1.hashCode()).toBe(new Futoshiki(1).hashCode());
+});
+*/
 
-        public puzzlesAreEqualIfInSameState() {
-            let f1 : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(1);
+test('Puzzles are equal if in same state', () => {
+    let f1 : Futoshiki = new Futoshiki(1);
             f1.set(1, 1, 1);
-            org.junit.Assert.assertFalse(f1.equals(new org.kafsemo.futoshiki.Futoshiki(1)));
-            let f2 : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(1);
+    expect(f1).not.toEqual(new Futoshiki(1));
+    let f2 : Futoshiki = new Futoshiki(1);
             f2.set(1, 1, 1);
-            org.junit.Assert.assertTrue(f1.equals(f2));
-        }
+    expect(f1).toEqual(f2);
+});
 
-        public puzzlesAreEqualIfSameRule() {
-            let f1 : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(2);
+test('Puzzles are equal if same rule', () => {
+    let f1 : Futoshiki = new Futoshiki(2);
             f1.addGtRule(1, 1, 2, 1);
-            let f2 : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(2);
-            org.junit.Assert.assertFalse(f1.equals(f2));
+    let f2 : Futoshiki = new Futoshiki(2);
+    expect(f1).not.toEqual(f2);
             f2.addGtRule(1, 1, 2, 1);
-            org.junit.Assert.assertTrue(f1.equals(f2));
-            f2.removeRule(new org.kafsemo.futoshiki.GtRule(1, 1, 2, 1));
-            org.junit.Assert.assertTrue(f2.equals(new org.kafsemo.futoshiki.Futoshiki(2)));
-        }
+    expect(f1).toEqual(f2);
+    f2.removeRule(new GtRule(1, 1, 2, 1));
+    expect(f2).toEqual(new Futoshiki(2));
+});
 
-        public puzzlesAreEqualIfSameMultipleRules() {
-            let f1 : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(2);
+test('Puzzles are equal if same multiple rules', () => {
+    let f1 : Futoshiki = new Futoshiki(2);
             f1.addGtRule(1, 1, 2, 1);
             f1.addGtRule(1, 1, 1, 2);
             f1.addGtRule(2, 2, 2, 1);
             f1.addGtRule(2, 2, 1, 2);
-            let f2 : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki(2);
-            org.junit.Assert.assertFalse(f1.equals(f2));
+    let f2 : Futoshiki = new Futoshiki(2);
+    expect(f1).not.toEqual(f2);
             f2.addGtRule(1, 1, 2, 1);
-            org.junit.Assert.assertFalse(f1.equals(f2));
+    expect(f1).not.toEqual(f2);
             f2.addGtRule(1, 1, 1, 2);
-            org.junit.Assert.assertFalse(f1.equals(f2));
+    expect(f1).not.toEqual(f2);
             f2.addGtRule(2, 2, 2, 1);
-            org.junit.Assert.assertFalse(f1.equals(f2));
+    expect(f1).not.toEqual(f2);
             f2.addGtRule(2, 2, 1, 2);
-            org.junit.Assert.assertTrue("Puzzles are equal when all rules match", f1.equals(f2));
-        }
+    expect(f1).toEqual(f2); // Puzzles are equal when all rules match
+});
 
-        public puzzlesAreNotEqualToNull() {
-            org.junit.Assert.assertFalse(new org.kafsemo.futoshiki.Futoshiki().equals(null));
-        }
+test('Puzzles are not equal to null', () => {
+    expect(new Futoshiki().equals(null)).toBe(false);
+});
 
-        public ruleIteratorReflectsChangedRules() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
+test('Rule iterator reflects changed rules', () => {
+    let f : Futoshiki = new Futoshiki();
             let o : any = f.getRules();
             f.addGtRule(1, 1, 2, 1);
-            org.junit.Assert.assertNotSame(o, f.getRules());
-        }
+    expect(f.getRules()).not.toBe(o);
+});
 
-        public rulesAddedToCloneAreImmediatelyReturned() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
+test('Rules added to clone are immediately returned', () => {
+    let f : Futoshiki = new Futoshiki();
             f.addGtRule(1, 1, 2, 1);
             f = /* clone */((o:any) => { if(o.clone!=undefined) { return (<any>o).clone(); } else { let clone = Object.create(o); for(let p in o) { if (o.hasOwnProperty(p)) clone[p] = o[p]; } return clone; } })(f);
             f.addGtRule(2, 1, 3, 1);
-            org.junit.Assert.assertEquals(2, TestFutoshiki.gather(f.getRules()).size());
-        }
+    expect(f.getRules()).toHaveLength(2);
+});
 
-        public ruleIteratorIsCurrentAfterValidityCheck() {
-            let f : org.kafsemo.futoshiki.Futoshiki = new org.kafsemo.futoshiki.Futoshiki();
+test('Rule iterator is current after validity check', () => {
+    let f : Futoshiki = new Futoshiki();
             f.getRules();
             f.addGtRule(1, 1, 2, 1);
-            f.isValid();
-            org.junit.Assert.assertEquals(1, TestFutoshiki.gather(f.getRules()).size());
-        }
-    }
-    TestFutoshiki["__class"] = "org.kafsemo.futoshiki.TestFutoshiki";
-
-}
-
+    expect(f.isValid()).toBe(true);
+    expect(f.getRules()).toHaveLength(1);
+});

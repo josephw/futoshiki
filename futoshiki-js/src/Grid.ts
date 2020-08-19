@@ -1,5 +1,4 @@
 /* Generated from Java with JSweet 2.3.5 - http://www.jsweet.org */
-namespace org.kafsemo.futoshiki {
     /**
      * A square grid of between one and nine squares across.
      * 
@@ -13,7 +12,7 @@ namespace org.kafsemo.futoshiki {
         public constructor(length : number) {
             if(this.length===undefined) this.length = 0;
             if((length < 1) || (length > 9)) {
-                throw new java.lang.IllegalArgumentException("Size must be 1 to 9: " + length);
+                throw new Error("Size must be 1 to 9: " + length);
             }
             this.length = length;
         }
@@ -23,8 +22,8 @@ namespace org.kafsemo.futoshiki {
         }
 
         idx(column : number, row : number) : number {
-            if(column < 1 || column > this.length) throw new java.lang.IllegalArgumentException("Bad column " + column);
-            if(row < 1 || row > this.length) throw new java.lang.IllegalArgumentException("Bad row " + row);
+            if(column < 1 || column > this.length) throw new Error("Bad column " + column);
+            if(row < 1 || row > this.length) throw new Error("Bad row " + row);
             return this.idxInternal(column, row);
         }
 
@@ -32,7 +31,3 @@ namespace org.kafsemo.futoshiki {
             return (row - 1) * this.length + (column - 1);
         }
     }
-    Grid["__class"] = "org.kafsemo.futoshiki.Grid";
-
-}
-
