@@ -4,8 +4,8 @@
      "downlevelIteration": true,
   },
   "include": [
-	  "src/org/kafsemo/futoshiki/*.ts",
-	  "test/org/kafsemo/futoshiki/**/*.ts",
+	  "src/*.ts",
+	  "test/**/*.ts",
   ]
 }
 
