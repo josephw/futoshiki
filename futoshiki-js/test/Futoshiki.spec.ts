@@ -107,13 +107,9 @@ test("Test full sample is valid", () => {
     [1, 3, 2, 4, 5],
   ];
   for (let row: number = 1; row <= 5; row++) {
-    {
-      for (let column: number = 1; column <= 5; column++) {
-        {
-          f.set(column, row, sample[row - 1][column - 1]);
-          expect(f.isValid()).toBe(true);
-        }
-      }
+    for (let column: number = 1; column <= 5; column++) {
+      f.set(column, row, sample[row - 1][column - 1]);
+      expect(f.isValid()).toBe(true);
     }
   }
   f.addGtRule(2, 2, 2, 1);
@@ -172,14 +168,6 @@ test("Test setting rules overwrites existing rules", () => {
   expect(gtr.getLesserColumn()).toEqual(1);
   expect(gtr.getLesserRow()).toEqual(1);
 });
-
-/*
-test('unableToRemoveFromRuleIterator', () => {
-    expect(() => {
-        new Futoshiki().getRules().iterator().remove();
-    }).toThrow();
-});
-*/
 
 test("Test get rule by position", () => {
   let f: Futoshiki = new Futoshiki();
@@ -258,17 +246,7 @@ test("Large futoshiki can be set", () => {
 test("Large futoshiki can be cloned", () => {
   let f: Futoshiki = new Futoshiki(9);
   f.set(9, 9, 9);
-  f = /* clone */ ((o: any) => {
-    if (o.clone != undefined) {
-      return (<any>o).clone();
-    } else {
-      let clone = Object.create(o);
-      for (let p in o) {
-        if (o.hasOwnProperty(p)) clone[p] = o[p];
-      }
-      return clone;
-    }
-  })(f);
+  f = f.clone();
   expect(f.get(9, 9)).toEqual(9);
   f.set(9, 9, 8);
   expect(f.get(9, 9)).toEqual(8);
@@ -281,14 +259,11 @@ test("Large futoshiki is valid", () => {
   expect(f.isValid()).toBe(true);
 });
 
-/*
-test('puzzlesAreEqualIfSameSize', () => {
-    let f1 : Futoshiki = new Futoshiki(1);
-    expect(f1).not.toEqual(new Futoshiki(2));
-    expect(f1).toEqual(new Futoshiki(1));
-    expect(f1.hashCode()).toBe(new Futoshiki(1).hashCode());
+test("puzzlesAreEqualIfSameSize", () => {
+  let f1: Futoshiki = new Futoshiki(1);
+  expect(f1).not.toEqual(new Futoshiki(2));
+  expect(f1).toEqual(new Futoshiki(1));
 });
-*/
 
 test("Puzzles are equal if in same state", () => {
   let f1: Futoshiki = new Futoshiki(1);
@@ -342,17 +317,7 @@ test("Rule iterator reflects changed rules", () => {
 test("Rules added to clone are immediately returned", () => {
   let f: Futoshiki = new Futoshiki();
   f.addGtRule(1, 1, 2, 1);
-  f = /* clone */ ((o: any) => {
-    if (o.clone != undefined) {
-      return (<any>o).clone();
-    } else {
-      let clone = Object.create(o);
-      for (let p in o) {
-        if (o.hasOwnProperty(p)) clone[p] = o[p];
-      }
-      return clone;
-    }
-  })(f);
+  f = f.clone();
   f.addGtRule(2, 1, 3, 1);
   expect(f.getRules()).toHaveLength(2);
 });

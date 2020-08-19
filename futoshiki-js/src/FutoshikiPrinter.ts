@@ -30,19 +30,15 @@ export class FutoshikiPrinter {
       return allocate(dims);
     })([stringLength, stringLength]);
     for (let row: number = 1; row <= f.getLength(); row++) {
-      {
-        for (let column: number = 1; column <= f.getLength(); column++) {
-          {
-            let v: number = f.get(column, row);
-            let s: string;
-            if (v !== 0) {
-              s = /* toString */ "" + v;
-            } else {
-              s = null;
-            }
-            caa[(row - 1) * 2][(column - 1) * 2] = s;
-          }
+      for (let column: number = 1; column <= f.getLength(); column++) {
+        let v: number = f.get(column, row);
+        let s: string;
+        if (v !== 0) {
+          s = /* toString */ "" + v;
+        } else {
+          s = null;
         }
+        caa[(row - 1) * 2][(column - 1) * 2] = s;
       }
     }
     for (let r of f.getRules()) {

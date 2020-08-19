@@ -26,24 +26,18 @@ export class Possibilities extends Grid {
     if (value < 1 || value > this.length)
       throw new Error("Bad cell value " + value);
     for (let c: number = 1; c <= this.length; c++) {
-      {
-        if (c !== column) {
-          this.possibilities.add(this.bit(c, row, value));
-        }
+      if (c !== column) {
+        this.possibilities.add(this.bit(c, row, value));
       }
     }
     for (let r: number = 1; r <= this.length; r++) {
-      {
-        if (r !== row) {
-          this.possibilities.add(this.bit(column, r, value));
-        }
+      if (r !== row) {
+        this.possibilities.add(this.bit(column, r, value));
       }
     }
     for (let v: number = 1; v <= this.length; v++) {
-      {
-        if (v !== value) {
-          this.possibilities.add(this.bit(column, row, v));
-        }
+      if (v !== value) {
+        this.possibilities.add(this.bit(column, row, v));
       }
     }
   }
@@ -66,10 +60,8 @@ export class Possibilities extends Grid {
 
   minPossible(column: number, row: number): number {
     for (let v: number = 1; v <= this.length; v++) {
-      {
-        if (this.isPossible(column, row, v)) {
-          return v;
-        }
+      if (this.isPossible(column, row, v)) {
+        return v;
       }
     }
     return 0;
@@ -77,10 +69,8 @@ export class Possibilities extends Grid {
 
   maxPossible(column: number, row: number): number {
     for (let v: number = this.length; v >= 1; v--) {
-      {
-        if (this.isPossible(column, row, v)) {
-          return v;
-        }
+      if (this.isPossible(column, row, v)) {
+        return v;
       }
     }
     return 0;
@@ -88,14 +78,10 @@ export class Possibilities extends Grid {
 
   public use$org_kafsemo_futoshiki_Futoshiki(f: Futoshiki) {
     for (let r: number = 1; r <= this.length; r++) {
-      {
-        for (let c: number = 1; c <= this.length; c++) {
-          {
-            let v: number = f.get(c, r);
-            if (v !== 0) {
-              this.use$int$int$int(c, r, v);
-            }
-          }
+      for (let c: number = 1; c <= this.length; c++) {
+        let v: number = f.get(c, r);
+        if (v !== 0) {
+          this.use$int$int$int(c, r, v);
         }
       }
     }
@@ -180,13 +166,9 @@ export class Possibilities extends Grid {
   public size(): bigint {
     let total: bigint = BigInt(1);
     for (let r: number = 1; r <= this.length; r++) {
-      {
-        for (let c: number = 1; c <= this.length; c++) {
-          {
-            let available: number = this.possibleCount$int$int(c, r);
-            total = total * BigInt(available);
-          }
-        }
+      for (let c: number = 1; c <= this.length; c++) {
+        let available: number = this.possibleCount$int$int(c, r);
+        total = total * BigInt(available);
       }
     }
     return total;
@@ -195,10 +177,8 @@ export class Possibilities extends Grid {
   public possibleCount$int$int(column: number, row: number): number {
     let available: number = 0;
     for (let v: number = 1; v <= this.length; v++) {
-      {
-        if (this.isPossible(column, row, v)) {
-          available++;
-        }
+      if (this.isPossible(column, row, v)) {
+        available++;
       }
     }
     return available;
