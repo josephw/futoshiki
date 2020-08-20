@@ -125,14 +125,6 @@ export class Futoshiki extends Grid {
     return blank;
   }
 
-  public hashCode(): number {
-    return 0;
-  }
-
-  public equals(o: any): boolean {
-    return false;
-  }
-
   public toString(): string {
     return FutoshikiPrinter.toString(this);
   }

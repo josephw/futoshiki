@@ -303,10 +303,6 @@ test("Puzzles are equal if same multiple rules", () => {
   expect(f1).toEqual(f2); // Puzzles are equal when all rules match
 });
 
-test("Puzzles are not equal to null", () => {
-  expect(new Futoshiki().equals(null)).toBe(false);
-});
-
 test("Rule iterator reflects changed rules", () => {
   let f: Futoshiki = new Futoshiki();
   let o: any = f.getRules();

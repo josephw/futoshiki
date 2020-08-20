@@ -22,27 +22,4 @@ export class CellPos {
   public toString(): string {
     return "(" + this.column + "," + this.row + ")";
   }
-
-  /**
-   *
-   * @return {number}
-   */
-  public hashCode(): number {
-    return 31 * this.column + this.row;
-  }
-
-  /**
-   *
-   * @param {*} obj
-   * @return {boolean}
-   */
-  public equals(obj: any): boolean {
-    if (this === obj) return true;
-    if (obj == null) return false;
-    if (!(obj != null && obj instanceof <any>CellPos)) return false;
-    let other: CellPos = <CellPos>obj;
-    if (this.column !== other.column) return false;
-    if (this.row !== other.row) return false;
-    return true;
-  }
 }

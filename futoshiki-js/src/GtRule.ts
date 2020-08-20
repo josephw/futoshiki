@@ -60,32 +60,4 @@ export class GtRule {
       return this;
     }
   }
-
-  /**
-   *
-   * @return {number}
-   */
-  public hashCode(): number {
-    let prime: number = 31;
-    let result: number = 1;
-    result = prime * result + this.columnA;
-    result = prime * result + this.columnB;
-    result = prime * result + this.rowA;
-    result = prime * result + this.rowB;
-    return result;
-  }
-
-  public equals(o: any): boolean {
-    if (o != null && o instanceof <any>GtRule) {
-      let r: GtRule = <GtRule>o;
-      return (
-        this.columnA === r.columnA &&
-        this.rowA === r.rowA &&
-        this.columnB === r.columnB &&
-        this.rowB === r.rowB
-      );
-    } else {
-      return false;
-    }
-  }
 }
