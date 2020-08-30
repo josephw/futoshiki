@@ -1,0 +1,88 @@
+<svg xmlns='http://www.w3.org/2000/svg'
+ viewBox='0 0 160 160'
+ width='530' height='530'>
+
+<!-- px, py = 10 -->
+
+<defs>
+<g id='h_gt'>
+<!--
+<rect x='0' y='0' width='10' height='20' fill='none' stroke='red'/>
+-->
+
+<polygon points='10,37 40,47 40,53 10,63 10,57 30,50 10,43'
+ transform='scale(0.2)' />
+</g>
+
+<g id='h_lt'>
+<use href='#h_gt' transform='translate(10, 20) rotate(180)' />
+</g>
+
+<g id='v_gt'>
+<use href='#h_gt' transform='translate(20, 0) rotate(90)' />
+</g>
+
+<g id='v_lt'>
+<use href='#h_gt' transform='translate(0, 10) rotate(-90)' />
+</g>
+
+<g id='cell'>
+<rect x='0' y='0' width='20' height='20' fill='white'/>
+
+<!-- Red if selected -->
+<rect x='0' y='0' width='20' height='20' style='fill: none; stroke: black; stroke-width: 1px;'/>
+</g>
+
+</defs>
+
+<rect x='0' y='0' width='160' height='160' fill='lightgray'/>
+
+<use href='#cell' x='10' y='10' />
+
+<!-- Black bold for designed -->
+<!-- Blue for automatic -->
+<!-- + Red for selected -->
+<text x='20' y='20' dominant-baseline="middle" text-anchor="middle" style='font-size: 10px; font-weight: bold; font-family: sans-serif;'>5</text>
+
+<use href='#h_gt' x='30' y='10'
+/>
+
+<!-- Second cell -->
+<use href='#cell' x='40' y='10' />
+<text x='50' y='20' dominant-baseline="middle" text-anchor="middle" style='font-size: 10px; font-weight: bold; font-family: sans-serif;'>1</text>
+
+
+<use href='#v_lt' x='40' y='30'
+/>
+
+<use href='#cell' x='70' y='10' />
+<use href='#cell' x='100' y='10' />
+<use href='#cell' x='130' y='10' />
+
+<use href='#cell' x='10' y='40' />
+<use href='#cell' x='40' y='40' />
+<use href='#cell' x='70' y='40' />
+<use href='#cell' x='100' y='40' />
+<use href='#cell' x='130' y='40' />
+
+<use href='#cell' x='10' y='70' />
+<use href='#cell' x='40' y='70' />
+<use href='#cell' x='70' y='70' />
+<use href='#cell' x='100' y='70' />
+<use href='#cell' x='130' y='70' />
+
+<use href='#cell' x='10' y='100' />
+<use href='#cell' x='40' y='100' />
+<use href='#cell' x='70' y='100' />
+<use href='#cell' x='100' y='100' />
+<use href='#cell' x='130' y='100' />
+
+<use href='#cell' x='10' y='130' />
+<use href='#cell' x='40' y='130' />
+<use href='#cell' x='70' y='130' />
+<use href='#cell' x='100' y='130' />
+<use href='#cell' x='130' y='130' />
+
+<use href='#v_gt' x='10' y='30' />
+</svg>
+
