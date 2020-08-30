@@ -3,7 +3,6 @@
 import { Grid } from "./Grid";
 import { CellPos } from "./CellPos";
 import { GtRule } from "./GtRule";
-import { FutoshikiPrinter } from "./FutoshikiPrinter";
 
 /**
  * A Futoshiki puzzle state, with any number of cells filled in and
@@ -123,10 +122,6 @@ export class Futoshiki extends Grid {
       }
     }
     return blank;
-  }
-
-  public toString(): string {
-    return FutoshikiPrinter.toString(this);
   }
 
   public getRules(): Array<GtRule> {
