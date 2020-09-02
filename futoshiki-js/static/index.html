@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<meta charset=utf-8>
+
+<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+<script src='bundle.js'></script>
+<script src='react-board.js' type='text/babel'></script>
+
+<style>
+html {
+  background-color: #eef5ee;
+}
+</style>
+
+<script type='text/babel'>
+
+function solve() {
+    const p = document.getElementById('puzzle');
+
+    const f = abc.FutoshikiPrinter.parse(p.value);
+
+    const resTxt = document.getElementById('result-txt');
+    const res = document.getElementById('result');
+
+    res.value = abc.FutoshikiPrinter.toString(f);
+
+    new abc.Solver({
+        remainingPossibilities: (x) => { return true; },
+        solution: (f) => {
+            const s = abc.FutoshikiPrinter.toString(f);
+            resTxt.value = s;
+
+            ReactDOM.render(<Board f={f} selected={null} />,
+                res);
+            return true;
+        }
+    }).solve(f);
+}
+</script>
+
+<textarea id='puzzle' cols="20" rows="20">
+</textarea>
+
+<br>
+<button onclick='solve()'>Solve</button>
+<br>
+
+<div style="display: flex; align-items: center;">
+
+<div id='result' style='border: 1px solid black; width: fit-content;'>
+(No result yet.)
+</div>
+<div>
+
+<div style="width: min-content; padding: 0 1em 1em 1em; border: 1px solid black;">
+
+<h3>Current state</h3>
+<p style="text-align: center;">Valid</p>
+
+<table>
+<tr>
+<td><button>Solve</button></td>
+<td><button disabled>Undo</button></td>
+</tr>
+<tr>
+<td><button>Clear</button></td>
+<td><button>Edit...</button></td>
+</tr>
+</table>
+
+<form>
+<select>
+<option>1x1</option>
+<option>2x2</option>
+<option>3x3</option>
+<option>4x4</option>
+<option selected>5x5</option>
+<option>6x6</option>
+<option>7x7</option>
+<option>8x8</option>
+<option>9x9</option>
+</select>
+</form>
+
+</div>
+
+
+</div>
+</div>
+
+
+<div>
+<textarea id='result-txt' cols="20" rows="20" readonly>
+</textarea>
+</div>
