@@ -22,13 +22,24 @@
   <plugins>
    <plugin>
     <artifactId>maven-shade-plugin</artifactId>
-    <version>2.4.3</version>
+    <version>3.2.4</version>
     <executions>
      <execution>
       <phase>package</phase>
       <goals>
        <goal>shade</goal>
       </goals>
+      <configuration>
+       <shadedArtifactAttached>true</shadedArtifactAttached>
+       <filters>
+        <filter>
+         <artifact>*:futoshiki-model</artifact>
+         <excludes>
+          <exclude>META-INF/MANIFEST.MF </exclude>
+         </excludes>
+        </filter>
+       </filters>
+      </configuration>
      </execution>
     </executions>
    </plugin>
