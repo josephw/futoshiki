@@ -124,7 +124,7 @@ public class FutoshikiControls
     {
         private final JLabel label;
         
-        public ValidityLabelChanger(JLabel label)
+        ValidityLabelChanger(JLabel label)
         {
             this.label = label;
         }
@@ -152,7 +152,7 @@ public class FutoshikiControls
     {
         private final JComponent comp;
         
-        public UndoabilityListener(JComponent c)
+        UndoabilityListener(JComponent c)
         {
             this.comp = c;
         }
@@ -169,7 +169,7 @@ public class FutoshikiControls
     {
         private final JComboBox sizeControl;
         
-        public PuzzleSizeListener(JComboBox sizeControl)
+        PuzzleSizeListener(JComboBox sizeControl)
         {
             this.sizeControl = sizeControl;
         }

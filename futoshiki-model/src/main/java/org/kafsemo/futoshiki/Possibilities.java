@@ -106,6 +106,7 @@ public class Possibilities extends Grid
 
         boolean learnedSomething;
         
+     // CHECKSTYLE:OFF
         do {
             learnedSomething = false;
             for (GtRule r : f.getRules()) {
@@ -138,6 +139,7 @@ public class Possibilities extends Grid
                 }
             }
         } while (learnedSomething);
+     // CHECKSTYLE:ON
     }
     
     public boolean isPossible(int column, int row, int value)
