@@ -1,8 +1,8 @@
 #!/bin/sh
 
-$(npm bin)/tsc -m es6 --outDir d src/*.ts --target es2019 --moduleResolution node
+npm run browser-build
 
-$(npm bin)/rollup d/index.js --file static/bundle.js --format iife --output.name abc
+npm run browser-package
 
 
 # Serve with

@@ -7,7 +7,7 @@
 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
 <script src='bundle.js'></script>
-<script src='react-board.js' type='text/babel'></script>
+<script src='react-board.jsx' type='text/babel'></script>
 
 <style>
 html {
@@ -20,17 +20,17 @@ html {
 function solve() {
     const p = document.getElementById('puzzle');
 
-    const f = abc.FutoshikiPrinter.parse(p.value);
+    const f = futoshiki.FutoshikiPrinter.parse(p.value);
 
     const resTxt = document.getElementById('result-txt');
     const res = document.getElementById('result');
 
-    res.value = abc.FutoshikiPrinter.toString(f);
+    res.value = futoshiki.FutoshikiPrinter.toString(f);
 
-    new abc.Solver({
+    new futoshiki.Solver({
         remainingPossibilities: (x) => { return true; },
         solution: (f) => {
-            const s = abc.FutoshikiPrinter.toString(f);
+            const s = futoshiki.FutoshikiPrinter.toString(f);
             resTxt.value = s;
 
             ReactDOM.render(<Board f={f} selected={null} />,

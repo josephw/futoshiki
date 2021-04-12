@@ -1,4 +1,4 @@
 lib/
+lib-browser/
 node_modules/
-d/
 static/bundle.js

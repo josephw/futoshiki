@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc -p .",
     "test": "jest lib/",
-    "reformat": "prettier --write src/ test/"
+    "reformat": "prettier --write src/ test/ static/*.jsx",
+    "browser-build": "tsc --project tsconfig-for-browser.json",
+    "browser-package": "rollup lib-browser/index.js --file static/bundle.js --format iife --output.name futoshiki"
   },
   "author": "Joseph Walton",
   "license": "GPL-3.0-or-later",
