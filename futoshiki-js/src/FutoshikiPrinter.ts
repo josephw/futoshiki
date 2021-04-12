@@ -49,7 +49,7 @@ export class FutoshikiPrinter {
         for (let index127 = 0; index127 < row.length; index127++) {
           let c = row[index127];
           {
-            if (c != null) sb = sb + c;
+            if (c !== undefined) sb = sb + c;
             else sb = sb + " ";
           }
         }

@@ -45,8 +45,8 @@ export class Possibilities extends Grid {
   public use(column: number | Futoshiki, row?: any, value?: any): number {
     if (
       typeof column === "number" &&
-      (typeof row === "number" || row === null) &&
-      (typeof value === "number" || value === null)
+      (typeof row === "number" || row === undefined) &&
+      (typeof value === "number" || value === undefined)
     ) {
       return <any>this.use$int$int$int(column, row, value);
     } else if (
@@ -187,7 +187,7 @@ export class Possibilities extends Grid {
   public possibleCount(column: number | CellPos, row?: any): number {
     if (
       typeof column === "number" &&
-      (typeof row === "number" || row === null)
+      (typeof row === "number" || row === undefined)
     ) {
       return <any>this.possibleCount$int$int(column, row);
     } else if (column instanceof CellPos && row === undefined) {

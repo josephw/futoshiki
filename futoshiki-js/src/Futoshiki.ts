@@ -48,7 +48,7 @@ export class Futoshiki extends Grid {
         }
         rowMask.add(v);
         let c = columnMask[column];
-        if (c == null) {
+        if (c === undefined) {
           c = new Set();
           columnMask[column] = c;
         }

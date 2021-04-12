@@ -6,7 +6,6 @@
   //  [5, 161280],
 ].forEach((k) => {
   test(`Size ${k[0]}`, () => {
-    let f = null;
     expect(exhaustive(k[0])).toBe(k[1]);
   });
 });

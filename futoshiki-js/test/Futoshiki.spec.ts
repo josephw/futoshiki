@@ -180,10 +180,10 @@ test("Test get rule by position", () => {
   expect(r).toEqual(expected);
 });
 
-test("Get rule returns null when no rule", () => {
+test("Get rule returns undefined when no rule", () => {
   let f: Futoshiki = new Futoshiki(2);
   let r: GtRule = new GtRule(1, 1, 2, 1);
-  expect(f.getRule(r)).toBeFalsy();
+  expect(f.getRule(r)).toBe(undefined);
 });
 
 test("testRemoveRule", () => {
