@@ -3,13 +3,13 @@ import { Solver, SolutionTarget } from "../../src/Solver";
 import { FutoshikiPrinter } from "../../src/FutoshikiPrinter";
 
 export class PrintingSolutionTarget implements SolutionTarget {
-  total: bigint;
+  total?: bigint;
 
-  startTime: [number, number];
+  startTime?: [number, number];
 
   reports: number = 0;
 
-  nextStats: [number, number];
+  nextStats?: [number, number];
 
   public solution(f: Futoshiki): boolean {
     console.info("Solution:");

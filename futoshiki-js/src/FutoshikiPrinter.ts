@@ -15,30 +15,16 @@ export class FutoshikiPrinter {
 
   public static toString(f: Futoshiki): string {
     let stringLength: number = FutoshikiPrinter.stringLength(f);
-    let caa: string[][] = <any>(function (dims) {
-      let allocate = function (dims) {
-        if (dims.length == 0) {
-          return null;
-        } else {
-          let array = [];
-          for (let i = 0; i < dims[0]; i++) {
-            array.push(allocate(dims.slice(1)));
-          }
-          return array;
-        }
-      };
-      return allocate(dims);
-    })([stringLength, stringLength]);
+    let caa: string[][] = [];
+    for (let i = 0; i < stringLength; i++) {
+      caa.push(new Array(stringLength));
+    }
     for (let row: number = 1; row <= f.getLength(); row++) {
       for (let column: number = 1; column <= f.getLength(); column++) {
         let v: number = f.get(column, row);
-        let s: string;
         if (v !== 0) {
-          s = /* toString */ "" + v;
-        } else {
-          s = null;
+          caa[(row - 1) * 2][(column - 1) * 2] = "" + v;
         }
-        caa[(row - 1) * 2][(column - 1) * 2] = s;
       }
     }
     for (let r of f.getRules()) {
@@ -124,8 +110,8 @@ export class FutoshikiPrinter {
       size = Math.max(size, ...filledCells.values());
     }
     let f: Futoshiki = new Futoshiki(size);
-    for (let p of filledCells.keys()) {
-      f.set(p.column, p.row, filledCells.get(p));
+    for (const [p, v] of filledCells.entries()) {
+      f.set(p.column, p.row, v);
     }
     for (let gtr of rules) {
       f.addGtRule(gtr.columnA, gtr.rowA, gtr.columnB, gtr.rowB);

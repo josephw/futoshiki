@@ -128,7 +128,7 @@ export class Futoshiki extends Grid {
     return Array.from(this.rules.values());
   }
 
-  public getRule(ruleKey: GtRule): GtRule {
+  public getRule(ruleKey: GtRule): GtRule | undefined {
     return this.rules.get(JSON.stringify(ruleKey.getCanonPosForm()));
   }
 

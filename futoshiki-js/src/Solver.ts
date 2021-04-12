@@ -67,16 +67,8 @@ export class Solver {
       while (s-- > 0) a.push(0);
       return a;
     })(f.getLength());
-    let possibilitiesForValue: bigint[] = ((s) => {
-      let a = [];
-      while (s-- > 0) a.push(null);
-      return a;
-    })(f.getLength());
-    let possibilities: Possibilities[] = ((s) => {
-      let a = [];
-      while (s-- > 0) a.push(null);
-      return a;
-    })(f.getLength());
+    let possibilitiesForValue: bigint[] = [];
+    let possibilities: Possibilities[] = [];
     let i: number = 0;
     for (let v: number = 1; v <= f.getLength(); v++) {
       if (poss.isPossible(p.column, p.row, v)) {

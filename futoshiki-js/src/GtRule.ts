@@ -24,10 +24,6 @@ export class GtRule {
     columnB: number,
     rowB: number
   ) {
-    if (this.columnA === undefined) this.columnA = 0;
-    if (this.rowA === undefined) this.rowA = 0;
-    if (this.columnB === undefined) this.columnB = 0;
-    if (this.rowB === undefined) this.rowB = 0;
     this.columnA = columnA;
     this.rowA = rowA;
     this.columnB = columnB;

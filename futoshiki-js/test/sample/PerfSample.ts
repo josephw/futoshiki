@@ -10,7 +10,7 @@ import { PrintingSolutionTarget } from "./PrintingSolutionTarget";
  * @class
  */
 export class PerfSample {
-  public static main(args: string[]) {
+  public static main() {
     console.info("Starting...");
     let start = process.hrtime();
     PerfSample.exhaustive();
@@ -82,4 +82,4 @@ export class PerfSample$1 implements SolutionTarget {
   }
 }
 
-PerfSample.main(null);
+PerfSample.main();

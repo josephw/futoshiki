@@ -13,8 +13,6 @@ export class CellPos {
   row: number;
 
   public constructor(cellColumn: number, cellRow: number) {
-    if (this.column === undefined) this.column = 0;
-    if (this.row === undefined) this.row = 0;
     this.column = cellColumn;
     this.row = cellRow;
   }

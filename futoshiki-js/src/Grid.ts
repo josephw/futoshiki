@@ -10,7 +10,6 @@ export class Grid {
   length: number;
 
   public constructor(length: number) {
-    if (this.length === undefined) this.length = 0;
     if (length < 1 || length > 9) {
       throw new Error("Size must be 1 to 9: " + length);
     }

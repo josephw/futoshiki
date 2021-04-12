@@ -172,7 +172,9 @@ test("Test setting rules overwrites existing rules", () => {
 test("Test get rule by position", () => {
   let f: Futoshiki = new Futoshiki();
   f.addGtRule(1, 1, 2, 1);
-  let r: GtRule = f.getRule(new GtRule(1, 1, 2, 1).getCanonPosForm());
+  let r: GtRule | undefined = f.getRule(
+    new GtRule(1, 1, 2, 1).getCanonPosForm()
+  );
   expect(r).toBeTruthy();
   let expected: GtRule = new GtRule(1, 1, 2, 1);
   expect(r).toEqual(expected);
