@@ -91,13 +91,14 @@ export class Solver {
       remainingPossibilities =
         remainingPossibilities - possibilitiesForValue[j];
 
-      let more: boolean = this.solve$org_kafsemo_futoshiki_Futoshiki$org_kafsemo_futoshiki_CellPos_A$int$org_kafsemo_futoshiki_Possibilities$java_math_BigInteger(
-        f.clone(),
-        blank,
-        nb + 1,
-        possibilities[j],
-        remainingPossibilities
-      );
+      let more: boolean =
+        this.solve$org_kafsemo_futoshiki_Futoshiki$org_kafsemo_futoshiki_CellPos_A$int$org_kafsemo_futoshiki_Possibilities$java_math_BigInteger(
+          f.clone(),
+          blank,
+          nb + 1,
+          possibilities[j],
+          remainingPossibilities
+        );
       if (!more) {
         return false;
       }

@@ -1,7 +1,4 @@
-import { CellPos } from "../src/CellPos";
-import { GtRule } from "../src/GtRule";
-import { Futoshiki } from "../src/Futoshiki";
-import { FutoshikiPrinter } from "../src/FutoshikiPrinter";
+import { CellPos, Futoshiki, FutoshikiPrinter, GtRule } from "../src/";
 
 /**
  * Tests for {@link FutoshikiPrinter}, converting puzzle state to

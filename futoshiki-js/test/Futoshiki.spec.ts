@@ -1,6 +1,4 @@
-import { CellPos } from "../src/CellPos";
-import { GtRule } from "../src/GtRule";
-import { Futoshiki } from "../src/Futoshiki";
+import { CellPos, Futoshiki, GtRule } from "../src/";
 
 test("Test initial state", () => {
   let f: Futoshiki = new Futoshiki();

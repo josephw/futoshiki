@@ -1,5 +1,5 @@
-import { Futoshiki } from "../src/Futoshiki";
-import { Solver, SolutionTarget } from "../src/Solver";
+import { Futoshiki, Solver } from "../src/";
+import { SolutionTarget } from "../src/Solver";
 
 test("Solver reports solution", () => {
   let f: Futoshiki = new Futoshiki(1);

@@ -8,8 +8,8 @@
     "test": "jest lib/",
     "reformat": "prettier --write src/ test/"
   },
-  "author": "",
-  "license": "",
+  "author": "Joseph Walton",
+  "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@types/jest": "^26.0.23",
     "jest": "^27.0.6",

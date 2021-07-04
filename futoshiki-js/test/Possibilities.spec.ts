@@ -1,5 +1,5 @@
 import { Possibilities } from "../src/Possibilities";
-import { Futoshiki } from "../src/Futoshiki";
+import { Futoshiki } from "../src/";
 
 test("Empty by default", () => {
   let p: Possibilities = new Possibilities(1);
