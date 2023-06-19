@@ -112,6 +112,25 @@ test("Puzzle with impossible cell is detected", () => {
   expect(pcg.counts).toStrictEqual([BigInt(0), BigInt(0)]);
 });
 
+test("Simple three-by-three finds single correct solution", () => {
+  let f: Futoshiki = new Futoshiki(3);
+  f.set(1, 1, 2);
+  f.addGtRule(1, 1, 2, 1);
+  f.addGtRule(1, 1, 1, 2);
+  let expectedSolution: Futoshiki = f.clone();
+  expectedSolution.set(2, 1, 1);
+  expectedSolution.set(3, 1, 3);
+  expectedSolution.set(1, 2, 1);
+  expectedSolution.set(2, 2, 3);
+  expectedSolution.set(3, 2, 2);
+  expectedSolution.set(1, 3, 3);
+  expectedSolution.set(2, 3, 2);
+  expectedSolution.set(3, 3, 1);
+  let sg: SolutionGatherer = new SolutionGatherer();
+  new Solver(sg).solve(f);
+  expect(sg.solutions).toStrictEqual([expectedSolution]);
+});
+
 class SolutionGatherer implements SolutionTarget {
   solutions: Futoshiki[] = [];
 

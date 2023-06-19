@@ -82,7 +82,8 @@ export class Futoshiki extends Grid {
   }
 
   public set(column: number, row: number, v: number) {
-    if (v < 1 || v > this.length) throw new Error("Bad cell value " + v);
+    if (!Number.isInteger(v) || v < 1 || v > this.length)
+      throw new Error("Bad cell value " + JSON.stringify(v));
     this.data[this.idx(column, row)] = v;
   }
 
