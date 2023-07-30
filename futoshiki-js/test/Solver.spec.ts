@@ -131,6 +131,14 @@ test("Simple three-by-three finds single correct solution", () => {
   expect(sg.solutions).toStrictEqual([expectedSolution]);
 });
 
+test("solve does not mutate its argument", () => {
+  let f: Futoshiki = new Futoshiki(1);
+  let sg: SolutionGatherer = new SolutionGatherer();
+  new Solver(sg).solve(f);
+  expect(sg.solutions).toHaveLength(1);
+  expect(f.get(1, 1)).toEqual(0);
+});
+
 class SolutionGatherer implements SolutionTarget {
   solutions: Futoshiki[] = [];
 

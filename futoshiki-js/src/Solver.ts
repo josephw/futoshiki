@@ -36,7 +36,7 @@ export class Solver {
     }
     if (
       this.solve$org_kafsemo_futoshiki_Futoshiki$org_kafsemo_futoshiki_CellPos_A$int$org_kafsemo_futoshiki_Possibilities$java_math_BigInteger(
-        f,
+        f.clone(),
         blanks,
         0,
         poss,
