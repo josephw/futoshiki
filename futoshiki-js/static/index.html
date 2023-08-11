@@ -2,53 +2,38 @@
 
 <meta charset=utf-8>
 
-<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/react@18.2.0/umd/react.development.js" crossorigin integrity="sha384-0HL/VWVbwweJfp0saUL50fXRuSABCdVeinTBoJCDXprLkJ49VI0QMWNGMRt8ebnT"></script>
+<script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js" crossorigin integrity="sha384-79Od0yhavbvtuP2nWl+Y6mwgs8AlknSIikYSw0+uOc65GTyH8SW7e2hCyCB303Y2"></script>
 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
 <script src='bundle.js'></script>
 <script src='react-board.jsx' type='text/babel'></script>
 
 <style>
-html {
-  background-color: #eef5ee;
-}
+  html {
+    background-color: #eef5ee;
+  }
+
+  #validity.invalid {
+    color: red;
+  }
 </style>
 
-<script type='text/babel'>
 
-function solve() {
-    const p = document.getElementById('puzzle');
 
-    const f = futoshiki.FutoshikiPrinter.parse(p.value);
-
-    const resTxt = document.getElementById('result-txt');
-    const res = document.getElementById('result');
-
-    res.value = futoshiki.FutoshikiPrinter.toString(f);
-
-    new futoshiki.Solver({
-        remainingPossibilities: (x) => { return true; },
-        solution: (f) => {
-            const s = futoshiki.FutoshikiPrinter.toString(f);
-            resTxt.value = s;
-
-            ReactDOM.render(<Board f={f} selected={null} />,
-                res);
-            return true;
-        }
-    }).solve(f);
-}
-</script>
-
-<textarea id='puzzle' cols="20" rows="20">
-</textarea>
-
-<br>
-<button onclick='solve()'>Solve</button>
 <br>
 
 <div style="display: flex; align-items: center;">
+
+<div id='editor' hidden style="position: absolute; left: 30px; width: 500px; height: 500px; background-color: rgba(0, 1, 0, 0.8);">
+<textarea id='puzzle' cols="20" rows="20" style="margin: 0 auto; display: block;">
+</textarea>
+<br>
+<p style="text-align: center;">
+<button onclick='handleEditorOkay();'>Okay</button>
+<button onclick='closeEditor();'>Cancel</button>
+</p>
+</div>
 
 <div id='result' style='border: 1px solid black; width: fit-content;'>
 (No result yet.)
@@ -58,30 +43,30 @@ function solve() {
 <div style="width: min-content; padding: 0 1em 1em 1em; border: 1px solid black;">
 
 <h3>Current state</h3>
-<p style="text-align: center;">Valid</p>
+<p style="text-align: center;" id="validity"></p>
 
 <table>
 <tr>
-<td><button>Solve</button></td>
-<td><button disabled>Undo</button></td>
+<td><button onclick='solve();'>Solve</button></td>
+<td><button disabled onclick='undo();' id='undo-button'>Undo</button></td>
 </tr>
 <tr>
-<td><button>Clear</button></td>
-<td><button>Edit...</button></td>
+<td><button onclick='clearBoard();'>Clear</button></td>
+<td><button onclick='showEditor();'>Edit...</button></td>
 </tr>
 </table>
 
 <form>
-<select>
-<option>1x1</option>
-<option>2x2</option>
-<option>3x3</option>
-<option>4x4</option>
-<option selected>5x5</option>
-<option>6x6</option>
-<option>7x7</option>
-<option>8x8</option>
-<option>9x9</option>
+<select id='size-select' onchange="initWithSize(this.value);">
+<option value=1>1x1</option>
+<option value=2>2x2</option>
+<option value=3>3x3</option>
+<option value=4>4x4</option>
+<option value=5 selected>5x5</option>
+<option value=6>6x6</option>
+<option value=7>7x7</option>
+<option value=8>8x8</option>
+<option value=9>9x9</option>
 </select>
 </form>
 
@@ -91,8 +76,105 @@ function solve() {
 </div>
 </div>
 
+<script type="text/babel">
+  // Assume running after onload, due to text/babel
 
-<div>
-<textarea id='result-txt' cols="20" rows="20" readonly>
-</textarea>
-</div>
+  const size = document.getElementById("size-select").value;
+  const res = document.getElementById("result");
+
+  var currentBoard = new futoshiki.Futoshiki(size);
+
+  var boardHistory = [];
+
+  function setBoard(board) {
+    boardHistory = boardHistory.slice(-9).concat(currentBoard);
+    document.getElementById("undo-button").disabled = (boardHistory.length == 0);
+
+    setBoardWithoutHistory(board);
+  }
+
+  function setBoardWithoutHistory(board) {
+    currentBoard = board;
+    document.getElementById("size-select").value = currentBoard.getLength();
+    root.render(<Board board={currentBoard} setBoard={setBoard}/>);
+    const validity = document.getElementById('validity');
+    if (board.isValid()) {
+      validity.textContent = 'Valid';
+      validity.classList.remove('invalid');
+    } else {
+      validity.textContent = 'Invalid';
+      validity.classList.add('invalid');
+    }
+  }
+
+  const root = ReactDOM.createRoot(res);
+  function initWithSize(size) {
+    setBoard(new futoshiki.Futoshiki(size));
+  }
+  function initWithSizeWithoutHistory(size) {
+    setBoardWithoutHistory(new futoshiki.Futoshiki(size));
+  }
+
+  initWithSizeWithoutHistory(size);
+
+  function solve() {
+    const f = currentBoard;
+
+    const initialTxt = futoshiki.FutoshikiPrinter.toString(f);
+
+    var solutionFound = false;
+
+    new futoshiki.Solver({
+      remainingPossibilities: (x) => {
+        return true;
+      },
+      solution: (f) => {
+        if (solutionFound) {
+          window.alert("There are multiple solutions.");
+          return false;
+        } else {
+          const s = futoshiki.FutoshikiPrinter.toString(f);
+
+          root.render(<Board board={currentBoard} solution={f} setBoard={setBoard}/>);
+          solutionFound = true;
+
+          return true;
+        }
+      },
+    }).solve(f);
+    if (!solutionFound) {
+      window.alert("There are no solutions.");
+    }
+  }
+
+  function clearBoard() {
+    const size = document.getElementById("size-select").value;
+    initWithSize(size);
+  }
+
+  function undo() {
+    if (boardHistory.length) {
+      const last = boardHistory.length - 1;
+      const previousBoard = boardHistory[last];
+      boardHistory = boardHistory.slice(0, last);
+      document.getElementById("undo-button").disabled = (boardHistory.length == 0);
+
+      setBoardWithoutHistory(previousBoard);
+    }
+  }
+
+  function showEditor() {
+    document.getElementById('puzzle').value = futoshiki.FutoshikiPrinter.toString(currentBoard);
+    document.getElementById('editor').hidden = false;
+  }
+
+  function handleEditorOkay() {
+    setBoard(futoshiki.FutoshikiPrinter.parse(document.getElementById('puzzle').value));
+    closeEditor();
+  }
+
+  function closeEditor() {
+    document.getElementById('editor').hidden = true;
+    document.getElementById('puzzle').value = '';
+  }
+</script>
