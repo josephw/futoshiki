@@ -1,6 +1,6 @@
-const { useRef, useState } = React;
+import React, { useState } from 'react';
 
-const Board = ({ board, solution, setBoard }) => {
+export const Board = ({ board, solution, setBoard }) => {
   const [selected, setSelected] = useState(undefined);
 
   function handleClicked(x) {

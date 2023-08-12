@@ -4,10 +4,8 @@
 
 <script src="https://unpkg.com/react@18.2.0/umd/react.development.js" crossorigin integrity="sha384-0HL/VWVbwweJfp0saUL50fXRuSABCdVeinTBoJCDXprLkJ49VI0QMWNGMRt8ebnT"></script>
 <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js" crossorigin integrity="sha384-79Od0yhavbvtuP2nWl+Y6mwgs8AlknSIikYSw0+uOc65GTyH8SW7e2hCyCB303Y2"></script>
-<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
 <script src='bundle.js'></script>
-<script src='react-board.jsx' type='text/babel'></script>
 
 <style>
   html {
@@ -76,9 +74,7 @@
 </div>
 </div>
 
-<script type="text/babel">
-  // Assume running after onload, due to text/babel
-
+<script>
   const size = document.getElementById("size-select").value;
   const res = document.getElementById("result");
 
@@ -96,7 +92,8 @@
   function setBoardWithoutHistory(board) {
     currentBoard = board;
     document.getElementById("size-select").value = currentBoard.getLength();
-    root.render(<Board board={currentBoard} setBoard={setBoard}/>);
+//    root.render(<Board board={currentBoard} setBoard={setBoard}/>);
+    root.render(React.createElement(futoshiki.Board, {board: currentBoard, setBoard: setBoard}));
     const validity = document.getElementById('validity');
     if (board.isValid()) {
       validity.textContent = 'Valid';
@@ -135,7 +132,8 @@
         } else {
           const s = futoshiki.FutoshikiPrinter.toString(f);
 
-          root.render(<Board board={currentBoard} solution={f} setBoard={setBoard}/>);
+          // root.render(<Board board={currentBoard} solution={f} setBoard={setBoard}/>);
+          root.render(React.createElement(futoshiki.Board, {board: currentBoard, solution: f, setBoard: setBoard}));
           solutionFound = true;
 
           return true;

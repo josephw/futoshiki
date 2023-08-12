@@ -4,9 +4,12 @@
     "module": "es2015",
     "outDir": "lib-browser/",
     "moduleResolution": "node",
-    "strict": true
+    "strict": true,
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true
   },
   "include": [
-          "src/*.ts"
+          "src/index.ts"
   ]
 }
