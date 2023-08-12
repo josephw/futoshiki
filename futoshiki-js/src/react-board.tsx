@@ -1,13 +1,25 @@
-import React, { useState } from 'react';
+import React, { KeyboardEvent, useState } from "react";
 
-export const Board = ({ board, solution, setBoard }) => {
-  const [selected, setSelected] = useState(undefined);
+import { Futoshiki } from "./Futoshiki";
+import { CellPos } from "./CellPos";
+import { GtRule } from "./GtRule";
 
-  function handleClicked(x) {
+export const Board = ({
+  board,
+  solution,
+  setBoard,
+}: {
+  board: Futoshiki;
+  solution: Futoshiki | undefined;
+  setBoard: (board: Futoshiki) => void;
+}) => {
+  const [selected, setSelected] = useState<CellPos | null>(null);
+
+  function handleClicked(x: CellPos) {
     setSelected(x);
   }
 
-  function handleTyped(e) {
+  function handleTyped(e: KeyboardEvent) {
     if (selected) {
       const n = Number(e.key);
       if (n >= 1 && n <= board.getLength()) {
@@ -18,7 +30,7 @@ export const Board = ({ board, solution, setBoard }) => {
     }
   }
 
-  function handleKeydown(e) {
+  function handleKeydown(e: KeyboardEvent) {
     if (selected && (e.key === "Delete" || e.key === "Backspace")) {
       var newBoard = board.clone();
       newBoard.clear(selected.column, selected.row);
@@ -26,7 +38,7 @@ export const Board = ({ board, solution, setBoard }) => {
     }
   }
 
-  function handleToggleRule(gtr) {
+  function handleToggleRule(gtr: GtRule) {
     const r = board.getRule(gtr);
     var newBoard = board.clone();
     if (!r) {
@@ -50,7 +62,7 @@ export const Board = ({ board, solution, setBoard }) => {
   }
 
   function clear() {
-    setBoard(new futoshiki.Futoshiki(board.getLength()));
+    setBoard(new Futoshiki(board.getLength()));
     setSelected(null);
   }
 
@@ -62,7 +74,7 @@ export const Board = ({ board, solution, setBoard }) => {
 
   for (let row = 1; row <= f.getLength(); row++) {
     for (let column = 1; column <= f.getLength(); column++) {
-      let pos = new futoshiki.CellPos(column, row);
+      let pos = new CellPos(column, row);
 
       let cellId;
       if (
@@ -115,8 +127,8 @@ export const Board = ({ board, solution, setBoard }) => {
         <rect
           x={10 + (column - 1) * 30}
           y={10 + (row - 1) * 30}
-          width="20"
-          height="20"
+          width={20}
+          height={20}
           fill="transparent"
           onClick={() => handleClicked(pos)}
           key={"click_cell_" + row + "_" + column}
@@ -157,7 +169,7 @@ export const Board = ({ board, solution, setBoard }) => {
 
   for (let row = 1; row <= f.getLength(); row++) {
     for (let column = 1; column < f.getLength(); column++) {
-      const r = new futoshiki.GtRule(column, row, column + 1, row);
+      const r = new GtRule(column, row, column + 1, row);
 
       let x = 10 + (column - 1) * 30;
       let y = 10 + (row - 1) * 30;
@@ -179,7 +191,7 @@ export const Board = ({ board, solution, setBoard }) => {
 
   for (let row = 1; row < f.getLength(); row++) {
     for (let column = 1; column <= f.getLength(); column++) {
-      const r = new futoshiki.GtRule(column, row, column, row + 1);
+      const r = new GtRule(column, row, column, row + 1);
 
       let x = 10 + (column - 1) * 30;
       let y = 10 + (row - 1) * 30;
@@ -203,9 +215,9 @@ export const Board = ({ board, solution, setBoard }) => {
   return (
     <svg
       viewBox={`0 0 ${units} ${units}`}
-      width="530"
-      height="530"
-      tabIndex="0"
+      width={530}
+      height={530}
+      tabIndex={0}
       onKeyPress={(e) => handleTyped(e)}
       onKeyDown={(e) => handleKeydown(e)}
     >
