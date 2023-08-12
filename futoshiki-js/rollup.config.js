@@ -1,3 +1,5 @@
+import terser from '@rollup/plugin-terser';
+
 export default {
   input: 'lib-browser/index.js',
   external: ['react'],
@@ -7,6 +9,7 @@ export default {
     format: 'iife',
     globals: {
       'react': 'React'
-    }
+    },
+    plugins: [terser()]
   }
 };
