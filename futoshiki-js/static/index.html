@@ -7,41 +7,32 @@
 
 <script src='bundle.js'></script>
 
-<style>
-  html {
-    background-color: #eef5ee;
-  }
-
-  #validity.invalid {
-    color: red;
-  }
-</style>
-
+<link rel='stylesheet' href='style.css'>
 
 
 <br>
 
-<div style="display: flex; align-items: center;">
+<div class='futoshiki-panel'>
 
-<div id='editor' hidden style="position: absolute; left: 30px; width: 500px; height: 500px; background-color: rgba(0, 1, 0, 0.8);">
-<textarea id='puzzle' cols="20" rows="20" style="margin: 0 auto; display: block;">
+<div id='editor' class="futoshiki-editor" hidden>
+<textarea id='puzzle' cols="20" rows="20" class="futoshiki-editor-textarea">
 </textarea>
 <br>
-<p style="text-align: center;">
+<p class="futoshiki-editor-button-panel">
 <button onclick='handleEditorOkay();'>Okay</button>
 <button onclick='closeEditor();'>Cancel</button>
 </p>
 </div>
 
-<div id='result' style='border: 1px solid black; width: fit-content;'>
+<div id='result' class="futoshiki-board">
 (No result yet.)
 </div>
 <div>
 
-<div style="width: min-content; padding: 0 1em 1em 1em; border: 1px solid black;">
+<div class="futoshiki-status-panel">
 
 <h3>Current state</h3>
-<p style="text-align: center;" id="validity"></p>
+<p id="validity"></p>
 
 <table>
 <tr>
