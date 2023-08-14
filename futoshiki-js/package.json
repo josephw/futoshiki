@@ -6,9 +6,10 @@
   "scripts": {
     "build": "tsc -p .",
     "test": "jest lib/",
-    "reformat": "prettier --write src/ test/ static/*.jsx",
+    "reformat": "prettier --write src/ test/ static/style.css",
     "browser-build": "tsc --project tsconfig-for-browser.json",
-    "browser-package": "rollup -c rollup.config.js --bundleConfigAsCjs"
+    "browser-package": "rollup -c rollup.config.js --bundleConfigAsCjs",
+    "package": "npm run browser-build && npm run browser-package"
   },
   "author": "Joseph Walton",
   "license": "GPL-3.0-or-later",
