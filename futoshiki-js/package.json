@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -p .",
+    "build": "tsc --jsx react --esModuleInterop -p .",
     "test": "jest lib/",
     "reformat": "prettier --write src/ test/ static/style.css",
     "browser-build": "tsc --project tsconfig-for-browser.json",
