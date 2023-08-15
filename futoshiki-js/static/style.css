@@ -1,0 +1,44 @@
+html {
+  background-color: #eef5ee;
+}
+
+.invalid {
+  color: red;
+}
+
+.futoshiki-panel {
+  display: flex;
+  align-items: center;
+}
+
+.futoshiki-editor {
+  position: absolute;
+  left: 30px;
+  width: 500px;
+  height: 500px;
+  background-color: rgba(0, 1, 0, 0.8);
+}
+
+.futoshiki-editor-textarea {
+  margin: 0 auto;
+  display: block;
+}
+
+.futoshiki-editor-button-panel {
+  text-align: center;
+}
+
+.futoshiki-board {
+  border: 1px solid black;
+  width: fit-content;
+}
+
+.futoshiki-status-panel {
+  width: min-content;
+  padding: 0 1em 1em 1em;
+  border: 1px solid black;
+}
+
+.futoshiki-status-panel p {
+  text-align: center;
+}
