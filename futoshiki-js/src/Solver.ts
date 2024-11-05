@@ -40,7 +40,7 @@ export class Solver {
         blanks,
         0,
         poss,
-        BigInt(0)
+        BigInt(0),
       )
     ) {
       this.target.remainingPossibilities(BigInt(0));
@@ -52,7 +52,7 @@ export class Solver {
     blank: CellPos[],
     nb: number,
     poss: Possibilities,
-    possibilitiesAfter: bigint
+    possibilitiesAfter: bigint,
   ): boolean {
     if (!f.isValid()) {
       return true;
@@ -97,7 +97,7 @@ export class Solver {
           blank,
           nb + 1,
           possibilities[j],
-          remainingPossibilities
+          remainingPossibilities,
         );
       if (!more) {
         return false;
@@ -110,16 +110,16 @@ export class Solver {
   moveBlankWithLeastPossibilitiesIntoPlace(
     blanks: CellPos[],
     p: number,
-    poss: Possibilities
+    poss: Possibilities,
   ): CellPos[] {
     let fewestIdx: number = -1;
     for (let i: number = p; i < blanks.length; i++) {
       if (fewestIdx >= 0) {
         let p1: number = poss.possibleCount$org_kafsemo_futoshiki_CellPos(
-          blanks[fewestIdx]
+          blanks[fewestIdx],
         );
         let p2: number = poss.possibleCount$org_kafsemo_futoshiki_CellPos(
-          blanks[i]
+          blanks[i],
         );
         if (p2 < p1) {
           fewestIdx = i;

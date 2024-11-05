@@ -95,7 +95,7 @@ export class Futoshiki extends Grid {
     columnA: number,
     rowA: number,
     columnB: number,
-    rowB: number
+    rowB: number,
   ) {
     let newRule: GtRule = new GtRule(columnA, rowA, columnB, rowB);
     let k: GtRule = newRule.getCanonPosForm();

@@ -46,14 +46,14 @@ export const Board = ({
         gtr.getGreaterColumn(),
         gtr.getGreaterRow(),
         gtr.getLesserColumn(),
-        gtr.getLesserRow()
+        gtr.getLesserRow(),
       );
     } else if (JSON.stringify(r) == JSON.stringify(gtr)) {
       newBoard.addGtRule(
         gtr.getLesserColumn(),
         gtr.getLesserRow(),
         gtr.getGreaterColumn(),
-        gtr.getGreaterRow()
+        gtr.getGreaterRow(),
       );
     } else {
       newBoard.removeRule(gtr);
@@ -93,7 +93,7 @@ export const Board = ({
           x={10 + (column - 1) * 30}
           y={10 + (row - 1) * 30}
           key={"cell_" + row + "_" + column}
-        />
+        />,
       );
 
       const designed = f.get(column, row);
@@ -121,7 +121,7 @@ export const Board = ({
           key={"cell_val_" + row + "_" + column}
         >
           {value || ""}
-        </text>
+        </text>,
       );
       elements.push(
         <rect
@@ -132,7 +132,7 @@ export const Board = ({
           fill="transparent"
           onClick={() => handleClicked(pos)}
           key={"click_cell_" + row + "_" + column}
-        />
+        />,
       );
     }
   }
@@ -163,7 +163,7 @@ export const Board = ({
         x={x}
         y={y}
         key={`rule_${r.columnA},${r.rowA}_${r.columnB},${r.rowB}`}
-      />
+      />,
     );
   }
 
@@ -184,7 +184,7 @@ export const Board = ({
           opacity="0%"
           key={`toggle_rule_horiz_${column},${row}`}
           onClick={() => handleToggleRule(r)}
-        />
+        />,
       );
     }
   }
@@ -206,7 +206,7 @@ export const Board = ({
           opacity="0%"
           key={`toggle_rule_vert_${column},${row}`}
           onClick={() => handleToggleRule(r)}
-        />
+        />,
       );
     }
   }

@@ -22,7 +22,7 @@ export class GtRule {
     columnA: number,
     rowA: number,
     columnB: number,
-    rowB: number
+    rowB: number,
   ) {
     this.columnA = columnA;
     this.rowA = rowA;

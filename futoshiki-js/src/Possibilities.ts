@@ -92,17 +92,17 @@ export class Possibilities extends Grid {
         for (let r of f.getRules()) {
           let greatestMoreThan: number = this.minPossible(
             r.getLesserColumn(),
-            r.getLesserRow()
+            r.getLesserRow(),
           );
           if (greatestMoreThan > 0) {
             for (let v: number = 1; v <= greatestMoreThan; v++) {
               {
                 learnedSomething =
                   !this.possibilities.has(
-                    this.bit(r.getGreaterColumn(), r.getGreaterRow(), v)
+                    this.bit(r.getGreaterColumn(), r.getGreaterRow(), v),
                   ) || learnedSomething;
                 this.possibilities.add(
-                  this.bit(r.getGreaterColumn(), r.getGreaterRow(), v)
+                  this.bit(r.getGreaterColumn(), r.getGreaterRow(), v),
                 );
               }
             }
@@ -111,27 +111,27 @@ export class Possibilities extends Grid {
               {
                 learnedSomething =
                   !this.possibilities.has(
-                    this.bit(r.getGreaterColumn(), r.getGreaterRow(), v)
+                    this.bit(r.getGreaterColumn(), r.getGreaterRow(), v),
                   ) || learnedSomething;
                 this.possibilities.add(
-                  this.bit(r.getGreaterColumn(), r.getGreaterRow(), v)
+                  this.bit(r.getGreaterColumn(), r.getGreaterRow(), v),
                 );
               }
             }
           }
           let leastLessThan: number = this.maxPossible(
             r.getGreaterColumn(),
-            r.getGreaterRow()
+            r.getGreaterRow(),
           );
           if (leastLessThan > 0) {
             for (let v: number = leastLessThan; v <= this.length; v++) {
               {
                 learnedSomething =
                   !this.possibilities.has(
-                    this.bit(r.getLesserColumn(), r.getLesserRow(), v)
+                    this.bit(r.getLesserColumn(), r.getLesserRow(), v),
                   ) || learnedSomething;
                 this.possibilities.add(
-                  this.bit(r.getLesserColumn(), r.getLesserRow(), v)
+                  this.bit(r.getLesserColumn(), r.getLesserRow(), v),
                 );
               }
             }
@@ -140,10 +140,10 @@ export class Possibilities extends Grid {
               {
                 learnedSomething =
                   !this.possibilities.has(
-                    this.bit(r.getLesserColumn(), r.getLesserRow(), v)
+                    this.bit(r.getLesserColumn(), r.getLesserRow(), v),
                   ) || learnedSomething;
                 this.possibilities.add(
-                  this.bit(r.getLesserColumn(), r.getLesserRow(), v)
+                  this.bit(r.getLesserColumn(), r.getLesserRow(), v),
                 );
               }
             }

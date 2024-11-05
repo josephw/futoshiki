@@ -9,7 +9,7 @@ export const FutoshikiPanel = () => {
   const [currentBoard, setCurrentBoard] = useState(() => new Futoshiki(5));
   const [boardHistory, setBoardHistory] = useState<Futoshiki[]>([]);
   const [editorContents, setEditorContents] = useState<string | undefined>(
-    undefined
+    undefined,
   );
   const [solution, setSolution] = useState<Futoshiki | undefined>(undefined);
 
