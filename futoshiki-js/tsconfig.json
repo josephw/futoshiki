@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-     "ignoreDeprecations": "6.0",
      "target": "es2019",
-     "module": "CommonJS",
-     "moduleResolution": "node",
+     "module": "node16",
+     "moduleResolution": "node16",
      "outDir": "lib/",
      "strict": true,
      "types": [
