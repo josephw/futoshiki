@@ -2,8 +2,10 @@
   "compilerOptions": {
     "target": "es2019",
     "module": "es2015",
+    "lib": ["es2020", "dom"],
+    "rootDir": "src/",
     "outDir": "lib-browser/",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "strict": true,
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
